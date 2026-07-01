@@ -1,0 +1,1 @@
+- [GRID Project Setup](grid-project.md) — React+Vite (port 5000) + Express API (port 3001) + PostgreSQL, JWT auth, 9-page community site
