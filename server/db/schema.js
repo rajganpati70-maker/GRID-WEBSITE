@@ -87,9 +87,28 @@ const initDB = async () => {
         hot BOOLEAN DEFAULT false,
         created_at TIMESTAMP DEFAULT NOW()
       );
+
+      CREATE TABLE IF NOT EXISTS forum_replies (
+        id SERIAL PRIMARY KEY,
+        thread_id INTEGER REFERENCES forum_threads(id) ON DELETE CASCADE NOT NULL,
+        parent_id INTEGER REFERENCES forum_replies(id) ON DELETE CASCADE,
+        author_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+        content TEXT NOT NULL,
+        likes INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS forum_votes (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+        target_type VARCHAR(20) NOT NULL,
+        target_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(user_id, target_type, target_id)
+      );
     `)
 
-    // Add new profile columns to existing tables safely
     const alterStatements = [
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_color VARCHAR(20) DEFAULT ''`,
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS location VARCHAR(150) DEFAULT ''`,
@@ -97,6 +116,7 @@ const initDB = async () => {
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS twitter_url VARCHAR(255) DEFAULT ''`,
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(255) DEFAULT ''`,
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS website_url VARCHAR(255) DEFAULT ''`,
+      `ALTER TABLE forum_threads ADD COLUMN IF NOT EXISTS content TEXT`,
     ]
     for (const stmt of alterStatements) {
       await client.query(stmt)

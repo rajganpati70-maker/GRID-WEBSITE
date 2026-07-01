@@ -12,6 +12,7 @@ import Events from './pages/Events'
 import Blog from './pages/Blog'
 import Projects from './pages/Projects'
 import Forum from './pages/Forum'
+import ForumThread from './pages/ForumThread'
 import Chat from './pages/Chat'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
@@ -49,6 +50,7 @@ const Layout = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/forum" element={<Forum />} />
+          <Route path="/forum/:threadId" element={<ForumThread />} />
           <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />

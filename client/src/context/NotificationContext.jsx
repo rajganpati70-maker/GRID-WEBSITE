@@ -102,6 +102,26 @@ export const NotificationProvider = ({ children }) => {
             }
             break
           }
+          case 'forum_reply_new': {
+            if (msg.reply?.author_id && msg.reply.author_id !== user.id) {
+              addNotification({
+                type: 'forum',
+                title: 'New forum reply',
+                body: `@${msg.reply?.author}: "${msg.threadTitle?.slice(0, 50)}${msg.threadTitle?.length > 50 ? '...' : ''}"`,
+              })
+            }
+            break
+          }
+          case 'forum_thread_new': {
+            if (msg.thread?.author_id && msg.thread.author_id !== user.id) {
+              addNotification({
+                type: 'forum',
+                title: `New thread: #${msg.thread?.category}`,
+                body: `@${msg.thread?.author}: ${msg.thread?.title?.slice(0, 60)}`,
+              })
+            }
+            break
+          }
           case 'user_joined': {
             if (msg.user?.id && msg.user.id !== user.id) {
               addNotification({

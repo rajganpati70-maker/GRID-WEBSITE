@@ -15,7 +15,6 @@ const messageHistory = {}
 Object.keys(ROOMS).forEach(r => { messageHistory[r] = [] })
 
 const dmHistory = {}
-
 const clients = new Map()
 
 const getOnlineUsers = () => {
@@ -35,6 +34,15 @@ const broadcast = (data, excludeWs = null) => {
   })
 }
 
+const broadcastForumEvent = (data) => {
+  const msg = JSON.stringify(data)
+  clients.forEach((meta, ws) => {
+    if (meta.user && ws.readyState === WebSocket.OPEN) {
+      ws.send(msg)
+    }
+  })
+}
+
 const sendToUser = (userId, data) => {
   const msg = JSON.stringify(data)
   clients.forEach((meta, ws) => {
@@ -48,7 +56,7 @@ const initWss = (server) => {
   const wss = new WebSocketServer({ server, path: '/ws' })
 
   wss.on('connection', (ws, req) => {
-    const meta = { user: null, room: 'general' }
+    const meta = { user: null, room: 'general', watchingThread: null }
     clients.set(ws, meta)
 
     ws.on('message', (raw) => {
@@ -93,6 +101,20 @@ const initWss = (server) => {
             room,
             messages: messageHistory[room] || [],
           }))
+          break
+        }
+
+        case 'watch_thread': {
+          if (!meta.user) return
+          meta.watchingThread = msg.threadId || null
+          clients.set(ws, meta)
+          break
+        }
+
+        case 'unwatch_thread': {
+          if (!meta.user) return
+          meta.watchingThread = null
+          clients.set(ws, meta)
           break
         }
 
@@ -179,4 +201,4 @@ const initWss = (server) => {
   return wss
 }
 
-module.exports = { initWss, ROOMS }
+module.exports = { initWss, ROOMS, broadcastForumEvent }
