@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { LayoutDashboard, Star, Code2, MessageSquare, Calendar, TrendingUp, Zap, Shield, Award, Bell, Settings, ArrowRight, Activity } from 'lucide-react'
+import { LayoutDashboard, Star, Code2, MessageSquare, Calendar, TrendingUp, Zap, Shield, Award, ArrowRight, Activity, Edit3, ExternalLink, MapPin, Github } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import EditProfileModal from '../components/EditProfileModal'
 import axios from 'axios'
 
 const QUICK_LINKS = [
@@ -28,10 +29,18 @@ const BADGES = [
   { icon: Award, label: 'Top Contributor', color: 'text-purple-400', bg: 'bg-purple-400/10' },
 ]
 
+const SKILL_COLORS = [
+  'border-grid-cyan/30 text-grid-cyan bg-grid-cyan/8',
+  'border-purple-500/30 text-purple-400 bg-purple-500/8',
+  'border-blue-500/30 text-blue-400 bg-blue-500/8',
+  'border-green-500/30 text-green-400 bg-green-500/8',
+]
+
 export default function Dashboard() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const [stats, setStats] = useState({ posts: 12, projects: 3, events: 7, reputation: 1240 })
   const [communityStats, setCommunityStats] = useState(null)
+  const [showEditProfile, setShowEditProfile] = useState(false)
 
   useEffect(() => {
     axios.get('/api/dashboard').then(r => {
@@ -39,6 +48,10 @@ export default function Dashboard() {
     }).catch(() => {})
     axios.get('/api/stats').then(r => setCommunityStats(r.data)).catch(() => {})
   }, [])
+
+  const avatarStyle = user?.avatar_color
+    ? { background: user.avatar_color }
+    : { background: 'linear-gradient(135deg,#0066ff,#00d4ff)' }
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4">
@@ -52,7 +65,7 @@ export default function Dashboard() {
         >
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-neon-cyan" style={{background:'linear-gradient(135deg,#0066ff,#00d4ff)'}}>
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-neon-cyan" style={avatarStyle}>
                 {user?.username?.[0]?.toUpperCase()}
               </div>
               <div>
@@ -64,15 +77,77 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="p-2.5 glass-card rounded-xl border-grid-cyan/20 text-gray-400 hover:text-grid-cyan hover:border-grid-cyan/50 transition-all duration-200">
-                <Bell className="w-5 h-5" />
-              </button>
-              <button className="p-2.5 glass-card rounded-xl border-grid-cyan/20 text-gray-400 hover:text-grid-cyan hover:border-grid-cyan/50 transition-all duration-200">
-                <Settings className="w-5 h-5" />
+              <Link
+                to={`/profile/${user?.username}`}
+                className="flex items-center gap-2 px-4 py-2.5 glass-card rounded-xl border-grid-cyan/20 text-gray-400 hover:text-grid-cyan hover:border-grid-cyan/50 transition-all duration-200 text-xs font-rajdhani tracking-widest uppercase"
+              >
+                <ExternalLink className="w-4 h-4" /> View Profile
+              </Link>
+              <button
+                onClick={() => setShowEditProfile(true)}
+                className="flex items-center gap-2 px-4 py-2.5 btn-primary text-xs"
+              >
+                <Edit3 className="w-4 h-4" /> Edit Profile
               </button>
             </div>
           </div>
         </motion.div>
+
+        {/* Profile Preview Card */}
+        {(user?.bio || user?.skills?.length > 0 || user?.location) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
+            className="glass-card rounded-2xl p-5 mb-8 border-grid-cyan/15"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] text-gray-500 font-rajdhani tracking-[0.3em] uppercase">Your Profile</span>
+              <button
+                onClick={() => setShowEditProfile(true)}
+                className="text-[10px] text-grid-cyan/60 hover:text-grid-cyan font-rajdhani tracking-widest uppercase transition-colors flex items-center gap-1"
+              >
+                <Edit3 className="w-3 h-3" /> Edit
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-4 items-start">
+              {user?.bio && (
+                <p className="text-sm text-gray-400 font-inter leading-relaxed flex-1 min-w-48">{user.bio}</p>
+              )}
+              <div className="flex flex-col gap-2 flex-shrink-0">
+                {user?.location && (
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500 font-rajdhani tracking-wide">
+                    <MapPin className="w-3.5 h-3.5 text-grid-cyan/50" /> {user.location}
+                  </div>
+                )}
+                {user?.github_url && (
+                  <a href={user.github_url} target="_blank" rel="noopener noreferrer"
+                     className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-grid-cyan font-rajdhani tracking-wide transition-colors">
+                    <Github className="w-3.5 h-3.5" /> GitHub
+                  </a>
+                )}
+              </div>
+              {user?.skills?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {user.skills.slice(0, 8).map((s, i) => (
+                    <span key={s} className={`px-2 py-0.5 rounded-lg border text-[10px] font-rajdhani tracking-wide ${SKILL_COLORS[i % SKILL_COLORS.length]}`}>{s}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* No profile set — prompt to fill in */}
+        {!user?.bio && !user?.skills?.length && !user?.location && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            className="glass-card rounded-2xl p-5 mb-8 border-dashed border-grid-cyan/20 text-center"
+          >
+            <p className="text-sm text-gray-500 font-rajdhani tracking-widest uppercase mb-3">Your profile is empty — add a bio, skills, and social links</p>
+            <button onClick={() => setShowEditProfile(true)} className="btn-primary text-xs inline-flex items-center gap-2">
+              <Edit3 className="w-3.5 h-3.5" /> Complete Your Profile
+            </button>
+          </motion.div>
+        )}
 
         {/* My Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -127,7 +202,6 @@ export default function Dashboard() {
 
           {/* Quick Actions + Badges */}
           <div className="space-y-6">
-            {/* Quick Links */}
             <motion.div
               initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
               className="glass-card rounded-2xl p-6"
@@ -148,7 +222,6 @@ export default function Dashboard() {
               </div>
             </motion.div>
 
-            {/* Badges */}
             <motion.div
               initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.4 }}
               className="glass-card rounded-2xl p-6"
@@ -192,6 +265,14 @@ export default function Dashboard() {
           </motion.div>
         )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditProfile && (
+        <EditProfileModal
+          onClose={() => setShowEditProfile(false)}
+          onSaved={() => setShowEditProfile(false)}
+        />
+      )}
     </div>
   )
 }

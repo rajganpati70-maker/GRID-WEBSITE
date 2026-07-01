@@ -26,7 +26,7 @@ router.get('/stats', async (req, res) => {
 router.get('/members', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      'SELECT id, username, role, skills, reputation, created_at FROM users ORDER BY reputation DESC LIMIT 50'
+      'SELECT id, username, role, skills, reputation, bio, location, avatar_color, created_at FROM users ORDER BY reputation DESC LIMIT 50'
     )
     const formatted = rows.map(r => ({
       ...r,
@@ -35,6 +35,92 @@ router.get('/members', async (req, res) => {
     res.json(formatted)
   } catch (err) {
     res.json([])
+  }
+})
+
+// Public profile by username
+router.get('/profile/:username', async (req, res) => {
+  try {
+    const { username } = req.params
+    const { rows } = await pool.query(
+      `SELECT id, username, role, bio, reputation, avatar_color, skills, location,
+              github_url, twitter_url, linkedin_url, website_url, created_at
+       FROM users WHERE LOWER(username) = LOWER($1)`,
+      [username]
+    )
+    if (rows.length === 0) return res.status(404).json({ message: 'User not found' })
+    const user = rows[0]
+
+    // Get their forum posts count
+    const [postsRes, projectsRes] = await Promise.all([
+      pool.query('SELECT COUNT(*) FROM forum_threads WHERE author_id=$1', [user.id]),
+      pool.query('SELECT COUNT(*) FROM projects WHERE author_id=$1', [user.id]),
+    ])
+
+    // Get recent posts
+    const recentPosts = await pool.query(
+      'SELECT id, title, category, created_at FROM forum_threads WHERE author_id=$1 ORDER BY created_at DESC LIMIT 5',
+      [user.id]
+    )
+
+    // Get recent projects
+    const recentProjects = await pool.query(
+      'SELECT id, title, category, stars, status FROM projects WHERE author_id=$1 ORDER BY created_at DESC LIMIT 5',
+      [user.id]
+    )
+
+    res.json({
+      ...user,
+      joined: new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      posts_count: parseInt(postsRes.rows[0].count),
+      projects_count: parseInt(projectsRes.rows[0].count),
+      recent_posts: recentPosts.rows,
+      recent_projects: recentProjects.rows,
+    })
+  } catch (err) {
+    console.error('Profile fetch error:', err)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// Update own profile (authenticated)
+router.put('/profile', authMiddleware, async (req, res) => {
+  try {
+    const { bio, skills, location, avatar_color, github_url, twitter_url, linkedin_url, website_url, role } = req.body
+
+    // Sanitize skills
+    let cleanSkills = []
+    if (Array.isArray(skills)) {
+      cleanSkills = skills.filter(s => typeof s === 'string' && s.trim()).slice(0, 20).map(s => s.trim())
+    } else if (typeof skills === 'string') {
+      cleanSkills = skills.split(',').map(s => s.trim()).filter(Boolean).slice(0, 20)
+    }
+
+    const { rows } = await pool.query(
+      `UPDATE users SET
+        bio = COALESCE($1, bio),
+        skills = $2,
+        location = COALESCE($3, location),
+        avatar_color = COALESCE($4, avatar_color),
+        github_url = COALESCE($5, github_url),
+        twitter_url = COALESCE($6, twitter_url),
+        linkedin_url = COALESCE($7, linkedin_url),
+        website_url = COALESCE($8, website_url),
+        role = COALESCE($9, role),
+        updated_at = NOW()
+       WHERE id = $10
+       RETURNING id, username, email, role, bio, reputation, avatar_color, skills,
+                 location, github_url, twitter_url, linkedin_url, website_url, created_at`,
+      [bio ?? null, cleanSkills, location ?? null, avatar_color ?? null,
+       github_url ?? null, twitter_url ?? null, linkedin_url ?? null, website_url ?? null,
+       role ?? null, req.user.id]
+    )
+
+    if (rows.length === 0) return res.status(404).json({ message: 'User not found' })
+    res.json({ user: rows[0] })
+  } catch (err) {
+    console.error('Profile update error:', err)
+    res.status(500).json({ message: 'Internal server error' })
   }
 })
 

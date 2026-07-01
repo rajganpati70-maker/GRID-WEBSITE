@@ -18,7 +18,13 @@ const initDB = async () => {
         bio TEXT DEFAULT '',
         reputation INTEGER DEFAULT 0,
         avatar_url TEXT DEFAULT '',
+        avatar_color VARCHAR(20) DEFAULT '',
         skills TEXT[] DEFAULT '{}',
+        location VARCHAR(150) DEFAULT '',
+        github_url VARCHAR(255) DEFAULT '',
+        twitter_url VARCHAR(255) DEFAULT '',
+        linkedin_url VARCHAR(255) DEFAULT '',
+        website_url VARCHAR(255) DEFAULT '',
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       );
@@ -82,6 +88,20 @@ const initDB = async () => {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `)
+
+    // Add new profile columns to existing tables safely
+    const alterStatements = [
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_color VARCHAR(20) DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS location VARCHAR(150) DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS github_url VARCHAR(255) DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS twitter_url VARCHAR(255) DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(255) DEFAULT ''`,
+      `ALTER TABLE users ADD COLUMN IF NOT EXISTS website_url VARCHAR(255) DEFAULT ''`,
+    ]
+    for (const stmt of alterStatements) {
+      await client.query(stmt)
+    }
+
     console.log('[DB] Schema initialized successfully')
   } finally {
     client.release()

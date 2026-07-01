@@ -57,7 +57,9 @@ router.post('/login', async (req, res) => {
 router.get('/me', authMiddleware, async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, username, email, role, bio, reputation, skills, created_at FROM users WHERE id=$1',
+      `SELECT id, username, email, role, bio, reputation, skills, avatar_color,
+              location, github_url, twitter_url, linkedin_url, website_url, created_at
+       FROM users WHERE id=$1`,
       [req.user.id]
     )
     if (result.rows.length === 0) return res.status(404).json({ message: 'User not found' })

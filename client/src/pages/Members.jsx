@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Filter, Star, Github, Twitter, Linkedin, Code2, Zap } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Search, Star, Code2, MapPin, ExternalLink } from 'lucide-react'
 import axios from 'axios'
 
 const ROLES = ['All', 'Developer', 'Designer', 'DevOps', 'Data Scientist', 'Security', 'Architect']
+
 const MOCK_MEMBERS = [
   { id:1, username:'alexchen', role:'Full-Stack Developer', skills:['React','Node.js','PostgreSQL'], reputation:4820, joined:'2021' },
   { id:2, username:'priya_dev', role:'AI Engineer', skills:['Python','TensorFlow','LLMs'], reputation:3650, joined:'2022' },
@@ -17,15 +19,17 @@ const MOCK_MEMBERS = [
 ]
 
 const GRAD_COLORS = [
-  'from-blue-600 to-cyan-400',
-  'from-purple-600 to-blue-400',
-  'from-cyan-600 to-teal-400',
-  'from-indigo-600 to-purple-400',
-  'from-blue-500 to-indigo-400',
-  'from-cyan-500 to-blue-400',
-  'from-purple-500 to-pink-400',
-  'from-teal-600 to-cyan-400',
+  'from-blue-600 to-cyan-400', 'from-purple-600 to-blue-400',
+  'from-cyan-600 to-teal-400', 'from-indigo-600 to-purple-400',
+  'from-blue-500 to-indigo-400', 'from-cyan-500 to-blue-400',
+  'from-purple-500 to-pink-400', 'from-teal-600 to-cyan-400',
   'from-violet-600 to-purple-400',
+]
+
+const SKILL_COLORS = [
+  'border-grid-cyan/25 text-grid-cyan/80',
+  'border-purple-500/25 text-purple-400/80',
+  'border-blue-500/25 text-blue-400/80',
 ]
 
 export default function Members() {
@@ -42,8 +46,9 @@ export default function Members() {
 
   const filtered = members.filter(m => {
     const matchSearch = m.username.toLowerCase().includes(search.toLowerCase()) ||
-      (m.role && m.role.toLowerCase().includes(search.toLowerCase()))
-    const matchRole = roleFilter === 'All' || (m.role && m.role.includes(roleFilter))
+      (m.role && m.role.toLowerCase().includes(search.toLowerCase())) ||
+      (m.bio && m.bio.toLowerCase().includes(search.toLowerCase()))
+    const matchRole = roleFilter === 'All' || (m.role && m.role.toLowerCase().includes(roleFilter.toLowerCase()))
     return matchSearch && matchRole
   })
 
@@ -73,7 +78,7 @@ export default function Members() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
-                placeholder="Search members by name or role..."
+                placeholder="Search members by name, role, or bio..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="input-field pl-11"
@@ -103,47 +108,85 @@ export default function Members() {
 
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {filtered.map((member, i) => (
-              <motion.div
-                key={member.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05, duration: 0.5 }}
-                className="member-card"
-              >
-                {/* Avatar */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${GRAD_COLORS[i % GRAD_COLORS.length]} flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-neon-sm`}>
-                    {member.username[0].toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-orbitron text-sm font-bold text-white mb-0.5 truncate">@{member.username}</div>
-                    <div className="text-xs text-gray-400 font-rajdhani tracking-wide truncate">{member.role || 'GRID Member'}</div>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-3 h-3 text-yellow-400" />
-                      <span className="text-xs text-yellow-400 font-semibold">{(member.reputation || 0).toLocaleString()}</span>
+            {filtered.map((member, i) => {
+              const avatarStyle = member.avatar_color
+                ? { background: member.avatar_color }
+                : undefined
+              const avatarClass = !member.avatar_color
+                ? `bg-gradient-to-br ${GRAD_COLORS[i % GRAD_COLORS.length]}`
+                : ''
+
+              return (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05, duration: 0.5 }}
+                  className="member-card group relative"
+                >
+                  {/* View Profile overlay on hover */}
+                  <Link
+                    to={`/profile/${member.username}`}
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-grid-black/80 backdrop-blur-sm rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-grid-cyan/40 bg-grid-cyan/10 text-grid-cyan text-xs font-rajdhani tracking-widest uppercase">
+                      <ExternalLink className="w-3.5 h-3.5" /> View Profile
+                    </div>
+                  </Link>
+
+                  {/* Avatar + name */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div
+                      className={`w-14 h-14 rounded-xl ${avatarClass} flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-neon-sm`}
+                      style={avatarStyle}
+                    >
+                      {member.username[0].toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-orbitron text-sm font-bold text-white mb-0.5 truncate">@{member.username}</div>
+                      <div className="text-xs text-gray-400 font-rajdhani tracking-wide truncate">{member.role || 'GRID Member'}</div>
+                      <div className="flex items-center gap-1 mt-1">
+                        <Star className="w-3 h-3 text-yellow-400" />
+                        <span className="text-xs text-yellow-400 font-semibold">{(member.reputation || 0).toLocaleString()}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Skills */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {(member.skills || []).slice(0,3).map(skill => (
-                    <span key={skill} className="tag text-[10px] px-2 py-0.5">{skill}</span>
-                  ))}
-                </div>
+                  {/* Bio snippet */}
+                  {member.bio && (
+                    <p className="text-xs text-gray-500 font-inter leading-snug line-clamp-2 mb-3">{member.bio}</p>
+                  )}
 
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-3 border-t border-grid-cyan/10">
-                  <span className="text-xs text-gray-600 font-rajdhani tracking-wide">Since {member.joined || '2023'}</span>
-                  <div className="flex gap-2">
-                    <a href="#" className="text-gray-600 hover:text-grid-cyan transition-colors"><Github className="w-3.5 h-3.5" /></a>
-                    <a href="#" className="text-gray-600 hover:text-grid-cyan transition-colors"><Twitter className="w-3.5 h-3.5" /></a>
+                  {/* Location */}
+                  {member.location && (
+                    <div className="flex items-center gap-1.5 text-[10px] text-gray-600 font-rajdhani tracking-wide mb-3">
+                      <MapPin className="w-3 h-3" /> {member.location}
+                    </div>
+                  )}
+
+                  {/* Skills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {(member.skills || []).slice(0, 3).map((skill, si) => (
+                      <span key={skill} className={`border text-[10px] px-2 py-0.5 rounded-lg font-rajdhani tracking-wide ${SKILL_COLORS[si % SKILL_COLORS.length]}`}>
+                        {skill}
+                      </span>
+                    ))}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-3 border-t border-grid-cyan/10">
+                    <span className="text-xs text-gray-600 font-rajdhani tracking-wide">Since {member.joined || '2023'}</span>
+                    <Link
+                      to={`/profile/${member.username}`}
+                      className="relative z-20 text-xs text-grid-cyan/50 hover:text-grid-cyan font-rajdhani tracking-widest uppercase transition-colors flex items-center gap-1"
+                    >
+                      Profile <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
 
           {filtered.length === 0 && (
