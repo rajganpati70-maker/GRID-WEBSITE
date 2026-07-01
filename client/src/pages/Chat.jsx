@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Hash, Lock, Wifi, WifiOff, Circle, MessageCircle, Users, X, Loader2, AtSign, ChevronRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 import { useNavigate } from 'react-router-dom'
 
 const ROOM_ICONS = {
@@ -108,6 +109,7 @@ function TypingIndicator({ typers }) {
 export default function Chat() {
   const { user, token } = useAuth()
   const navigate = useNavigate()
+  const notif = useNotifications()
 
   const [connected, setConnected] = useState(false)
   const [connecting, setConnecting] = useState(false)
@@ -134,8 +136,12 @@ export default function Chat() {
 
   useEffect(() => {
     if (!user) { navigate('/login'); return }
+    notif?.markChatActive('general')
     connect()
-    return () => ws.current?.close()
+    return () => {
+      ws.current?.close()
+      notif?.markChatInactive()
+    }
   }, [user])
 
   useEffect(() => {
@@ -231,6 +237,8 @@ export default function Chat() {
   const joinRoom = (room) => {
     setActiveRoom(room)
     setDmUser(null)
+    notif?.markChatActive(room)
+    notif?.clearRoomUnread(room)
     if (ws.current?.readyState === WebSocket.OPEN) {
       ws.current.send(JSON.stringify({ type: 'join_room', room }))
     }
@@ -238,6 +246,7 @@ export default function Chat() {
 
   const openDm = (targetUser) => {
     setDmUser(targetUser)
+    notif?.clearDmUnread(targetUser.id)
     if (ws.current?.readyState === WebSocket.OPEN) {
       ws.current.send(JSON.stringify({ type: 'get_dm_history', withUserId: targetUser.id }))
     }
@@ -302,31 +311,47 @@ export default function Chat() {
             <span className="text-[10px] text-gray-600 font-rajdhani tracking-[0.3em] uppercase">Channels</span>
           </div>
           <div className="space-y-0.5 px-2 mb-4">
-            {Object.entries(rooms).length > 0 ? Object.entries(rooms).map(([id, room]) => (
-              <button
-                key={id}
-                onClick={() => joinRoom(id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 group ${
-                  activeRoom === id && !dmUser
-                    ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
-                }`}
-              >
-                <span className="text-base leading-none" style={{fontSize:'13px'}}>{ROOM_ICONS[id] || '#'}</span>
-                <span className="font-rajdhani tracking-wide text-sm">{room.name}</span>
-              </button>
-            )) : Object.entries({ general:{name:'General'}, ai_ml:{name:'AI / ML'}, devops:{name:'DevOps'}, security:{name:'Security'}, frontend:{name:'Frontend'}, backend:{name:'Backend'} }).map(([id, room]) => (
-              <button
-                key={id}
-                onClick={() => joinRoom(id)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
-                  activeRoom === id && !dmUser ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25' : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
-                }`}
-              >
-                <span style={{fontSize:'13px'}}>{ROOM_ICONS[id] || '#'}</span>
-                <span className="font-rajdhani tracking-wide">{room.name}</span>
-              </button>
-            ))}
+            {Object.entries(rooms).length > 0 ? Object.entries(rooms).map(([id, room]) => {
+              const badge = notif?.unreadRooms?.[id] || 0
+              return (
+                <button
+                  key={id}
+                  onClick={() => joinRoom(id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 group ${
+                    activeRoom === id && !dmUser
+                      ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
+                  }`}
+                >
+                  <span className="text-base leading-none" style={{fontSize:'13px'}}>{ROOM_ICONS[id] || '#'}</span>
+                  <span className="font-rajdhani tracking-wide text-sm flex-1 text-left">{room.name}</span>
+                  {badge > 0 && (
+                    <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center px-1 font-orbitron">
+                      {badge > 9 ? '9+' : badge}
+                    </span>
+                  )}
+                </button>
+              )
+            }) : Object.entries({ general:{name:'General'}, ai_ml:{name:'AI / ML'}, devops:{name:'DevOps'}, security:{name:'Security'}, frontend:{name:'Frontend'}, backend:{name:'Backend'} }).map(([id, room]) => {
+              const badge = notif?.unreadRooms?.[id] || 0
+              return (
+                <button
+                  key={id}
+                  onClick={() => joinRoom(id)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                    activeRoom === id && !dmUser ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25' : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
+                  }`}
+                >
+                  <span style={{fontSize:'13px'}}>{ROOM_ICONS[id] || '#'}</span>
+                  <span className="font-rajdhani tracking-wide flex-1 text-left">{room.name}</span>
+                  {badge > 0 && (
+                    <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center px-1 font-orbitron">
+                      {badge > 9 ? '9+' : badge}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
           </div>
 
           {/* DMs */}
@@ -336,21 +361,29 @@ export default function Chat() {
                 <span className="text-[10px] text-gray-600 font-rajdhani tracking-[0.3em] uppercase">Direct Messages</span>
               </div>
               <div className="space-y-0.5 px-2">
-                {onlineUsers.filter(u => u.id !== user?.id).map(u => (
-                  <button
-                    key={u.id}
-                    onClick={() => openDm(u)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
-                      dmUser?.id === u.id ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25' : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
-                    }`}
-                  >
-                    <div className="relative">
-                      <Avatar username={u.username} size={5} />
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-400 border border-grid-dark" />
-                    </div>
-                    <span className="font-rajdhani tracking-wide truncate">{u.username}</span>
-                  </button>
-                ))}
+                {onlineUsers.filter(u => u.id !== user?.id).map(u => {
+                  const dmBadge = notif?.unreadDms?.[u.id] || 0
+                  return (
+                    <button
+                      key={u.id}
+                      onClick={() => openDm(u)}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
+                        dmUser?.id === u.id ? 'bg-grid-cyan/15 text-grid-cyan border border-grid-cyan/25' : 'text-gray-400 hover:text-gray-200 hover:bg-white/4'
+                      }`}
+                    >
+                      <div className="relative flex-shrink-0">
+                        <Avatar username={u.username} size={5} />
+                        <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-400 border border-grid-dark" />
+                      </div>
+                      <span className="font-rajdhani tracking-wide truncate flex-1 text-left">{u.username}</span>
+                      {dmBadge > 0 && (
+                        <span className="min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center px-1 font-orbitron flex-shrink-0">
+                          {dmBadge > 9 ? '9+' : dmBadge}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
               </div>
             </>
           )}

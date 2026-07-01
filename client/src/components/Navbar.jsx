@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronRight, LogOut, LayoutDashboard, MessageCircle, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
+import NotificationBell from './NotificationBell'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -14,11 +16,26 @@ const navLinks = [
   { href: '/forum', label: 'Forum' },
 ]
 
+function Badge({ count }) {
+  if (!count) return null
+  return (
+    <motion.span
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      exit={{ scale: 0 }}
+      className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 rounded-full bg-red-500 border-[1.5px] border-grid-black text-white text-[9px] font-bold flex items-center justify-center px-1 font-orbitron leading-none"
+    >
+      {count > 9 ? '9+' : count}
+    </motion.span>
+  )
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const { user, logout } = useAuth()
+  const notif = useNotifications()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -37,6 +54,10 @@ export default function Navbar() {
     logout()
     navigate('/')
   }
+
+  const chatBadge = notif?.chatBadge || 0
+  const dmBadge = notif?.dmBadge || 0
+  const totalChatBadge = chatBadge + dmBadge
 
   return (
     <>
@@ -77,41 +98,57 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Auth / Chat Buttons */}
-            <div className="hidden lg:flex items-center gap-3">
+            {/* Right section */}
+            <div className="hidden lg:flex items-center gap-2.5">
               {user ? (
                 <>
-                  {/* Live Chat button */}
+                  {/* Live Chat button with badge */}
                   <Link
                     to="/chat"
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 text-xs font-rajdhani tracking-widest uppercase ${
+                    className={`relative flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-300 text-xs font-rajdhani tracking-widest uppercase ${
                       location.pathname === '/chat'
                         ? 'border-grid-cyan/60 bg-grid-cyan/15 text-grid-cyan'
                         : 'border-grid-cyan/20 text-gray-400 hover:border-grid-cyan/50 hover:text-grid-cyan'
                     }`}
                   >
-                    <span className="relative flex">
-                      <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75" />
+                    <span className="relative flex w-2 h-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
                     </span>
                     <MessageCircle className="w-3.5 h-3.5" />
                     Live Chat
+                    <AnimatePresence>
+                      {totalChatBadge > 0 && (
+                        <motion.span
+                          key="chatbadge"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-red-500 border-2 border-grid-black text-white text-[9px] font-bold flex items-center justify-center px-1 font-orbitron"
+                        >
+                          {totalChatBadge > 9 ? '9+' : totalChatBadge}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </Link>
+
+                  {/* Notification Bell */}
+                  <NotificationBell />
 
                   {/* User menu */}
                   <div className="relative">
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-grid-cyan/20 hover:border-grid-cyan/50 transition-all duration-300 group"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl border border-grid-cyan/20 hover:border-grid-cyan/50 transition-all duration-300 group"
                     >
                       <div
-                        className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
-                        style={{ background: 'linear-gradient(135deg,#0066ff,#00d4ff)', width: '28px', height: '28px' }}
+                        className="rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+                        style={{ background: 'linear-gradient(135deg,#0066ff,#00d4ff)', width: '26px', height: '26px' }}
                       >
                         {user.username?.[0]?.toUpperCase()}
                       </div>
-                      <span className="text-sm font-medium text-gray-300 group-hover:text-white font-rajdhani tracking-wide">{user.username}</span>
-                      <ChevronRight className={`w-4 h-4 text-grid-cyan transition-transform duration-300 ${userMenuOpen ? 'rotate-90' : ''}`} />
+                      <span className="text-sm font-medium text-gray-300 group-hover:text-white font-rajdhani tracking-wide max-w-[80px] truncate">{user.username}</span>
+                      <ChevronRight className={`w-3.5 h-3.5 text-grid-cyan transition-transform duration-300 ${userMenuOpen ? 'rotate-90' : ''}`} />
                     </button>
 
                     <AnimatePresence>
@@ -120,17 +157,29 @@ export default function Navbar() {
                           initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          className="absolute right-0 top-full mt-2 w-52 glass-card rounded-xl overflow-hidden z-50"
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 top-full mt-2 w-52 glass-card rounded-xl overflow-hidden z-50 border-grid-cyan/20"
+                          style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.12)' }}
                         >
+                          {/* User info */}
+                          <div className="px-4 py-3 border-b border-grid-cyan/10 bg-grid-cyan/3">
+                            <div className="font-orbitron text-xs font-bold text-white">{user.username}</div>
+                            <div className="text-[10px] text-gray-500 font-inter truncate">{user.email}</div>
+                          </div>
                           <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide">
                             <LayoutDashboard className="w-4 h-4" />
                             Dashboard
                           </Link>
-                          <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/10">
-                            <MessageCircle className="w-4 h-4" />
-                            Live Chat
+                          <Link to="/chat" className="flex items-center justify-between gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/8">
+                            <div className="flex items-center gap-3">
+                              <MessageCircle className="w-4 h-4" />
+                              Live Chat
+                            </div>
+                            {totalChatBadge > 0 && (
+                              <span className="px-1.5 py-0.5 rounded bg-red-500/20 border border-red-500/30 text-red-400 text-[10px] font-bold font-orbitron">{totalChatBadge}</span>
+                            )}
                           </Link>
-                          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/10">
+                          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/8">
                             <LogOut className="w-4 h-4" />
                             Logout
                           </button>
@@ -149,13 +198,16 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 text-grid-cyan hover:bg-grid-cyan/10 rounded-lg transition-all duration-200"
-            >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            {/* Mobile: notification bell + hamburger */}
+            <div className="lg:hidden flex items-center gap-2">
+              {user && <NotificationBell />}
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="p-2 text-grid-cyan hover:bg-grid-cyan/10 rounded-lg transition-all duration-200"
+              >
+                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -178,11 +230,20 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <div className="cyber-line my-2" />
+                <div className="cyber-line my-1" />
                 {user ? (
                   <>
-                    <Link to="/chat" className="btn-outline text-center flex items-center justify-center gap-2">
+                    <Link to="/chat" className="relative btn-outline text-center flex items-center justify-center gap-2">
+                      <span className="relative flex w-2 h-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                      </span>
                       <MessageCircle className="w-4 h-4" /> Live Chat
+                      {totalChatBadge > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 border-2 border-grid-dark text-white text-[9px] font-bold flex items-center justify-center px-1">
+                          {totalChatBadge}
+                        </span>
+                      )}
                     </Link>
                     <Link to="/dashboard" className="btn-outline text-center">Dashboard</Link>
                     <button onClick={handleLogout} className="text-red-400 text-sm font-rajdhani tracking-wider uppercase py-2 hover:text-red-300 transition-colors">Logout</button>

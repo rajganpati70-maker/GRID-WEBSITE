@@ -1,6 +1,8 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { NotificationProvider } from './context/NotificationContext'
+import { ToastProvider } from './components/ToastContainer'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -61,9 +63,13 @@ const Layout = () => {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Layout />
-      </BrowserRouter>
+      <ToastProvider>
+        <NotificationProvider>
+          <BrowserRouter>
+            <Layout />
+          </BrowserRouter>
+        </NotificationProvider>
+      </ToastProvider>
     </AuthProvider>
   )
 }
