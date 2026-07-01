@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ChevronRight, LogOut, LayoutDashboard, User } from 'lucide-react'
+import { Menu, X, ChevronRight, LogOut, LayoutDashboard, MessageCircle, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const navLinks = [
@@ -65,7 +65,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Links */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-7">
               {navLinks.map(link => (
                 <Link
                   key={link.href}
@@ -77,44 +77,74 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Auth Buttons */}
+            {/* Auth / Chat Buttons */}
             <div className="hidden lg:flex items-center gap-3">
               {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-grid-cyan/20 hover:border-grid-cyan/50 transition-all duration-300 group"
+                <>
+                  {/* Live Chat button */}
+                  <Link
+                    to="/chat"
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-300 text-xs font-rajdhani tracking-widest uppercase ${
+                      location.pathname === '/chat'
+                        ? 'border-grid-cyan/60 bg-grid-cyan/15 text-grid-cyan'
+                        : 'border-grid-cyan/20 text-gray-400 hover:border-grid-cyan/50 hover:text-grid-cyan'
+                    }`}
                   >
-                    <div className="w-7 h-7 avatar text-xs" style={{width:'28px',height:'28px',background:'linear-gradient(135deg,#0066ff,#00d4ff)'}}>
-                      {user.username?.[0]?.toUpperCase()}
-                    </div>
-                    <span className="text-sm font-medium text-gray-300 group-hover:text-white font-rajdhani tracking-wide">{user.username}</span>
-                    <ChevronRight className={`w-4 h-4 text-grid-cyan transition-transform duration-300 ${userMenuOpen ? 'rotate-90' : ''}`} />
-                  </button>
-                  <AnimatePresence>
-                    {userMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 top-full mt-2 w-48 glass-card rounded-xl overflow-hidden"
+                    <span className="relative flex">
+                      <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                    </span>
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    Live Chat
+                  </Link>
+
+                  {/* User menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-grid-cyan/20 hover:border-grid-cyan/50 transition-all duration-300 group"
+                    >
+                      <div
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+                        style={{ background: 'linear-gradient(135deg,#0066ff,#00d4ff)', width: '28px', height: '28px' }}
                       >
-                        <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide">
-                          <LayoutDashboard className="w-4 h-4" />
-                          Dashboard
-                        </Link>
-                        <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200 font-rajdhani tracking-wide">
-                          <LogOut className="w-4 h-4" />
-                          Logout
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                        {user.username?.[0]?.toUpperCase()}
+                      </div>
+                      <span className="text-sm font-medium text-gray-300 group-hover:text-white font-rajdhani tracking-wide">{user.username}</span>
+                      <ChevronRight className={`w-4 h-4 text-grid-cyan transition-transform duration-300 ${userMenuOpen ? 'rotate-90' : ''}`} />
+                    </button>
+
+                    <AnimatePresence>
+                      {userMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute right-0 top-full mt-2 w-52 glass-card rounded-xl overflow-hidden z-50"
+                        >
+                          <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide">
+                            <LayoutDashboard className="w-4 h-4" />
+                            Dashboard
+                          </Link>
+                          <Link to="/chat" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:text-grid-cyan hover:bg-grid-cyan/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/10">
+                            <MessageCircle className="w-4 h-4" />
+                            Live Chat
+                          </Link>
+                          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-200 font-rajdhani tracking-wide border-t border-grid-cyan/10">
+                            <LogOut className="w-4 h-4" />
+                            Logout
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </>
               ) : (
                 <>
                   <Link to="/login" className="btn-outline text-xs">Login</Link>
-                  <Link to="/register" className="btn-primary text-xs">Join GRID</Link>
+                  <Link to="/register" className="btn-primary text-xs flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5" /> Join GRID
+                  </Link>
                 </>
               )}
             </div>
@@ -151,6 +181,9 @@ export default function Navbar() {
                 <div className="cyber-line my-2" />
                 {user ? (
                   <>
+                    <Link to="/chat" className="btn-outline text-center flex items-center justify-center gap-2">
+                      <MessageCircle className="w-4 h-4" /> Live Chat
+                    </Link>
                     <Link to="/dashboard" className="btn-outline text-center">Dashboard</Link>
                     <button onClick={handleLogout} className="text-red-400 text-sm font-rajdhani tracking-wider uppercase py-2 hover:text-red-300 transition-colors">Logout</button>
                   </>
@@ -166,7 +199,7 @@ export default function Navbar() {
         </AnimatePresence>
       </motion.nav>
 
-      {/* Scan Line Effect */}
+      {/* Top scan line */}
       <div className="fixed top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-grid-cyan to-transparent opacity-30 z-40 pointer-events-none animate-pulse-slow" />
     </>
   )

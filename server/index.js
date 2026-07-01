@@ -1,10 +1,13 @@
 require('dotenv').config()
+const http = require('http')
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const { initDB } = require('./db/schema')
+const { initWss } = require('./ws')
 
 const app = express()
+const server = http.createServer(app)
 const PORT = process.env.PORT || 3001
 
 app.use(cors({ origin: true, credentials: true }))
@@ -17,20 +20,24 @@ const communityRoutes = require('./routes/community')
 app.use('/api/auth', authRoutes)
 app.use('/api', communityRoutes)
 
+app.get('/api/health', (req, res) => res.json({ status: 'online', service: 'GRID API v1', ws: 'enabled' }))
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')))
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/ws')) {
+      res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+    }
   })
 }
-
-app.get('/api/health', (req, res) => res.json({ status: 'online', service: 'GRID API v1' }))
 
 const start = async () => {
   try {
     await initDB()
-    app.listen(PORT, '0.0.0.0', () => {
+    initWss(server)
+    server.listen(PORT, '0.0.0.0', () => {
       console.log(`[GRID API] Running on port ${PORT}`)
+      console.log(`[GRID WS]  WebSocket ready at ws://localhost:${PORT}/ws`)
     })
   } catch (err) {
     console.error('Failed to start:', err)
