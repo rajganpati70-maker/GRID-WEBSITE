@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
 import { ToastProvider } from './components/ToastContainer'
+import MagneticCursor from './components/MagneticCursor'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -70,6 +71,7 @@ export default function App() {
       <ToastProvider>
         <NotificationProvider>
           <BrowserRouter>
+            <MagneticCursor />
             <Layout />
           </BrowserRouter>
         </NotificationProvider>
