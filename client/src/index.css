@@ -362,3 +362,28 @@
   0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
+
+/* ── Aurora blob drift ────────────────────────────────────────────────────── */
+@keyframes aurora1 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(40px,-30px) scale(1.08); }
+  66%     { transform: translate(-20px,25px) scale(0.94); }
+}
+@keyframes aurora2 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  40%     { transform: translate(-35px,20px) scale(1.12); }
+  70%     { transform: translate(25px,-15px) scale(0.92); }
+}
+@keyframes aurora3 {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%     { transform: translate(15px,35px) scale(1.06); }
+}
+
+/* ── Live ticker scroll ───────────────────────────────────────────────────── */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── btn-secondary alias ──────────────────────────────────────────────────── */
+.btn-secondary { /* handled inline via btn-outline */ }
