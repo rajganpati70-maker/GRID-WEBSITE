@@ -428,7 +428,7 @@ export default function GridLogoAnimation({ size = 560, opacity = 0.13 }) {
             key={cycleKey}
             width={size}
             height={size}
-            viewBox="0 0 300 380"
+            viewBox="0 0 300 300"
             style={{
               filter: glitching
                 ? 'drop-shadow(0 0 28px rgba(0,212,255,0.95))'
@@ -633,131 +633,6 @@ export default function GridLogoAnimation({ size = 560, opacity = 0.13 }) {
               )
             })}
 
-            {/* ═══ GRID TEXT ══════════════════════════════════════════════ */}
-            {/* Glow layer (behind) */}
-            <motion.text
-              x="150" y="322"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontFamily="'Orbitron', 'Rajdhani', 'Arial Black', sans-serif"
-              fontWeight="900"
-              fontSize="72"
-              letterSpacing="8"
-              fill="url(#textGlowGrad)"
-              filter="url(#nodeBloom)"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: textVisible ? 0.6 : 0 }}
-              transition={{ delay: 0.05, duration: 0.5 }}
-            >
-              GRID
-            </motion.text>
-
-            {/* Main text with forge-in per character */}
-            {['G','R','I','D'].map((char, i) => {
-              const offsets = [-106, -36, 34, 98]
-              return (
-                <motion.text
-                  key={`char-${char}-${cycleKey}`}
-                  x={150 + offsets[i]}
-                  y="322"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fontFamily="'Orbitron', 'Rajdhani', 'Arial Black', sans-serif"
-                  fontWeight="900"
-                  fontSize="72"
-                  letterSpacing="0"
-                  fill="url(#textGrad)"
-                  initial={{ opacity: 0, scaleY: 0.1, y: 334 }}
-                  animate={textVisible
-                    ? { opacity: 1, scaleY: 1, y: 322 }
-                    : { opacity: 0, scaleY: 0.1, y: 334 }
-                  }
-                  transition={{
-                    opacity:  { delay: i * 0.12, duration: 0.3 },
-                    scaleY:   { delay: i * 0.12, duration: 0.45, ease: [0.22, 1.4, 0.36, 1] },
-                    y:        { delay: i * 0.12, duration: 0.45, ease: [0.22, 1.4, 0.36, 1] },
-                  }}
-                  style={{ transformOrigin: `${150 + offsets[i]}px 322px` }}
-                >
-                  {char}
-                </motion.text>
-              )
-            })}
-
-            {/* Text edge highlight */}
-            <motion.text
-              x="150" y="322"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontFamily="'Orbitron', 'Rajdhani', 'Arial Black', sans-serif"
-              fontWeight="900"
-              fontSize="72"
-              letterSpacing="8"
-              fill="none"
-              stroke="rgba(180,220,255,0.2)"
-              strokeWidth="0.5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: textVisible ? 1 : 0 }}
-              transition={{ delay: 0.5, duration: 0.4 }}
-            >
-              GRID
-            </motion.text>
-
-            {/* ═══ TAGLINE ══════════════════════════════════════════════ */}
-            {/* Left dash */}
-            <motion.line
-              x1="52" y1="354" x2="80" y2="354"
-              stroke="#00d4ff" strokeWidth="0.8" strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: tagVisible ? 1 : 0, opacity: tagVisible ? 0.6 : 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: 'easeOut' }}
-            />
-            {/* Left dot */}
-            <motion.circle
-              cx="46" cy="354" r="1.5"
-              fill="#00d4ff"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: tagVisible ? 0.7 : 0, scale: tagVisible ? 1 : 0 }}
-              transition={{ delay: 0.05, duration: 0.3 }}
-              style={{ transformOrigin: '46px 354px' }}
-            />
-
-            {/* Tagline text */}
-            <motion.text
-              x="150" y="354"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontFamily="'Rajdhani', 'Orbitron', 'Arial', sans-serif"
-              fontWeight="600"
-              fontSize="11.5"
-              letterSpacing="4.5"
-              fill="url(#tagGrad)"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: tagVisible ? 1 : 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              WHERE TECH MINDS CONNECT.
-            </motion.text>
-
-            {/* Right dot */}
-            <motion.circle
-              cx="254" cy="354" r="1.5"
-              fill="#00d4ff"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: tagVisible ? 0.7 : 0, scale: tagVisible ? 1 : 0 }}
-              transition={{ delay: 0.05, duration: 0.3 }}
-              style={{ transformOrigin: '254px 354px' }}
-            />
-            {/* Right dash */}
-            <motion.line
-              x1="220" y1="354" x2="248" y2="354"
-              stroke="#00d4ff" strokeWidth="0.8" strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: tagVisible ? 1 : 0, opacity: tagVisible ? 0.6 : 0 }}
-              transition={{ delay: 0.1, duration: 0.5, ease: 'easeOut' }}
-            />
 
             {/* Scanline sweep (during build) */}
             {(phase === 'build_lines' || phase === 'build_nodes') && (
