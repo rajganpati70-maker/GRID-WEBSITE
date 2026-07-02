@@ -55,7 +55,7 @@ export default function Projects() {
             <span className="tag mb-6 inline-block">Open Source</span>
             <h1 className="section-title text-white mb-6">COMMUNITY <span className="text-gradient">PROJECTS</span></h1>
             <p className="text-gray-400 text-lg max-w-xl mx-auto font-inter">
-              Cutting-edge open source projects built by and for the GRID community.
+              Open source projects built by GRID members — real code, real contributors, real impact.
             </p>
           </motion.div>
         </div>

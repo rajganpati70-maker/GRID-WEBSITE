@@ -426,8 +426,8 @@ export default function Home() {
         {/* Dot grid */}
         <motion.div style={{ y: yBg }} className="absolute inset-0 grid-bg opacity-40" />
 
-        {/* GRID Logo SVG animation — the star of the show */}
-        <GridLogoAnimation size={560} opacity={0.14} />
+        {/* GRID Logo SVG animation — hero centerpiece */}
+        <GridLogoAnimation size={620} opacity={0.72} />
 
         <Particles />
 
@@ -441,16 +441,8 @@ export default function Home() {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 pt-32 pb-28 text-center">
 
-          {/* Live badge */}
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.55 }} className="mb-6">
-            <span className="tag">
-              <span className="w-1 h-1 rounded-full animate-pulse" style={{ background: '#00d4ff' }} />
-              Community Network v2.0 — Now Live
-            </span>
-          </motion.div>
-
           {/* Main headline */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.75 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.75 }}>
             <h1 style={{ fontFamily: '"Plus Jakarta Sans",sans-serif', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.04em', marginBottom: 8 }}
               className="text-[2.6rem] sm:text-5xl md:text-6xl text-white">
               Where tech minds
@@ -461,11 +453,11 @@ export default function Home() {
             </h1>
           </motion.div>
 
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.36, duration: 0.65 }}
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.65 }}
             className="max-w-lg mx-auto mb-10 text-base md:text-lg leading-relaxed"
             style={{ fontFamily: '"Plus Jakarta Sans",sans-serif', fontWeight: 400, color: 'rgba(180,196,220,0.8)' }}>
             Join <span style={{ color: '#e8eef8', fontWeight: 600 }}>50,000+ developers</span>, engineers, and creators
-            building the future — openly, globally, together.
+            from every corner of the world — sharing, shipping, and growing together.
           </motion.p>
 
           {/* CTA buttons */}
@@ -516,9 +508,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <motion.div {...inView} className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             {[
-              { title: 'Open source at heart',   body: 'Every feature we build is shaped by the community. No black boxes, no closed doors.' },
-              { title: 'Zero friction to start',  body: 'Join in seconds, find your first collaborator in minutes. No gatekeeping.' },
-              { title: 'Built for the long game', body: 'This is where careers are built — not just projects. Real mentorship, real opportunities.' },
+              { title: 'Community first',         body: 'Every decision is shaped by the people in it. No black boxes, no gatekeeping — just builders.' },
+              { title: 'Ship together',           body: 'Find a collaborator in minutes, not months. Real code, real feedback, real progress.' },
+              { title: 'Grow for the long run',   body: 'This is where careers are built — mentorship, opportunities, and friendships that last.' },
             ].map(({ title, body }, i) => (
               <motion.div key={title}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}

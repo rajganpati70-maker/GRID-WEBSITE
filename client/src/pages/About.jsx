@@ -9,7 +9,7 @@ const MILESTONES = [
   { year: '2021', title: '10K Members', desc: 'Reached our first major milestone with global representation.' },
   { year: '2022', title: 'Global Chapters', desc: 'Launched city chapters in 20+ countries across 6 continents.' },
   { year: '2023', title: 'GRID Platform', desc: 'Launched our dedicated community platform with projects & forums.' },
-  { year: '2024', title: '50K Members', desc: 'Half a million tech professionals call GRID their home.' },
+  { year: '2024', title: '50K Members', desc: '50,000 builders from 90+ countries — a true global community.' },
 ]
 
 const TEAM = [
@@ -20,10 +20,10 @@ const TEAM = [
 ]
 
 const VALUES = [
-  { icon: Code2, title: 'Open Source First', desc: 'We believe in transparency, sharing, and building in public.' },
-  { icon: Network, title: 'Radical Collaboration', desc: 'Great things happen when brilliant minds work together.' },
-  { icon: Heart, title: 'Inclusive by Design', desc: 'Everyone deserves a seat at the table, regardless of background.' },
-  { icon: Cpu, title: 'Relentless Innovation', desc: 'We push boundaries and challenge the status quo, always.' },
+  { icon: Code2, title: 'Open Source First', desc: 'We build in public, share freely, and believe transparency creates better software.' },
+  { icon: Network, title: 'Better Together', desc: 'Great things happen when talented people work together toward a common goal.' },
+  { icon: Heart, title: 'Inclusive by Design', desc: 'Everyone deserves a place here — regardless of experience, background, or location.' },
+  { icon: Cpu, title: 'Always Learning', desc: 'We stay curious, experiment often, and are never too proud to change our minds.' },
 ]
 
 export default function About() {
@@ -39,8 +39,8 @@ export default function About() {
               ABOUT <span className="text-gradient">GRID</span>
             </h1>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto font-inter leading-relaxed">
-              We started with a simple belief: the best technology is built by communities, not corporations. 
-              GRID is where that belief becomes reality.
+              Started by a handful of developers who believed that the best work happens when smart people have each other.
+              GRID is where that belief keeps proving itself right.
             </p>
           </motion.div>
         </div>
@@ -50,8 +50,8 @@ export default function About() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { icon: Target, title: 'Our Mission', color: 'from-grid-blue/20 to-grid-cyan/10', border: 'border-grid-cyan/25', text: 'Empower every developer, engineer, and innovator to connect, learn, grow, and build the technology that shapes our world — with no barriers, no gatekeeping, just raw talent and shared purpose.' },
-            { icon: Eye, title: 'Our Vision', color: 'from-grid-purple/20 to-grid-blue/10', border: 'border-grid-purple/25', text: 'A world where every brilliant mind has access to a global network of peers, mentors, and resources — turning individual potential into collective revolution. GRID is the infrastructure for the next generation of builders.' },
+            { icon: Target, title: 'Our Mission', color: 'from-grid-blue/20 to-grid-cyan/10', border: 'border-grid-cyan/25', text: 'Give every developer, engineer, and creator a real community to grow in — no barriers, no gatekeeping, just talented people helping each other do better work.' },
+            { icon: Eye, title: 'Our Vision', color: 'from-grid-purple/20 to-grid-blue/10', border: 'border-grid-purple/25', text: 'A world where geography and background do not limit what you can build or who you can learn from. GRID is the place where the best technical communities form and last.' },
           ].map(({ icon: Icon, title, color, border, text }, i) => (
             <motion.div
               key={title}

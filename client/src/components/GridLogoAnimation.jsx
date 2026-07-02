@@ -47,17 +47,17 @@ const NODES = [
   { id:'C',  r:10.5, glow:26, seq:8   },
 ]
 
-/* Phase timing in ms */
+/* Phase timing in ms — tuned for fast, punchy build */
 const T = {
-  PARTICLE_BURST : 600,
-  BUILD_LINES    : 1500,
-  BUILD_NODES    : 2800,
-  FORGE_TEXT     : 3800,
-  TAGLINE        : 5000,
-  HOLD           : 7800,
-  GLITCH         : 9200,
-  DISSOLVE       : 10400,
-  RESET          : 11000,
+  PARTICLE_BURST : 280,
+  BUILD_LINES    : 750,
+  BUILD_NODES    : 1450,
+  FORGE_TEXT     : 1950,
+  TAGLINE        : 2650,
+  HOLD           : 5200,
+  GLITCH         : 6400,
+  DISSOLVE       : 7200,
+  RESET          : 7800,
 }
 
 const PHASES = [
@@ -114,8 +114,8 @@ function NetworkLine({ x1, y1, x2, y2, delay, visible, isOuter }) {
       initial={{ pathLength: 0, opacity: 0 }}
       animate={{ pathLength: visible ? 1 : 0, opacity: visible ? 1 : 0 }}
       transition={{
-        pathLength: { delay, duration: isOuter ? 0.38 : 0.28, ease: 'easeOut' },
-        opacity:    { delay, duration: 0.15 },
+        pathLength: { delay, duration: isOuter ? 0.22 : 0.16, ease: 'easeOut' },
+        opacity:    { delay, duration: 0.08 },
       }}
     />
   )
@@ -164,10 +164,10 @@ function NetworkNode({ id, cx, cy, r, glow, delay, visible, glitching, phase }) 
         scale: scaleAnim,
       }}
       transition={{
-        opacity: { delay, duration: 0.2 },
+        opacity: { delay, duration: 0.12 },
         scale: {
           delay,
-          duration: glitching ? 0.45 : 0.4,
+          duration: glitching ? 0.35 : 0.26,
           ease: glitching ? 'easeInOut' : [0.22, 1.8, 0.4, 1],
         },
       }}

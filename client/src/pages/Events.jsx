@@ -39,10 +39,10 @@ export default function Events() {
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="tag mb-6 inline-block">Live Events</span>
+            <span className="tag mb-6 inline-block">Events</span>
             <h1 className="section-title text-white mb-6">EVENTS & <span className="text-gradient">MEETUPS</span></h1>
             <p className="text-gray-400 text-lg max-w-xl mx-auto font-inter">
-              Hackathons, workshops, conferences, and study groups — where the community meets IRL.
+              Hackathons, workshops, conferences, and study groups — online and in person.
             </p>
           </motion.div>
         </div>
