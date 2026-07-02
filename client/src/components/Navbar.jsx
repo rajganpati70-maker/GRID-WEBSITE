@@ -74,14 +74,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
+            <Link to="/" className="flex items-center group">
               <div className="relative">
                 <img src="/grid-logo.png" alt="GRID" className="w-10 h-10 object-contain" />
                 <div className="absolute inset-0 bg-grid-cyan/20 rounded-full blur-lg group-hover:bg-grid-cyan/40 transition-all duration-300" />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-orbitron font-bold text-xl text-white tracking-[0.2em] group-hover:text-grid-cyan transition-colors duration-300">GRID</span>
-                <span className="text-[9px] text-grid-cyan/60 tracking-[0.3em] font-rajdhani uppercase">Where Tech Minds Connect</span>
               </div>
             </Link>
 
