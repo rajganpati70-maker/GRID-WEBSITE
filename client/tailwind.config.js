@@ -17,6 +17,7 @@ export default {
         'orbitron': ['Orbitron', 'sans-serif'],
         'rajdhani': ['Rajdhani', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
+        'jakarta': ['"Plus Jakarta Sans"', 'sans-serif'],
       },
       boxShadow: {
         'neon-cyan': '0 0 20px #00d4ff55, 0 0 60px #00d4ff22',
