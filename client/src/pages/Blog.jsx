@@ -49,10 +49,10 @@ export default function Blog() {
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="tag mb-6 inline-block">Knowledge Base</span>
+            <span className="tag mb-6 inline-block">Articles</span>
             <h1 className="section-title text-white mb-6">THE GRID <span className="text-gradient">BLOG</span></h1>
             <p className="text-gray-400 text-lg max-w-xl mx-auto font-inter">
-              Deep technical articles, tutorials, and insights from the GRID community's brightest minds.
+              Technical articles, tutorials, and real-world insights written by the people building things.
             </p>
           </motion.div>
         </div>

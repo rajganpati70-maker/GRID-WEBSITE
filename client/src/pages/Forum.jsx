@@ -127,7 +127,7 @@ export default function Forum() {
             <span className="tag mb-6 inline-block">Discussions</span>
             <h1 className="section-title text-white mb-6">COMMUNITY <span className="text-gradient">FORUM</span></h1>
             <p className="text-gray-400 text-lg max-w-xl mx-auto font-inter">
-              Ask questions, share insights, debate ideas. The GRID hive mind awaits.
+              Ask questions, share what you know, debate ideas. Real conversations with real builders.
             </p>
           </motion.div>
         </div>
