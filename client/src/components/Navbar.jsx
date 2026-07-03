@@ -5,6 +5,7 @@ import { Menu, X, ChevronRight, LogOut, LayoutDashboard, MessageCircle, Zap } fr
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../context/NotificationContext'
 import NotificationBell from './NotificationBell'
+import GRIDLogoIcon from './GRIDLogoIcon'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -74,10 +75,13 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center group">
+            <Link to="/" aria-label="GRID — Home" className="flex items-center group">
               <div className="relative">
-                <img src="/grid-logo.png" alt="GRID" className="w-10 h-10 object-contain" />
-                <div className="absolute inset-0 bg-grid-cyan/20 rounded-full blur-lg group-hover:bg-grid-cyan/40 transition-all duration-300" />
+                <GRIDLogoIcon
+                  size={42}
+                  style={{ transition: 'filter 0.3s ease' }}
+                  className="group-hover:[filter:drop-shadow(0_0_10px_rgba(0,212,255,0.7))]"
+                />
               </div>
             </Link>
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Github, Twitter, Linkedin, Youtube, Mail, MapPin, ExternalLink } from 'lucide-react'
+import GRIDLogoIcon from './GRIDLogoIcon'
 
 const footerLinks = {
   Community: [
@@ -39,8 +40,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 group w-fit">
               <div className="relative">
-                <img src="/grid-logo.png" alt="GRID" className="w-12 h-12 object-contain" />
-                <div className="absolute inset-0 bg-grid-cyan/20 rounded-full blur-xl group-hover:bg-grid-cyan/40 transition-all duration-300" />
+                <GRIDLogoIcon size={48} className="group-hover:[filter:drop-shadow(0_0_10px_rgba(0,212,255,0.6))] transition-[filter] duration-300" />
               </div>
               <div>
                 <div className="font-orbitron font-bold text-2xl text-white tracking-[0.25em]">GRID</div>

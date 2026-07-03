@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Zap } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import GRIDLogoIcon from '../components/GRIDLogoIcon'
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
@@ -43,7 +44,7 @@ export default function Login() {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-grid-cyan/10 border border-grid-cyan/25 mb-4 relative">
-              <img src="/grid-logo.png" alt="GRID" className="w-10 h-10 object-contain" />
+              <GRIDLogoIcon size={40} />
               <div className="absolute inset-0 bg-grid-cyan/10 rounded-xl blur-xl" />
             </div>
             <h1 className="font-orbitron text-2xl font-bold text-white mb-1 tracking-widest">GRID LOGIN</h1>
