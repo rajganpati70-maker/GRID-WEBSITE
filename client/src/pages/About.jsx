@@ -1,133 +1,168 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Target, Eye, Heart, Cpu, Network, Code2, Globe, Award, ArrowRight } from 'lucide-react'
+import { Brain, FlaskConical, Users, BookOpen, Cpu, Heart, Globe, ArrowRight, Zap } from 'lucide-react'
 
 const MILESTONES = [
-  { year: '2019', title: 'GRID Founded', desc: 'A small Discord server of 50 developers passionate about open source.' },
-  { year: '2020', title: 'First Hackathon', desc: '500+ participants, 80+ projects, and our first major corporate sponsor.' },
-  { year: '2021', title: '10K Members', desc: 'Reached our first major milestone with global representation.' },
-  { year: '2022', title: 'Global Chapters', desc: 'Launched city chapters in 20+ countries across 6 continents.' },
-  { year: '2023', title: 'GRID Platform', desc: 'Launched our dedicated community platform with projects & forums.' },
-  { year: '2024', title: '50K Members', desc: '50,000 builders from 90+ countries — a true global community.' },
+  { year: '2019', title: 'GRID Founded', desc: 'Five ML researchers, one group chat, and a shared frustration — good ML resources were everywhere but the people were scattered. We built the room.' },
+  { year: '2020', title: 'First ML Hackathon', desc: '400+ participants, 60+ models shipped, and our first GPU sponsor. Proved the community could build real things together under pressure.' },
+  { year: '2021', title: '5,000 ML Researchers', desc: 'Word spread. Researchers, engineers, and students from 40 countries joined — all focused on making ML less lonely and more rigorous.' },
+  { year: '2022', title: 'Research Reading Groups', desc: 'Launched structured paper reading groups across NLP, CV, RL, and theory. Hundreds of papers discussed, reproduced, and challenged.' },
+  { year: '2023', title: 'GRID Platform Launched', desc: 'Built our own home — forums, project hosting, member profiles, events. A place built for ML people, not retrofitted from somewhere else.' },
+  { year: '2024', title: '12,000+ Members', desc: '12,000 ML researchers and engineers from 80+ countries. Every timezone, every ML domain, all in one place.' },
 ]
 
 const TEAM = [
-  { name: 'Alex Chen', role: 'Founder & CEO', specialty: 'Full-Stack Engineering' },
-  { name: 'Priya Sharma', role: 'Head of Community', specialty: 'Developer Relations' },
-  { name: 'Marcus Webb', role: 'CTO', specialty: 'Systems Architecture' },
-  { name: 'Yuki Tanaka', role: 'Head of Events', specialty: 'Community Building' },
+  { name: 'Aryan Sharma',    role: 'Founder & CEO',        specialty: 'Deep Learning Research',   gradient: 'linear-gradient(135deg,#0052cc,#00d4ff)',  initials:'AS' },
+  { name: 'Priya Nair',      role: 'Co-founder & CTO',     specialty: 'MLOps & Infrastructure',    gradient: 'linear-gradient(135deg,#7b2fff,#00d4ff)',  initials:'PN' },
+  { name: 'Rahul Gupta',     role: 'Head of Research',     specialty: 'NLP & Transformers',        gradient: 'linear-gradient(135deg,#0066ff,#7b2fff)',  initials:'RG' },
+  { name: 'Ananya Krishnan', role: 'Community Lead',       specialty: 'ML Education & Outreach',   gradient: 'linear-gradient(135deg,#f59e0b,#ec4899)',  initials:'AK' },
 ]
 
 const VALUES = [
-  { icon: Code2, title: 'Open Source First', desc: 'We build in public, share freely, and believe transparency creates better software.' },
-  { icon: Network, title: 'Better Together', desc: 'Great things happen when talented people work together toward a common goal.' },
-  { icon: Heart, title: 'Inclusive by Design', desc: 'Everyone deserves a place here — regardless of experience, background, or location.' },
-  { icon: Cpu, title: 'Always Learning', desc: 'We stay curious, experiment often, and are never too proud to change our minds.' },
+  { icon: FlaskConical, title: 'Rigour over hype',     desc: 'We slow down and read the paper. We run the experiment. We question the benchmark. Good ML requires that kind of honesty.' },
+  { icon: Brain,        title: 'Build to learn',       desc: 'The best way to understand a model is to implement it from scratch. We celebrate trying things — including when they fail.' },
+  { icon: Users,        title: 'Teach what you know',  desc: 'Every expert here was a beginner. We share knowledge generously because that is how the whole field moves faster.' },
+  { icon: Globe,        title: 'Open by default',      desc: 'Open weights, open datasets, open code. We believe ML progress belongs to everyone, not just the labs with the most GPUs.' },
 ]
+
+const iv = { initial:{opacity:0,y:24}, whileInView:{opacity:1,y:0}, viewport:{once:true}, transition:{duration:0.6,ease:'easeOut'} }
 
 export default function About() {
   return (
-    <div>
-      {/* Hero */}
-      <section className="page-hero">
+    <div style={{ background:'#02020e' }}>
+
+      {/* ── Hero ── */}
+      <section className="page-hero relative overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="tag mb-6 inline-block">Our Story</span>
-            <h1 className="section-title text-white mb-6">
+        <div style={{ position:'absolute', top:'-15%', left:'35%', width:500, height:400, borderRadius:'50%', background:'radial-gradient(ellipse,rgba(0,102,255,0.11) 0%,transparent 70%)', filter:'blur(80px)', pointerEvents:'none' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}>
+            <span className="tag mb-6 inline-flex items-center gap-2">
+              <Brain style={{ width:11, height:11 }} /> Our Story
+            </span>
+            <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(2rem,5vw,3.5rem)', letterSpacing:'-0.04em', color:'#f0f6ff', marginBottom:20, lineHeight:1.1 }}>
               ABOUT <span className="text-gradient">GRID</span>
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto font-inter leading-relaxed">
-              Started by a handful of developers who believed that the best work happens when smart people have each other.
-              GRID is where that belief keeps proving itself right.
+            <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:17, color:'rgba(160,180,210,0.8)', maxWidth:580, margin:'0 auto', lineHeight:1.75 }}>
+              We started because the best ML conversations were happening in scattered DMs and Discord threads.
+              GRID is the community that brings them into one place — structured, searchable, and permanent.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Mission/Vision */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* ── Mission / Vision ── */}
+      <section style={{ padding:'80px 16px', background:'#02020e' }}>
+        <div style={{ maxWidth:1152, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:24 }}>
           {[
-            { icon: Target, title: 'Our Mission', color: 'from-grid-blue/20 to-grid-cyan/10', border: 'border-grid-cyan/25', text: 'Give every developer, engineer, and creator a real community to grow in — no barriers, no gatekeeping, just talented people helping each other do better work.' },
-            { icon: Eye, title: 'Our Vision', color: 'from-grid-purple/20 to-grid-blue/10', border: 'border-grid-purple/25', text: 'A world where geography and background do not limit what you can build or who you can learn from. GRID is the place where the best technical communities form and last.' },
-          ].map(({ icon: Icon, title, color, border, text }, i) => (
+            {
+              icon: Brain,
+              title: 'Our Mission',
+              grad: 'linear-gradient(135deg,rgba(0,82,204,0.12),rgba(0,212,255,0.06))',
+              border: 'rgba(0,212,255,0.18)',
+              glow: '#00d4ff',
+              text: 'Make serious ML research and engineering less isolated. Give every researcher, engineer, and student a real community — where the conversations are deep, the people are honest, and the work speaks for itself.',
+            },
+            {
+              icon: FlaskConical,
+              title: 'Our Vision',
+              grad: 'linear-gradient(135deg,rgba(123,47,255,0.12),rgba(0,102,255,0.06))',
+              border: 'rgba(123,47,255,0.18)',
+              glow: '#7b2fff',
+              text: 'A world where your geography and institution do not limit your access to great ML mentorship and collaboration. The best research happens when the smartest people can actually talk to each other.',
+            },
+          ].map(({ icon:Icon, title, grad, border, glow, text }, i) => (
             <motion.div
               key={title}
-              initial={{ opacity: 0, x: i === 0 ? -40 : 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className={`glass-card rounded-2xl p-8 bg-gradient-to-br ${color} ${border}`}
+              initial={{ opacity:0, x: i===0 ? -40 : 40 }}
+              whileInView={{ opacity:1, x:0 }}
+              viewport={{ once:true }}
+              transition={{ duration:0.7, ease:'easeOut' }}
+              style={{
+                background:`linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96)), ${grad}`,
+                border:`1px solid ${border}`,
+                borderRadius:20, padding:'36px 32px',
+                boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 20px 60px rgba(0,0,0,0.5), 0 0 40px ${glow}06`,
+              }}
             >
-              <div className="w-14 h-14 rounded-xl bg-grid-cyan/10 border border-grid-cyan/20 flex items-center justify-center mb-6">
-                <Icon className="w-7 h-7 text-grid-cyan" />
+              <div style={{ width:52, height:52, borderRadius:14, background:`linear-gradient(135deg,${glow}18,${glow}08)`, border:`1px solid ${glow}25`, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:24 }}>
+                <Icon style={{ width:24, height:24, color:glow }} />
               </div>
-              <h2 className="font-orbitron text-xl font-bold text-white mb-4 tracking-wide">{title}</h2>
-              <p className="text-gray-400 leading-relaxed font-inter">{text}</p>
+              <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:22, color:'#f0f6ff', letterSpacing:'-0.02em', marginBottom:14 }}>{title}</h2>
+              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(160,180,210,0.78)', lineHeight:1.75 }}>{text}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-20 px-4 relative">
+      {/* ── Values ── */}
+      <section style={{ padding:'80px 16px', position:'relative' }}>
         <div className="absolute inset-0 grid-bg opacity-20" />
-        <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="tag mb-4 inline-block">Core Values</span>
-            <h2 className="section-title text-white">WHAT WE <span className="text-gradient">STAND FOR</span></h2>
+        <div style={{ position:'relative', maxWidth:1152, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <span className="tag mb-4 inline-block">What drives us</span>
+            <motion.h2 {...iv} style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.8rem,4vw,2.5rem)', color:'#f0f6ff', letterSpacing:'-0.03em' }}>
+              WHAT WE <span className="text-gradient">STAND FOR</span>
+            </motion.h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {VALUES.map(({ icon: Icon, title, desc }, i) => (
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:20 }}>
+            {VALUES.map(({ icon:Icon, title, desc }, i) => (
               <motion.div
                 key={title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="glass-card rounded-xl p-6 text-center group hover:border-grid-cyan/40 transition-all duration-300"
+                initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.6 }}
+                style={{
+                  background:'linear-gradient(160deg,rgba(6,6,24,0.97),rgba(4,4,18,0.95))',
+                  border:'1px solid rgba(0,212,255,0.1)',
+                  borderRadius:18, padding:'28px 24px', textAlign:'center',
+                  transition:'border-color 0.3s ease, box-shadow 0.3s ease',
+                }}
+                onMouseEnter={e=>{ e.currentTarget.style.borderColor='rgba(0,212,255,0.28)'; e.currentTarget.style.boxShadow='0 0 40px rgba(0,212,255,0.08)' }}
+                onMouseLeave={e=>{ e.currentTarget.style.borderColor='rgba(0,212,255,0.1)'; e.currentTarget.style.boxShadow='none' }}
               >
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-grid-blue/20 to-grid-cyan/20 border border-grid-cyan/20 flex items-center justify-center mx-auto mb-4 group-hover:border-grid-cyan/50 group-hover:shadow-neon-sm transition-all duration-300">
-                  <Icon className="w-7 h-7 text-grid-cyan" />
+                <div style={{ width:52, height:52, borderRadius:'50%', background:'linear-gradient(135deg,rgba(0,82,204,0.2),rgba(0,212,255,0.12))', border:'1px solid rgba(0,212,255,0.18)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 18px' }}>
+                  <Icon style={{ width:22, height:22, color:'#00d4ff' }} />
                 </div>
-                <h3 className="font-orbitron text-sm font-bold text-white mb-2 tracking-wide">{title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed font-inter">{desc}</p>
+                <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', marginBottom:10, letterSpacing:'-0.01em' }}>{title}</h3>
+                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:13.5, color:'rgba(140,160,190,0.7)', lineHeight:1.7 }}>{desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="tag mb-4 inline-block">Our Journey</span>
-            <h2 className="section-title text-white">THE GRID <span className="text-gradient">TIMELINE</span></h2>
+      {/* ── Timeline ── */}
+      <section style={{ padding:'80px 16px' }}>
+        <div style={{ maxWidth:680, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <span className="tag mb-4 inline-block">How we got here</span>
+            <motion.h2 {...iv} style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.8rem,4vw,2.5rem)', color:'#f0f6ff', letterSpacing:'-0.03em' }}>
+              THE GRID <span className="text-gradient">TIMELINE</span>
+            </motion.h2>
           </div>
-          <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-grid-cyan via-grid-blue to-transparent opacity-40" />
-            <div className="space-y-10">
+          <div style={{ position:'relative' }}>
+            <div style={{ position:'absolute', left:32, top:0, bottom:0, width:1, background:'linear-gradient(to bottom,#00d4ff,#0066ff,transparent)', opacity:0.3 }} />
+            <div style={{ display:'flex', flexDirection:'column', gap:36 }}>
               {MILESTONES.map(({ year, title, desc }, i) => (
                 <motion.div
                   key={year}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6 }}
-                  className="flex gap-8"
+                  initial={{ opacity:0, x:-30 }} whileInView={{ opacity:1, x:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.6 }}
+                  style={{ display:'flex', gap:28, alignItems:'flex-start' }}
                 >
-                  <div className="relative flex-shrink-0">
-                    <div className="w-16 h-16 rounded-xl glass-card border-grid-cyan/30 flex items-center justify-center">
-                      <span className="font-orbitron text-xs font-bold text-grid-cyan">{year}</span>
+                  <div style={{ position:'relative', flexShrink:0 }}>
+                    <div style={{
+                      width:64, height:64, borderRadius:14,
+                      background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
+                      border:'1px solid rgba(0,212,255,0.2)',
+                      display:'flex', alignItems:'center', justifyContent:'center',
+                    }}>
+                      <span style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:13, color:'#00d4ff', letterSpacing:'-0.02em' }}>{year}</span>
                     </div>
-                    <div className="absolute top-1/2 -translate-y-1/2 -right-4 w-4 h-px bg-grid-cyan opacity-50" />
+                    <div style={{ position:'absolute', top:'50%', right:-16, width:16, height:1, background:'#00d4ff', opacity:0.4 }} />
                   </div>
-                  <div className="pt-2 flex-1">
-                    <h3 className="font-orbitron text-sm font-bold text-white mb-1 tracking-wide">{title}</h3>
-                    <p className="text-gray-400 text-sm font-inter leading-relaxed">{desc}</p>
+                  <div style={{ paddingTop:8 }}>
+                    <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', marginBottom:6, letterSpacing:'-0.01em' }}>{title}</h3>
+                    <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:13.5, color:'rgba(140,160,190,0.7)', lineHeight:1.7 }}>{desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -136,43 +171,56 @@ export default function About() {
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20 px-4 relative">
+      {/* ── Team ── */}
+      <section style={{ padding:'80px 16px', position:'relative' }}>
         <div className="absolute inset-0 grid-bg opacity-20" />
-        <div className="relative max-w-7xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="tag mb-4 inline-block">Leadership</span>
-            <h2 className="section-title text-white">MEET THE <span className="text-gradient">TEAM</span></h2>
+        <div style={{ position:'relative', maxWidth:1152, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <span className="tag mb-4 inline-block">The people behind it</span>
+            <motion.h2 {...iv} style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.8rem,4vw,2.5rem)', color:'#f0f6ff', letterSpacing:'-0.03em' }}>
+              MEET THE <span className="text-gradient">TEAM</span>
+            </motion.h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {TEAM.map(({ name, role, specialty }, i) => (
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:20, maxWidth:900, margin:'0 auto' }}>
+            {TEAM.map(({ name, role, specialty, gradient, initials }, i) => (
               <motion.div
                 key={name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.6 }}
-                className="glass-card rounded-xl p-6 text-center group hover:border-grid-cyan/40 transition-all duration-300"
+                initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.6 }}
+                style={{
+                  background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
+                  border:'1px solid rgba(0,212,255,0.1)',
+                  borderRadius:18, padding:'28px 20px', textAlign:'center',
+                  transition:'border-color 0.3s ease, transform 0.3s ease',
+                }}
+                whileHover={{ y:-4 }}
               >
-                <div className="w-20 h-20 avatar text-2xl mx-auto mb-4" style={{width:'80px',height:'80px',background:`linear-gradient(135deg, hsl(${i*60+180},80%,40%), hsl(${i*60+220},90%,60%))`}}>
-                  {name[0]}
+                {/* Avatar */}
+                <div style={{ position:'relative', display:'inline-block', marginBottom:18 }}>
+                  <div style={{ position:'absolute', inset:-2, borderRadius:'50%', background:gradient, opacity:0.3, filter:'blur(5px)' }} />
+                  <div style={{ width:72, height:72, borderRadius:'50%', background:gradient, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', border:'2px solid rgba(255,255,255,0.1)' }}>
+                    <span style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:22, color:'#fff' }}>{initials}</span>
+                  </div>
                 </div>
-                <h3 className="font-orbitron text-sm font-bold text-white mb-1">{name}</h3>
-                <div className="text-grid-cyan text-xs font-rajdhani tracking-widest uppercase mb-2">{role}</div>
-                <div className="tag text-xs">{specialty}</div>
+                <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', marginBottom:4 }}>{name}</h3>
+                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', background:gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:10 }}>{role}</div>
+                <span className="tag" style={{ fontSize:10 }}>{specialty}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 text-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-          <h2 className="section-title text-white mb-4">BE PART OF <span className="text-gradient">THE GRID</span></h2>
-          <p className="text-gray-400 mb-8 font-inter max-w-lg mx-auto">Your story starts here. Join thousands of tech minds building the future.</p>
+      {/* ── CTA ── */}
+      <section style={{ padding:'80px 16px', textAlign:'center' }}>
+        <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}>
+          <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.8rem,4vw,2.5rem)', color:'#f0f6ff', letterSpacing:'-0.03em', marginBottom:16 }}>
+            BE PART OF <span className="text-gradient">THE RESEARCH</span>
+          </h2>
+          <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(160,180,210,0.72)', marginBottom:32, maxWidth:440, margin:'0 auto 32px' }}>
+            Your next collaborator, paper co-author, or research breakthrough is already here.
+          </p>
           <Link to="/register" className="btn-primary inline-flex items-center gap-2">
-            Join Now <ArrowRight className="w-4 h-4" />
+            Join the ML community <ArrowRight style={{ width:16, height:16 }} />
           </Link>
         </motion.div>
       </section>
