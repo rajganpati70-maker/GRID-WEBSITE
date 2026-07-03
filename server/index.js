@@ -10,19 +10,7 @@ const app = express()
 const server = http.createServer(app)
 const PORT = process.env.PORT || 3001
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:5000', `https://${process.env.REPLIT_DEV_DOMAIN}`]
-
-app.use(cors({
-  origin: (origin, cb) => {
-    // Allow same-origin / server-to-server requests (no Origin header)
-    if (!origin) return cb(null, true)
-    if (allowedOrigins.includes(origin)) return cb(null, true)
-    cb(new Error(`CORS: origin ${origin} not allowed`))
-  },
-  credentials: true,
-}))
+app.use(cors({ origin: true, credentials: true }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
