@@ -7,7 +7,7 @@ import {
   BookOpen, FlaskConical, Network, Github, Linkedin, Globe,
 } from 'lucide-react'
 import axios from 'axios'
-import GridLogoAnimation from '../components/GridLogoAnimation'
+import GRIDLogoHero      from '../components/GRIDLogoHero'
 import ParticleNetwork   from '../components/ParticleNetwork'
 import HolographicCard  from '../components/HolographicCard'
 import MagneticButton   from '../components/MagneticButton'
@@ -442,81 +442,88 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center overflow-hidden">
 
         {/* Deep radial bg */}
-        <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse 100% 80% at 50% -5%, rgba(0,82,204,0.2) 0%, transparent 62%), radial-gradient(ellipse 60% 50% at 80% 95%, rgba(109,40,217,0.11) 0%, transparent 65%), #02020e' }} />
+        <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse 110% 80% at 65% -5%, rgba(0,82,204,0.22) 0%, transparent 60%), radial-gradient(ellipse 55% 55% at 90% 90%, rgba(109,40,217,0.13) 0%, transparent 65%), #02020e' }} />
 
         {/* Dot grid — parallax */}
-        <motion.div style={{ y: yBg }} className="absolute inset-0 grid-bg opacity-35" />
+        <motion.div style={{ y: yBg }} className="absolute inset-0 grid-bg opacity-30" />
 
         {/* 3-D Particle network */}
-        <ParticleNetwork opacity={0.82} />
+        <ParticleNetwork opacity={0.55} />
 
         {/* Aurora blobs */}
-        <div style={{ position:'absolute', top:'8%', left:'4%', width:520, height:520, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.13) 0%,transparent 70%)', filter:'blur(90px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
-        <div style={{ position:'absolute', top:'35%', right:'6%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle,rgba(109,40,217,0.11) 0%,transparent 70%)', filter:'blur(80px)', animation:'aurora2 28s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
-        <div style={{ position:'absolute', bottom:'8%', left:'28%', width:560, height:280, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.06) 0%,transparent 70%)', filter:'blur(110px)', animation:'aurora3 18s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        <div style={{ position:'absolute', top:'5%', right:'2%', width:640, height:640, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.14) 0%,transparent 70%)', filter:'blur(100px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        <div style={{ position:'absolute', bottom:'10%', right:'5%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle,rgba(109,40,217,0.10) 0%,transparent 70%)', filter:'blur(80px)', animation:'aurora2 28s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        <div style={{ position:'absolute', top:'40%', left:'2%', width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.06) 0%,transparent 70%)', filter:'blur(90px)', animation:'aurora3 18s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
 
-        {/* GRID logo — faint background anchor */}
-        <GridLogoAnimation size={560} opacity={0.6} />
+        {/* ── Split layout: Text left · Logo right ── */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-28 pb-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-6">
 
-        {/* Content — full width centered */}
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 pt-36 pb-24 text-center">
+          {/* ── LEFT: Text content ── */}
+          <div className="flex-1 min-w-0 text-center lg:text-left">
 
-          {/* Status badge */}
-          <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }} className="mb-6 flex justify-center">
-            <span className="tag">
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background:'#4ade80', boxShadow:'0 0 6px #4ade80' }} />
-              12,000 ML researchers online now
-            </span>
-          </motion.div>
+            {/* Status badge */}
+            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }} className="mb-7 flex justify-center lg:justify-start">
+              <span className="tag">
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background:'#4ade80', boxShadow:'0 0 6px #4ade80' }} />
+                12,000 ML researchers online now
+              </span>
+            </motion.div>
 
-          {/* H1 */}
-          <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.12, duration:0.75 }}>
-            <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.6rem,6vw,4.6rem)', color:'#f0f6ff', marginBottom:6 }}>
-              Where ML minds
-            </h1>
-            <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.6rem,6vw,4.6rem)', marginBottom:32 }}>
-              <MorphingWord />
-            </h1>
-          </motion.div>
+            {/* H1 */}
+            <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.12, duration:0.75 }}>
+              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.4rem,5.2vw,4.4rem)', color:'#f0f6ff', marginBottom:6 }}>
+                Where ML minds
+              </h1>
+              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.4rem,5.2vw,4.4rem)', marginBottom:28 }}>
+                <MorphingWord />
+              </h1>
+            </motion.div>
 
-          <motion.p initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.28, duration:0.65 }}
-            className="max-w-2xl mb-12 text-base md:text-lg leading-relaxed mx-auto"
-            style={{ color:'rgba(170,186,210,0.82)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-            The world's most focused Machine Learning community —
-            {' '}<strong style={{ color:'#e8eef8', fontWeight:700 }}>researchers, engineers, and builders</strong>{' '}
-            collaborating on models, papers, datasets, and production ML systems.
-          </motion.p>
+            <motion.p initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.28, duration:0.65 }}
+              className="max-w-xl mb-10 text-base md:text-lg leading-relaxed mx-auto lg:mx-0"
+              style={{ color:'rgba(170,186,210,0.82)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+              The world's most focused Machine Learning community —{' '}
+              <strong style={{ color:'#e8eef8', fontWeight:700 }}>researchers, engineers, and builders</strong>{' '}
+              collaborating on models, papers, datasets, and production ML systems.
+            </motion.p>
 
-          {/* Magnetic CTAs */}
-          <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.42, duration:0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-16">
-            <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/register'}>
-              Join GRID free <ArrowRight style={{ width:16,height:16 }} />
-            </MagneticButton>
-            <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-sm btn-outline" onClick={() => window.location.href='/members'}>
-              Meet the researchers
-            </MagneticButton>
-          </motion.div>
+            {/* CTAs */}
+            <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.42, duration:0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-14">
+              <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/register'}>
+                Join GRID free <ArrowRight style={{ width:16,height:16 }} />
+              </MagneticButton>
+              <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-sm btn-outline" onClick={() => window.location.href='/members'}>
+                Meet the researchers
+              </MagneticButton>
+            </motion.div>
 
-          {/* Stats row */}
-          <motion.div initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.58, duration:0.6 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl mx-auto">
-            {[
-              { v:'12k+',  l:'ML Researchers' },
-              { v:'900+',  l:'ML Projects' },
-              { v:'2.4k+', l:'Papers Discussed' },
-              { v:'180+',  l:'Research Groups' },
-            ].map(({ v, l }) => (
-              <div key={l} className="stat-card py-3">
-                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:20, letterSpacing:'-0.03em', marginBottom:2 }} className="text-gradient">{v}</div>
-                <div style={{ fontFamily:'Inter,sans-serif', fontSize:10, color:'#374151', letterSpacing:'0.14em', textTransform:'uppercase', fontWeight:500 }}>{l}</div>
-              </div>
-            ))}
-          </motion.div>
+            {/* Stats row */}
+            <motion.div initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.58, duration:0.6 }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto lg:mx-0">
+              {[
+                { v:'12k+',  l:'ML Researchers' },
+                { v:'900+',  l:'ML Projects' },
+                { v:'2.4k+', l:'Papers Discussed' },
+                { v:'180+',  l:'Research Groups' },
+              ].map(({ v, l }) => (
+                <div key={l} className="stat-card py-3">
+                  <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:20, letterSpacing:'-0.03em', marginBottom:2 }} className="text-gradient">{v}</div>
+                  <div style={{ fontFamily:'Inter,sans-serif', fontSize:10, color:'#374151', letterSpacing:'0.14em', textTransform:'uppercase', fontWeight:500 }}>{l}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT: Large GRID Logo ── */}
+          <div className="flex-shrink-0 flex items-center justify-center w-full lg:w-[460px] xl:w-[520px]">
+            <GRIDLogoHero size={440} />
+          </div>
+
         </div>
 
         {/* Scroll hint */}
-        <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.8, duration:0.6 }}
+        <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:2, duration:0.6 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
           <span style={{ fontSize:9, color:'#1f2937', letterSpacing:'0.35em', textTransform:'uppercase', fontFamily:'Inter,sans-serif' }}>scroll</span>
           <motion.div animate={{ y:[0,7,0] }} transition={{ repeat:Infinity, duration:1.8 }}
