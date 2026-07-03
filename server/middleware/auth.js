@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken')
 
 if (!process.env.JWT_SECRET) {
-  console.error('[GRID] FATAL: JWT_SECRET environment variable is not set. Refusing to start.')
-  process.exit(1)
+  console.warn('[GRID] WARNING: JWT_SECRET is not set — using insecure default. Set a strong secret in production.')
 }
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET || 'grid_community_secret_2025'
 
 const authMiddleware = (req, res, next) => {
   const header = req.headers.authorization

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import axios from 'axios'
 import GRIDLogoHero      from '../components/GRIDLogoHero'
+import GRIDHeroBackground from '../components/GRIDHeroBackground'
 import ParticleNetwork   from '../components/ParticleNetwork'
 import HolographicCard  from '../components/HolographicCard'
 import MagneticButton   from '../components/MagneticButton'
@@ -449,6 +450,9 @@ export default function Home() {
 
         {/* 3-D Particle network */}
         <ParticleNetwork opacity={0.55} />
+
+        {/* ── GRID Logo — full-hero animated background ── */}
+        <GRIDHeroBackground opacity={0.14} />
 
         {/* Aurora blobs */}
         <div style={{ position:'absolute', top:'5%', right:'2%', width:640, height:640, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.14) 0%,transparent 70%)', filter:'blur(100px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
