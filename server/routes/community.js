@@ -269,17 +269,21 @@ router.post('/forum/:threadId/replies', authMiddleware, async (req, res) => {
 router.post('/forum/:threadId/upvote', authMiddleware, async (req, res) => {
   try {
     const { threadId } = req.params
-    await pool.query(
+    const voteRes = await pool.query(
       `INSERT INTO forum_votes (user_id, target_type, target_id) VALUES ($1, 'thread', $2)
-       ON CONFLICT (user_id, target_type, target_id) DO NOTHING`,
+       ON CONFLICT (user_id, target_type, target_id) DO NOTHING RETURNING id`,
       [req.user.id, threadId]
     )
-    const result = await pool.query(
-      `UPDATE forum_threads SET likes = likes + 1 WHERE id=$1
-       RETURNING likes`,
-      [threadId]
-    )
-    res.json({ likes: result.rows[0]?.likes || 0 })
+    let likesRes
+    if (voteRes.rows.length > 0) {
+      likesRes = await pool.query(
+        `UPDATE forum_threads SET likes = likes + 1 WHERE id=$1 RETURNING likes`,
+        [threadId]
+      )
+    } else {
+      likesRes = await pool.query('SELECT likes FROM forum_threads WHERE id=$1', [threadId])
+    }
+    res.json({ likes: likesRes.rows[0]?.likes || 0 })
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' })
   }
@@ -289,16 +293,21 @@ router.post('/forum/:threadId/upvote', authMiddleware, async (req, res) => {
 router.post('/forum/replies/:replyId/upvote', authMiddleware, async (req, res) => {
   try {
     const { replyId } = req.params
-    await pool.query(
+    const voteRes = await pool.query(
       `INSERT INTO forum_votes (user_id, target_type, target_id) VALUES ($1, 'reply', $2)
-       ON CONFLICT (user_id, target_type, target_id) DO NOTHING`,
+       ON CONFLICT (user_id, target_type, target_id) DO NOTHING RETURNING id`,
       [req.user.id, replyId]
     )
-    const result = await pool.query(
-      `UPDATE forum_replies SET likes = likes + 1 WHERE id=$1 RETURNING likes`,
-      [replyId]
-    )
-    res.json({ likes: result.rows[0]?.likes || 0 })
+    let likesRes
+    if (voteRes.rows.length > 0) {
+      likesRes = await pool.query(
+        `UPDATE forum_replies SET likes = likes + 1 WHERE id=$1 RETURNING likes`,
+        [replyId]
+      )
+    } else {
+      likesRes = await pool.query('SELECT likes FROM forum_replies WHERE id=$1', [replyId])
+    }
+    res.json({ likes: likesRes.rows[0]?.likes || 0 })
   } catch (err) {
     res.status(500).json({ message: 'Internal server error' })
   }

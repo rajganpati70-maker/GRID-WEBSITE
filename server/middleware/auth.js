@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = process.env.JWT_SECRET || 'grid_community_secret_2025'
+
+if (!process.env.JWT_SECRET) {
+  console.error('[GRID] FATAL: JWT_SECRET environment variable is not set. Refusing to start.')
+  process.exit(1)
+}
+const JWT_SECRET = process.env.JWT_SECRET
 
 const authMiddleware = (req, res, next) => {
   const header = req.headers.authorization
