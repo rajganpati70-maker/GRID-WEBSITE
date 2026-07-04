@@ -2,7 +2,27 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useLocation } from 'react-router-dom'
 import { Send, X, Sparkles, Bot } from 'lucide-react'
+import axios from 'axios'
 import GRIDLogoIcon from './GRIDLogoIcon'
+
+const STORAGE_KEY = 'grid_ai_chat_history_v1'
+const DEFAULT_MESSAGES = [
+  {
+    role: 'bot',
+    text: "Hey, I'm the GRID Assistant. Ask me about events, projects, members, or how to get started.",
+  },
+]
+
+function loadStoredMessages() {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY)
+    if (!raw) return DEFAULT_MESSAGES
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) && parsed.length ? parsed : DEFAULT_MESSAGES
+  } catch {
+    return DEFAULT_MESSAGES
+  }
+}
 
 const TEASERS = [
   'How can I help you?',
@@ -36,11 +56,6 @@ const KB = [
     link: { to: '/login', label: 'Go to Login' },
   },
   {
-    match: /(event|hackathon|workshop|conference)/i,
-    reply: "We host hackathons, workshops, and conferences year-round. Check the Events page for what's coming up next.",
-    link: { to: '/events', label: 'Browse Events' },
-  },
-  {
     match: /(project|open source|github|repo)/i,
     reply: "Our Projects page showcases open-source work built by the community — a great place to find collaborators or contribute.",
     link: { to: '/projects', label: 'Explore Projects' },
@@ -49,11 +64,6 @@ const KB = [
     match: /(blog|article|read)/i,
     reply: "The Blog has technical articles from members across categories like ML research, engineering, and career growth.",
     link: { to: '/blog', label: 'Read the Blog' },
-  },
-  {
-    match: /(forum|discussion|thread|question)/i,
-    reply: "The Forum is where the community discusses ideas, asks questions, and shares progress. Jump in anytime.",
-    link: { to: '/forum', label: 'Visit the Forum' },
   },
   {
     match: /(member|people|researcher|team|who.*built)/i,
@@ -81,7 +91,51 @@ const FALLBACK_REPLIES = [
   "Good question! For deeper answers, the community Forum is a great place to ask — or try asking me about GRID's events or projects.",
 ]
 
-function getReply(input) {
+const EVENT_QUERY = /(event|hackathon|workshop|conference|meetup|upcoming)/i
+const FORUM_QUERY = /(forum|discussion|thread|trending|hot topic|popular)/i
+
+function formatEventDate(d) {
+  if (!d) return ''
+  try {
+    return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch {
+    return d
+  }
+}
+
+function buildEventsReply(events) {
+  if (!events || !events.length) {
+    return {
+      reply: "I couldn't find any events loaded right now — but the Events page always has the freshest schedule.",
+      link: { to: '/events', label: 'Browse Events' },
+    }
+  }
+  const upcoming = events.slice(0, 3)
+  const lines = upcoming.map(e => `• ${e.title}${e.date ? ` — ${formatEventDate(e.date)}` : ''}${e.location ? ` (${e.location})` : ''}`).join('\n')
+  return {
+    reply: `Here's what's coming up on GRID:\n${lines}`,
+    link: { to: '/events', label: 'See all events' },
+  }
+}
+
+function buildForumReply(threads) {
+  if (!threads || !threads.length) {
+    return {
+      reply: "The forum's a little quiet in my cache right now — head over and see what's fresh.",
+      link: { to: '/forum', label: 'Visit the Forum' },
+    }
+  }
+  const trending = [...threads].sort((a, b) => (b.hot === a.hot ? (b.likes || 0) - (a.likes || 0) : b.hot ? 1 : -1)).slice(0, 3)
+  const lines = trending.map(t => `• ${t.title}${t.replies != null ? ` — ${t.replies} replies` : ''}${t.hot ? ' 🔥' : ''}`).join('\n')
+  return {
+    reply: `Trending on the GRID forum right now:\n${lines}`,
+    link: { to: '/forum', label: 'Open the Forum' },
+  }
+}
+
+function getReply(input, liveData) {
+  if (EVENT_QUERY.test(input)) return buildEventsReply(liveData.events)
+  if (FORUM_QUERY.test(input)) return buildForumReply(liveData.forum)
   const hit = KB.find(k => k.match.test(input))
   if (hit) return hit
   return { reply: FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)] }
@@ -94,14 +148,23 @@ export default function GridAIBot() {
   const [teaserIndex, setTeaserIndex] = useState(0)
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
-  const [messages, setMessages] = useState([
-    {
-      role: 'bot',
-      text: "Hey, I'm the GRID Assistant. Ask me about events, projects, members, or how to get started.",
-    },
-  ])
+  const [messages, setMessages] = useState(loadStoredMessages)
+  const [liveData, setLiveData] = useState({ events: [], forum: [] })
   const scrollRef = useRef(null)
   const teaserTimerRef = useRef(null)
+
+  // Pull live events + forum data once so the assistant can answer with real info
+  useEffect(() => {
+    axios.get('/api/events').then(r => setLiveData(d => ({ ...d, events: r.data || [] }))).catch(() => {})
+    axios.get('/api/forum').then(r => setLiveData(d => ({ ...d, forum: r.data || [] }))).catch(() => {})
+  }, [])
+
+  // Persist the conversation across page navigations and reloads (per browser tab)
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages))
+    } catch {}
+  }, [messages])
 
   // Cycle the "How can I help you?" teaser bubble in and out on a loop
   useEffect(() => {
@@ -139,7 +202,7 @@ export default function GridAIBot() {
     setInput('')
     setTyping(true)
     setTimeout(() => {
-      const { reply, link } = getReply(trimmed)
+      const { reply, link } = getReply(trimmed, liveData)
       setMessages(m => [...m, { role: 'bot', text: reply, link }])
       setTyping(false)
     }, 650 + Math.random() * 500)
@@ -222,7 +285,7 @@ export default function GridAIBot() {
                         : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(0,212,255,0.14)', color: 'rgba(220,230,245,0.92)', borderBottomLeftRadius: 4 }
                     }
                   >
-                    {m.text}
+                    <span style={{ whiteSpace: 'pre-line' }}>{m.text}</span>
                     {m.link && (
                       <Link
                         to={m.link.to}
