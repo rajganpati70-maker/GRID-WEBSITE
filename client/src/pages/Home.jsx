@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import {
   ArrowRight, ChevronRight, Star,
   Brain, Database, GitBranch, Layers, Cpu, BarChart2,
@@ -430,6 +430,48 @@ export default function Home() {
   const yBg = useTransform(scrollY, [0, 600], [0, 120])
   const [events, setEvents] = useState([])
 
+  /* ── Global mouse parallax ── */
+  const rawX = useMotionValue(0.5)
+  const rawY = useMotionValue(0.5)
+  const sp   = { stiffness: 55, damping: 16, mass: 0.9 }
+  const sx   = useSpring(rawX, sp)
+  const sy   = useSpring(rawY, sp)
+
+  // Hero aurora blobs — very strong, each layer moves opposite/different
+  const b1x = useTransform(sx, [0,1], [-70, 70])
+  const b1y = useTransform(sy, [0,1], [-50, 50])
+  const b2x = useTransform(sx, [0,1], [55, -55])
+  const b2y = useTransform(sy, [0,1], [40, -40])
+  const b3x = useTransform(sx, [0,1], [-90, 90])
+  const b3y = useTransform(sy, [0,1], [-65, 65])
+  const bgX = useTransform(sx, [0,1], [-28, 28])
+  const bgY = useTransform(sy, [0,1], [-20, 20])
+  const dotX= useTransform(sx, [0,1], [-14, 14])
+  const dotY= useTransform(sy, [0,1], [-10, 10])
+
+  // CTA orbs — even stronger
+  const cX1 = useTransform(sx, [0,1], [-80, 80])
+  const cY1 = useTransform(sy, [0,1], [-60, 60])
+  const cX2 = useTransform(sx, [0,1], [65, -65])
+  const cY2 = useTransform(sy, [0,1], [50, -50])
+  const cX3 = useTransform(sx, [0,1], [-45, 45])
+  const cY3 = useTransform(sy, [0,1], [-35, 35])
+  const cBgX= useTransform(sx, [0,1], [-35, 35])
+  const cBgY= useTransform(sy, [0,1], [-25, 25])
+  const cX4 = useTransform(sx, [0,1], [-110, 110])
+  const cY4 = useTransform(sy, [0,1], [-80,  80])
+  const cX5 = useTransform(sx, [0,1], [ 90, -90])
+  const cY5 = useTransform(sy, [0,1], [ 70, -70])
+
+  useEffect(() => {
+    const onMove = (e) => {
+      rawX.set(e.clientX / window.innerWidth)
+      rawY.set(e.clientY / window.innerHeight)
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [rawX, rawY])
+
   useEffect(() => {
     axios.get('/api/events').then(r => setEvents((r.data||[]).slice(0,3))).catch(() => setEvents(FALLBACK_EVENTS))
   }, [])
@@ -446,18 +488,20 @@ export default function Home() {
         <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse 110% 80% at 65% -5%, rgba(0,82,204,0.22) 0%, transparent 60%), radial-gradient(ellipse 55% 55% at 90% 90%, rgba(109,40,217,0.13) 0%, transparent 65%), #02020e' }} />
 
         {/* Dot grid — parallax */}
-        <motion.div style={{ y: yBg }} className="absolute inset-0 grid-bg opacity-30" />
+        <motion.div style={{ y: yBg, x: dotX, translateY: dotY }} className="absolute inset-0 grid-bg opacity-30" />
 
         {/* 3-D Particle network */}
         <ParticleNetwork opacity={0.55} />
 
         {/* ── GRID Logo — full-hero animated background ── */}
-        <GRIDHeroBackground opacity={0.14} />
+        <motion.div style={{ x: bgX, y: bgY }} className="absolute inset-0 pointer-events-none">
+          <GRIDHeroBackground opacity={0.14} />
+        </motion.div>
 
-        {/* Aurora blobs */}
-        <div style={{ position:'absolute', top:'5%', right:'2%', width:640, height:640, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.14) 0%,transparent 70%)', filter:'blur(100px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
-        <div style={{ position:'absolute', bottom:'10%', right:'5%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle,rgba(109,40,217,0.10) 0%,transparent 70%)', filter:'blur(80px)', animation:'aurora2 28s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
-        <div style={{ position:'absolute', top:'40%', left:'2%', width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.06) 0%,transparent 70%)', filter:'blur(90px)', animation:'aurora3 18s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        {/* Aurora blobs — each on its own parallax layer */}
+        <motion.div style={{ x: b1x, y: b1y, position:'absolute', top:'5%', right:'2%', width:640, height:640, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.18) 0%,transparent 70%)', filter:'blur(100px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        <motion.div style={{ x: b2x, y: b2y, position:'absolute', bottom:'10%', right:'5%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle,rgba(109,40,217,0.13) 0%,transparent 70%)', filter:'blur(80px)', animation:'aurora2 28s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
+        <motion.div style={{ x: b3x, y: b3y, position:'absolute', top:'40%', left:'2%', width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.09) 0%,transparent 70%)', filter:'blur(90px)', animation:'aurora3 18s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
 
         {/* ── Hero text ── */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-28 pb-20 flex flex-col items-center">
@@ -667,7 +711,39 @@ export default function Home() {
 
       {/* ════════════  FINAL CTA  ════════════ */}
       <section className="relative py-32 px-6 overflow-hidden">
-        <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,52,204,0.15) 0%, transparent 65%), #02020e' }} />
+        {/* Static base bg */}
+        <div className="absolute inset-0" style={{ background:'#02020e', zIndex:-1 }} />
+
+        {/* Parallax bg glow — shifts slowly */}
+        <motion.div style={{ x: cBgX, y: cBgY, position:'absolute', inset:0, pointerEvents:'none', zIndex:0,
+          background:'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,52,204,0.15) 0%, transparent 65%)' }} />
+
+        {/* Orb 1 — top-left, blue, strong left */}
+        <motion.div style={{ x: cX1, y: cY1, position:'absolute', top:'5%', left:'5%', width:460, height:460,
+          borderRadius:'50%', background:'radial-gradient(circle,rgba(0,102,255,0.20) 0%,transparent 70%)',
+          filter:'blur(85px)', pointerEvents:'none', zIndex:0 }} />
+
+        {/* Orb 2 — bottom-right, purple, moves right */}
+        <motion.div style={{ x: cX2, y: cY2, position:'absolute', bottom:'5%', right:'5%', width:520, height:520,
+          borderRadius:'50%', background:'radial-gradient(circle,rgba(124,58,237,0.18) 0%,transparent 70%)',
+          filter:'blur(90px)', pointerEvents:'none', zIndex:0 }} />
+
+        {/* Orb 3 — center, cyan, slow */}
+        <motion.div style={{ x: cX3, y: cY3, position:'absolute', top:'50%', left:'50%',
+          transform:'translate(-50%,-50%)', width:380, height:380,
+          borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.12) 0%,transparent 70%)',
+          filter:'blur(75px)', pointerEvents:'none', zIndex:0 }} />
+
+        {/* Orb 4 — top-right accent, fastest */}
+        <motion.div style={{ x: cX4, y: cY4, position:'absolute', top:'15%', right:'12%', width:200, height:200,
+          borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.26) 0%,transparent 65%)',
+          filter:'blur(42px)', pointerEvents:'none', zIndex:0 }} />
+
+        {/* Orb 5 — bottom-left accent, fastest opposite */}
+        <motion.div style={{ x: cX5, y: cY5, position:'absolute', bottom:'18%', left:'10%', width:180, height:180,
+          borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.28) 0%,transparent 65%)',
+          filter:'blur(38px)', pointerEvents:'none', zIndex:0 }} />
+
         <ParticleNetwork opacity={0.35} />
         <div className="grid-line-bg absolute inset-0 opacity-12" />
 
