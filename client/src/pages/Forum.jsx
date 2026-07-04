@@ -63,8 +63,8 @@ export default function Forum() {
 
   useEffect(() => {
     axios.get('/api/forum').then(r => {
-      setThreads(r.data.length > 0 ? r.data : MOCK_THREADS)
-    }).catch(() => setThreads(MOCK_THREADS))
+      setThreads(r.data || [])
+    }).catch(() => setThreads([]))
 
     const token = localStorage.getItem('grid_token')
     if (token) {
@@ -198,14 +198,111 @@ export default function Forum() {
             {rest.map((thread, i) => <ThreadRow key={thread.id} thread={thread} index={i} isNew={newThreadIds.has(thread.id)} />)}
           </div>
 
-          {filtered.length === 0 && (
-            <div style={{ textAlign:'center', padding:'80px 0' }}>
-              <MessageSquare style={{ width:40, height:40, color:'rgba(0,212,255,0.25)', margin:'0 auto 16px' }} />
-              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(140,160,190,0.5)', marginBottom:20 }}>No discussions found.</p>
-              <button onClick={handleNewThread} className="btn-primary" style={{ display:'inline-flex', alignItems:'center', gap:7, fontSize:12 }}>
-                <Plus style={{ width:14, height:14 }} /> Start one
+          {/* Search no-results */}
+          {filtered.length === 0 && (search || cat !== 'All') && (
+            <div style={{ textAlign:'center', padding:'64px 0' }}>
+              <MessageSquare style={{ width:34, height:34, color:'rgba(0,212,255,0.18)', margin:'0 auto 14px' }} />
+              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:14.5, color:'rgba(140,160,190,0.45)', marginBottom:16 }}>No discussions match your search.</p>
+              <button onClick={() => { setSearch(''); setCat('All') }} style={{ fontSize:12, color:'rgba(0,212,255,0.6)', background:'none', border:'none', cursor:'pointer', fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, textDecoration:'underline', textUnderlineOffset:3 }}>
+                Clear filters
               </button>
             </div>
+          )}
+
+          {/* ── Ultra-premium "be first" empty state ── */}
+          {threads.length === 0 && !search && cat === 'All' && (
+            <motion.div
+              initial={{ opacity:0, y:32 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ duration:0.8, ease:'easeOut' }}
+              style={{ position:'relative', borderRadius:28, overflow:'hidden', padding:'80px 32px 72px', textAlign:'center',
+                background:'linear-gradient(160deg,rgba(6,6,28,0.98),rgba(3,3,16,0.97))',
+                border:'1px solid rgba(255,255,255,0.05)',
+                boxShadow:'0 40px 100px rgba(0,0,0,0.6)',
+              }}
+            >
+              {/* ambient bg */}
+              <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 65% 55% at 50% 45%, rgba(0,40,160,0.12) 0%, transparent 70%)', pointerEvents:'none' }} />
+              <div className="absolute inset-0 grid-bg opacity-10" />
+
+              {/* Broadcast / signal animation */}
+              <div style={{ position:'relative', width:100, height:100, margin:'0 auto 36px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                {/* ripple rings */}
+                {[1, 2, 3].map(n => (
+                  <motion.div key={n}
+                    animate={{ scale:[1, 2.4 + n * 0.3], opacity:[0.22, 0] }}
+                    transition={{ duration:2.4, delay:n * 0.65, repeat:Infinity, ease:'easeOut' }}
+                    style={{ position:'absolute', width:44, height:44, borderRadius:'50%', border:'1px solid rgba(0,212,255,0.55)', pointerEvents:'none' }}
+                  />
+                ))}
+                {/* outer spinning ring */}
+                <motion.div animate={{ rotate:360 }} transition={{ duration:20, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:96, height:96, borderRadius:'50%', border:'1px solid rgba(0,212,255,0.08)', borderTopColor:'rgba(0,212,255,0.3)' }} />
+                <motion.div animate={{ rotate:-360 }} transition={{ duration:30, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:76, height:76, borderRadius:'50%', border:'1px dashed rgba(74,222,128,0.08)', borderBottomColor:'rgba(74,222,128,0.28)' }} />
+                {/* center */}
+                <div style={{ width:52, height:52, borderRadius:'50%', background:'linear-gradient(135deg,rgba(0,52,204,0.2),rgba(0,212,255,0.1))', border:'1px solid rgba(0,212,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 32px rgba(0,120,255,0.14)' }}>
+                  <MessageSquare style={{ width:22, height:22, color:'#00d4ff' }} />
+                </div>
+              </div>
+
+              {/* Copy */}
+              <div style={{ position:'relative', zIndex:1, maxWidth:600, margin:'0 auto' }}>
+                <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900, fontSize:'clamp(1.7rem,3.5vw,2.5rem)', letterSpacing:'-0.04em', lineHeight:1.1, color:'#f0f6ff', marginBottom:18 }}>
+                  The conversation<br />
+                  <span style={{ background:'linear-gradient(135deg,#00d4ff,#0066ff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>starts with you.</span>
+                </h2>
+                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16.5, color:'rgba(170,186,210,0.72)', lineHeight:1.78, marginBottom:38, maxWidth:520, margin:'0 auto 38px' }}>
+                  GRID Forum exists for the ML discussions that get buried in Twitter threads,
+                  lost in Slack, or never happen because no one wants to ask first.
+                  This is the place where that changes.
+                </p>
+
+                {/* CTA */}
+                <div style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center', marginBottom:40 }}>
+                  <motion.button
+                    onClick={handleNewThread}
+                    whileHover={{ scale:1.04, boxShadow:'0 8px 36px rgba(0,102,255,0.45)' }}
+                    whileTap={{ scale:0.97 }}
+                    style={{ display:'inline-flex', alignItems:'center', gap:9, padding:'14px 32px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14.5, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.38)', letterSpacing:'-0.01em' }}
+                  >
+                    <Plus style={{ width:16, height:16 }} /> Start the first discussion →
+                  </motion.button>
+                  <motion.button
+                    onClick={() => navigate('/blog')}
+                    whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
+                    style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 26px', borderRadius:13, border:'1px solid rgba(255,255,255,0.09)', background:'rgba(255,255,255,0.04)', cursor:'pointer', color:'rgba(190,205,225,0.75)', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}
+                  >
+                    Browse the Blog
+                  </motion.button>
+                </div>
+
+                {/* What to post pills */}
+                <div style={{ marginBottom:24 }}>
+                  <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:11, color:'rgba(120,140,170,0.4)', letterSpacing:'0.18em', textTransform:'uppercase', marginBottom:12, fontWeight:700 }}>
+                    What belongs here
+                  </p>
+                  <div style={{ display:'flex', flexWrap:'wrap', gap:8, justifyContent:'center' }}>
+                    {[
+                      { emoji:'📄', label:'Paper deep-dives' },
+                      { emoji:'🧪', label:'Experiment results' },
+                      { emoji:'❓', label:'Real questions' },
+                      { emoji:'🔥', label:'Training war stories' },
+                      { emoji:'🏗️', label:'Architecture debates' },
+                      { emoji:'🔍', label:'Benchmark analysis' },
+                    ].map(({ emoji, label }) => (
+                      <span key={label} style={{ fontSize:12, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, padding:'6px 14px', borderRadius:100, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)', color:'rgba(160,180,210,0.6)', display:'flex', alignItems:'center', gap:6 }}>
+                        <span>{emoji}</span> {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:12, color:'rgba(120,140,170,0.35)', fontStyle:'italic' }}>
+                  Be curious. Be rigorous. Be the one who breaks the silence.
+                </p>
+              </div>
+            </motion.div>
           )}
         </div>
       </section>

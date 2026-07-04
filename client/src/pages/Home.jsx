@@ -493,9 +493,9 @@ export default function Home() {
         {/* 3-D Particle network */}
         <ParticleNetwork opacity={0.55} />
 
-        {/* ── GRID Logo — full-hero animated background ── */}
+        {/* ── GRID Logo — full-hero ghost background ── */}
         <motion.div style={{ x: bgX, y: bgY }} className="absolute inset-0 pointer-events-none">
-          <GRIDHeroBackground opacity={0.14} />
+          <GRIDHeroBackground opacity={0.07} />
         </motion.div>
 
         {/* Aurora blobs — each on its own parallax layer */}
@@ -509,8 +509,31 @@ export default function Home() {
           {/* ── Text content ── */}
           <div className="w-full text-center">
 
+            {/* ── GRID Logo mark — compact, premium, centered ── */}
+            <motion.div
+              initial={{ opacity:0, scale:0.78, y:16 }}
+              animate={{ opacity:1, scale:1, y:0 }}
+              transition={{ duration:1.05, ease:[0.22,1,0.36,1] }}
+              style={{ display:'flex', justifyContent:'center', marginBottom:8, marginTop:0 }}
+            >
+              {/* Outer ambient ring */}
+              <div style={{ position:'relative', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
+                <motion.div
+                  animate={{ rotate:360 }}
+                  transition={{ duration:32, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:276, height:276, borderRadius:'50%', border:'1px solid rgba(0,212,255,0.08)', borderTopColor:'rgba(0,212,255,0.22)' }}
+                />
+                <motion.div
+                  animate={{ rotate:-360 }}
+                  transition={{ duration:48, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:252, height:252, borderRadius:'50%', border:'1px dashed rgba(123,47,255,0.06)', borderRightColor:'rgba(123,47,255,0.18)' }}
+                />
+                <GRIDLogoHero size={220} />
+              </div>
+            </motion.div>
+
             {/* Status badge */}
-            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }} className="mb-7 flex justify-center">
+            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.32, duration:0.5 }} className="mb-6 flex justify-center">
               <span className="tag">
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background:'#4ade80', boxShadow:'0 0 6px #4ade80' }} />
                 12,000 ML researchers online now
@@ -518,16 +541,16 @@ export default function Home() {
             </motion.div>
 
             {/* H1 */}
-            <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.12, duration:0.75 }}>
-              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.4rem,5.2vw,4.4rem)', color:'#f0f6ff', marginBottom:6 }}>
+            <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.44, duration:0.75 }}>
+              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.2rem,4.8vw,4rem)', color:'#f0f6ff', marginBottom:6 }}>
                 Where ML minds
               </h1>
-              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.4rem,5.2vw,4.4rem)', marginBottom:28 }}>
+              <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, lineHeight:1.07, letterSpacing:'-0.04em', fontSize:'clamp(2.2rem,4.8vw,4rem)', marginBottom:24 }}>
                 <MorphingWord />
               </h1>
             </motion.div>
 
-            <motion.p initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.28, duration:0.65 }}
+            <motion.p initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.56, duration:0.65 }}
               className="max-w-xl mb-10 text-base md:text-lg leading-relaxed mx-auto"
               style={{ color:'rgba(170,186,210,0.82)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
               The world's most focused Machine Learning community —{' '}
@@ -536,7 +559,7 @@ export default function Home() {
             </motion.p>
 
             {/* CTAs */}
-            <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.42, duration:0.6 }}
+            <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.68, duration:0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
               <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/register'}>
                 Join GRID free <ArrowRight style={{ width:16,height:16 }} />
@@ -547,7 +570,7 @@ export default function Home() {
             </motion.div>
 
             {/* Stats row */}
-            <motion.div initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.58, duration:0.6 }}
+            <motion.div initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.82, duration:0.6 }}
               className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
               {[
                 { v:'12k+',  l:'ML Researchers' },

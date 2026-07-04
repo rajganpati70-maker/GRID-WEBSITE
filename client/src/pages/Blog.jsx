@@ -65,8 +65,8 @@ export default function Blog() {
   const load = () => {
     setLoading(true)
     axios.get('/api/blog').then(r => {
-      setPosts(r.data.posts?.length > 0 ? r.data.posts : MOCK_POSTS)
-    }).catch(() => setPosts(MOCK_POSTS))
+      setPosts(r.data.posts || [])
+    }).catch(() => setPosts([]))
       .finally(() => setLoading(false))
   }
 
@@ -278,19 +278,107 @@ export default function Blog() {
             </div>
           )}
 
-          {/* Empty */}
-          {!loading && filtered.length === 0 && (
-            <div style={{ textAlign:'center', padding:'80px 0' }}>
-              <BookOpen style={{ width:44, height:44, color:'rgba(0,212,255,0.2)', margin:'0 auto 16px' }} />
-              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(130,150,180,0.5)', marginBottom:22 }}>
-                {search ? 'No articles match your search.' : 'No articles yet.'}
+          {/* Search no-results */}
+          {!loading && filtered.length === 0 && (search || cat !== 'All') && (
+            <div style={{ textAlign:'center', padding:'72px 0' }}>
+              <BookOpen style={{ width:36, height:36, color:'rgba(0,212,255,0.18)', margin:'0 auto 14px' }} />
+              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(130,150,180,0.45)', marginBottom:18 }}>
+                No articles match your search.
               </p>
-              {user && (
-                <button onClick={() => setShowEditor(true)} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'12px 24px', borderRadius:12, border:'none', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:13, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, cursor:'pointer' }}>
-                  <PenLine style={{ width:14, height:14 }} /> Be the first to write
-                </button>
-              )}
+              <button onClick={() => { setSearch(''); setCat('All') }} style={{ fontSize:12, color:'rgba(0,212,255,0.6)', background:'none', border:'none', cursor:'pointer', fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, textDecoration:'underline', textUnderlineOffset:3 }}>
+                Clear filters
+              </button>
             </div>
+          )}
+
+          {/* ── Ultra-premium "be first" empty state ── */}
+          {!loading && posts.length === 0 && !search && cat === 'All' && (
+            <motion.div
+              initial={{ opacity:0, y:32 }}
+              animate={{ opacity:1, y:0 }}
+              transition={{ duration:0.8, ease:'easeOut' }}
+              style={{ position:'relative', borderRadius:28, overflow:'hidden', padding:'80px 32px 72px', textAlign:'center',
+                background:'linear-gradient(160deg,rgba(6,6,28,0.98),rgba(3,3,16,0.97))',
+                border:'1px solid rgba(255,255,255,0.05)',
+                boxShadow:'0 40px 100px rgba(0,0,0,0.6)',
+              }}
+            >
+              {/* ambient bg */}
+              <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 70% 55% at 50% 40%, rgba(0,52,180,0.1) 0%, transparent 70%)', pointerEvents:'none' }} />
+              <div className="absolute inset-0 grid-bg opacity-10" />
+
+              {/* Animated icon mark */}
+              <div style={{ position:'relative', width:96, height:96, margin:'0 auto 36px', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                {/* outer spinning rings */}
+                <motion.div animate={{ rotate:360 }} transition={{ duration:22, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:96, height:96, borderRadius:'50%', border:'1px solid rgba(0,212,255,0.1)', borderTopColor:'rgba(0,212,255,0.35)' }} />
+                <motion.div animate={{ rotate:-360 }} transition={{ duration:14, repeat:Infinity, ease:'linear' }}
+                  style={{ position:'absolute', width:74, height:74, borderRadius:'50%', border:'1px dashed rgba(123,47,255,0.12)', borderRightColor:'rgba(123,47,255,0.32)' }} />
+                {/* center icon box */}
+                <div style={{ width:52, height:52, borderRadius:16, background:'linear-gradient(135deg,rgba(0,52,204,0.25),rgba(0,212,255,0.12))', border:'1px solid rgba(0,212,255,0.2)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 28px rgba(0,120,255,0.15)' }}>
+                  <PenLine style={{ width:22, height:22, color:'#00d4ff' }} />
+                </div>
+                {/* pulse ring */}
+                <motion.div
+                  animate={{ scale:[1, 1.55], opacity:[0.25, 0] }}
+                  transition={{ duration:2.2, repeat:Infinity, ease:'easeOut' }}
+                  style={{ position:'absolute', width:52, height:52, borderRadius:16, border:'1px solid rgba(0,212,255,0.5)', pointerEvents:'none' }}
+                />
+              </div>
+
+              {/* Copy */}
+              <div style={{ position:'relative', zIndex:1, maxWidth:580, margin:'0 auto' }}>
+                <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900, fontSize:'clamp(1.7rem,3.5vw,2.5rem)', letterSpacing:'-0.04em', lineHeight:1.1, color:'#f0f6ff', marginBottom:18 }}>
+                  The first article here<br />
+                  <span style={{ background:'linear-gradient(135deg,#0066ff,#00d4ff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>sets the standard.</span>
+                </h2>
+                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16.5, color:'rgba(170,186,210,0.72)', lineHeight:1.78, marginBottom:38, maxWidth:500, margin:'0 auto 38px' }}>
+                  Every great ML blog started with someone sharing exactly what they actually
+                  learned — not what they wished they'd known, but the honest, specific, real thing.
+                  That someone could be you.
+                </p>
+
+                {/* CTAs */}
+                <div style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center', marginBottom:36 }}>
+                  {user ? (
+                    <motion.button
+                      onClick={() => setShowEditor(true)}
+                      whileHover={{ scale:1.04, boxShadow:'0 8px 36px rgba(0,102,255,0.45)' }}
+                      whileTap={{ scale:0.97 }}
+                      style={{ display:'inline-flex', alignItems:'center', gap:9, padding:'14px 32px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14.5, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.38)', letterSpacing:'-0.01em' }}
+                    >
+                      <PenLine style={{ width:16, height:16 }} /> Write the first post →
+                    </motion.button>
+                  ) : (
+                    <>
+                      <motion.button
+                        onClick={() => navigate('/register')}
+                        whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
+                        style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 30px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.35)' }}
+                      >
+                        Join to write →
+                      </motion.button>
+                      <motion.button
+                        onClick={() => navigate('/forum')}
+                        whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
+                        style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 26px', borderRadius:13, border:'1px solid rgba(255,255,255,0.09)', background:'rgba(255,255,255,0.04)', cursor:'pointer', color:'rgba(190,205,225,0.75)', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}
+                      >
+                        Browse the forum
+                      </motion.button>
+                    </>
+                  )}
+                </div>
+
+                {/* Feature pills */}
+                <div style={{ display:'flex', flexWrap:'wrap', gap:8, justifyContent:'center' }}>
+                  {['Rich text editor', 'Code blocks & syntax', 'Cover images', 'Tags & categories', 'Reading time auto-calc'].map(f => (
+                    <span key={f} style={{ fontSize:11, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, letterSpacing:'0.04em', padding:'5px 13px', borderRadius:100, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)', color:'rgba(150,170,200,0.55)' }}>
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           )}
         </div>
       </section>
