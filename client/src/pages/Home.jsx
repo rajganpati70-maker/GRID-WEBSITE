@@ -660,13 +660,13 @@ export default function Home() {
         <div style={{ position:'absolute', top:'10%', left:'50%', transform:'translateX(-50%)', width:800, height:400, borderRadius:'50%', background:'radial-gradient(ellipse, rgba(0,102,255,0.07) 0%, transparent 70%)', filter:'blur(60px)', pointerEvents:'none' }} />
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <SectionLabel>The founding team</SectionLabel>
+            <SectionLabel>Meet the team</SectionLabel>
             <motion.h2 {...iv} className="section-title text-3xl md:text-[2.4rem] text-white">
-              Real people. <span className="text-gradient">Real research.</span>
+              The faces <span className="text-gradient">behind the community.</span>
             </motion.h2>
-            <motion.p {...iv} className="text-sm max-w-lg mx-auto mt-4" style={{ color:'rgba(140,160,190,0.7)', lineHeight:1.75 }}>
-              The core team behind GRID — ML researchers, engineers, and educators
-              who built this community from the ground up.
+            <motion.p {...iv} className="text-sm max-w-xl mx-auto mt-4" style={{ color:'rgba(140,160,190,0.7)', lineHeight:1.75 }}>
+              Nine ML researchers and engineers who decided the community they wanted
+              to be part of didn't exist yet — so they built it from scratch.
             </motion.p>
           </div>
 

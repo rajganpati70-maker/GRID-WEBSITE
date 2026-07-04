@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Brain, FlaskConical, Users, BookOpen, Cpu, Heart, Globe, ArrowRight, Zap } from 'lucide-react'
+import { Brain, FlaskConical, Users, Globe, ArrowRight } from 'lucide-react'
 
 const MILESTONES = [
   { year: '2019', title: 'GRID Founded', desc: 'Five ML researchers, one group chat, and a shared frustration — good ML resources were everywhere but the people were scattered. We built the room.' },
@@ -12,12 +12,6 @@ const MILESTONES = [
   { year: '2024', title: '12,000+ Members', desc: '12,000 ML researchers and engineers from 80+ countries. Every timezone, every ML domain, all in one place.' },
 ]
 
-const TEAM = [
-  { name: 'Aryan Sharma',    role: 'Founder & CEO',        specialty: 'Deep Learning Research',   gradient: 'linear-gradient(135deg,#0052cc,#00d4ff)',  initials:'AS' },
-  { name: 'Priya Nair',      role: 'Co-founder & CTO',     specialty: 'MLOps & Infrastructure',    gradient: 'linear-gradient(135deg,#7b2fff,#00d4ff)',  initials:'PN' },
-  { name: 'Rahul Gupta',     role: 'Head of Research',     specialty: 'NLP & Transformers',        gradient: 'linear-gradient(135deg,#0066ff,#7b2fff)',  initials:'RG' },
-  { name: 'Ananya Krishnan', role: 'Community Lead',       specialty: 'ML Education & Outreach',   gradient: 'linear-gradient(135deg,#f59e0b,#ec4899)',  initials:'AK' },
-]
 
 const VALUES = [
   { icon: FlaskConical, title: 'Rigour over hype',     desc: 'We slow down and read the paper. We run the experiment. We question the benchmark. Good ML requires that kind of honesty.' },
@@ -167,45 +161,6 @@ export default function About() {
                 </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Team ── */}
-      <section style={{ padding:'80px 16px', position:'relative' }}>
-        <div className="absolute inset-0 grid-bg opacity-20" />
-        <div style={{ position:'relative', maxWidth:1152, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:56 }}>
-            <span className="tag mb-4 inline-block">The people behind it</span>
-            <motion.h2 {...iv} style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.8rem,4vw,2.5rem)', color:'#f0f6ff', letterSpacing:'-0.03em' }}>
-              MEET THE <span className="text-gradient">TEAM</span>
-            </motion.h2>
-          </div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:20, maxWidth:900, margin:'0 auto' }}>
-            {TEAM.map(({ name, role, specialty, gradient, initials }, i) => (
-              <motion.div
-                key={name}
-                initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.6 }}
-                style={{
-                  background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
-                  border:'1px solid rgba(0,212,255,0.1)',
-                  borderRadius:18, padding:'28px 20px', textAlign:'center',
-                  transition:'border-color 0.3s ease, transform 0.3s ease',
-                }}
-                whileHover={{ y:-4 }}
-              >
-                {/* Avatar */}
-                <div style={{ position:'relative', display:'inline-block', marginBottom:18 }}>
-                  <div style={{ position:'absolute', inset:-2, borderRadius:'50%', background:gradient, opacity:0.3, filter:'blur(5px)' }} />
-                  <div style={{ width:72, height:72, borderRadius:'50%', background:gradient, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', border:'2px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:22, color:'#fff' }}>{initials}</span>
-                  </div>
-                </div>
-                <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', marginBottom:4 }}>{name}</h3>
-                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:600, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', background:gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:10 }}>{role}</div>
-                <span className="tag" style={{ fontSize:10 }}>{specialty}</span>
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
