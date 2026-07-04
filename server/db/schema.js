@@ -121,6 +121,8 @@ const initDB = async () => {
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(255) DEFAULT ''`,
       `ALTER TABLE users ADD COLUMN IF NOT EXISTS website_url VARCHAR(255) DEFAULT ''`,
       `ALTER TABLE forum_threads ADD COLUMN IF NOT EXISTS content TEXT`,
+      `ALTER TABLE forum_votes ADD COLUMN IF NOT EXISTS vote_type VARCHAR(5) DEFAULT 'up'`,
+      `ALTER TABLE forum_replies ADD COLUMN IF NOT EXISTS dislikes INTEGER DEFAULT 0`,
     ]
     for (const stmt of alterStatements) {
       await client.query(stmt)

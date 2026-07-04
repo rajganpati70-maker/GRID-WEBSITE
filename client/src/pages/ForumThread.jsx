@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ArrowLeft, ThumbsUp, MessageSquare, Eye, Clock, Pin, Flame,
+  ArrowLeft, ThumbsUp, ThumbsDown, MessageSquare, Eye, Clock, Pin, Flame,
   Send, CornerDownRight, Loader2, AlertCircle, ChevronDown, ChevronUp, Zap
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -124,18 +124,42 @@ function ReplyBox({ threadId, parentId, parentAuthor, onCancel, onPosted, depth 
   )
 }
 
-function ReplyCard({ reply, threadId, onUpvote, onReplyPosted, depth = 0 }) {
-  const { user } = useAuth()
+function ReplyCard({ reply, threadId, onVote, onReplyPosted, depth = 0 }) {
+  const { user, token } = useAuth()
   const [replying, setReplying] = useState(false)
   const [showChildren, setShowChildren] = useState(true)
-  const [liked, setLiked] = useState(false)
+  const [userVote, setUserVote] = useState(null) // null | 'up' | 'down'
   const [likes, setLikes] = useState(reply.likes || 0)
+  const [dislikes, setDislikes] = useState(reply.dislikes || 0)
+  const [voting, setVoting] = useState(false)
 
-  const handleUpvote = async () => {
-    if (!user || liked) return
-    setLiked(true)
-    setLikes(l => l + 1)
-    try { await onUpvote(reply.id) } catch { setLiked(false); setLikes(l => l - 1) }
+  const handleVote = async (type) => {
+    if (!user || voting) return
+    setVoting(true)
+    const prev = { userVote, likes, dislikes }
+    // Optimistic update
+    if (userVote === type) {
+      setUserVote(null)
+      type === 'up' ? setLikes(l => Math.max(0, l - 1)) : setDislikes(d => Math.max(0, d - 1))
+    } else {
+      if (userVote) {
+        userVote === 'up' ? setLikes(l => Math.max(0, l - 1)) : setDislikes(d => Math.max(0, d - 1))
+      }
+      setUserVote(type)
+      type === 'up' ? setLikes(l => l + 1) : setDislikes(d => d + 1)
+    }
+    try {
+      const res = await axios.post(`/api/forum/replies/${reply.id}/vote`, { type }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      setLikes(res.data.likes)
+      setDislikes(res.data.dislikes)
+      setUserVote(res.data.userVote)
+    } catch {
+      setUserVote(prev.userVote); setLikes(prev.likes); setDislikes(prev.dislikes)
+    } finally {
+      setVoting(false)
+    }
   }
 
   const maxDepth = 3
@@ -174,15 +198,39 @@ function ReplyCard({ reply, threadId, onUpvote, onReplyPosted, depth = 0 }) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-4 pl-10">
-          <button
-            onClick={handleUpvote}
-            disabled={!user || liked}
-            className={`flex items-center gap-1.5 text-xs transition-all duration-200 ${liked ? 'text-grid-cyan' : 'text-gray-600 hover:text-grid-cyan'} disabled:cursor-default`}
-          >
-            <ThumbsUp className={`w-3.5 h-3.5 ${liked ? 'fill-grid-cyan' : ''}`} />
-            <span className="font-orbitron font-bold">{likes}</span>
-          </button>
+        <div className="flex items-center gap-4 pl-10 flex-wrap">
+          {/* Was this helpful? */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-gray-600 font-rajdhani tracking-widest uppercase select-none">
+              Helpful?
+            </span>
+            <button
+              onClick={() => handleVote('up')}
+              disabled={!user || voting}
+              title={user ? 'Mark as helpful' : 'Log in to vote'}
+              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
+                userVote === 'up'
+                  ? 'bg-grid-cyan/15 border-grid-cyan/40 text-grid-cyan'
+                  : 'border-transparent text-gray-600 hover:border-grid-cyan/25 hover:text-grid-cyan'
+              } disabled:cursor-default`}
+            >
+              <ThumbsUp className={`w-3.5 h-3.5 ${userVote === 'up' ? 'fill-grid-cyan' : ''}`} />
+              {likes > 0 && <span className="font-orbitron font-bold text-[10px]">{likes}</span>}
+            </button>
+            <button
+              onClick={() => handleVote('down')}
+              disabled={!user || voting}
+              title={user ? 'Mark as not helpful' : 'Log in to vote'}
+              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
+                userVote === 'down'
+                  ? 'bg-red-500/15 border-red-500/40 text-red-400'
+                  : 'border-transparent text-gray-600 hover:border-red-500/25 hover:text-red-400'
+              } disabled:cursor-default`}
+            >
+              <ThumbsDown className={`w-3.5 h-3.5 ${userVote === 'down' ? 'fill-red-400' : ''}`} />
+              {dislikes > 0 && <span className="font-orbitron font-bold text-[10px]">{dislikes}</span>}
+            </button>
+          </div>
 
           {depth < maxDepth && (
             <button
@@ -225,7 +273,6 @@ function ReplyCard({ reply, threadId, onUpvote, onReplyPosted, depth = 0 }) {
                 key={child.id}
                 reply={child}
                 threadId={threadId}
-                onUpvote={onUpvote}
                 onReplyPosted={onReplyPosted}
                 depth={depth + 1}
               />
@@ -327,11 +374,7 @@ export default function ForumThread() {
     setThread(t => t ? { ...t, replies: (t.replies || 0) + 1 } : t)
   }, [])
 
-  const handleUpvoteReply = async (replyId) => {
-    await axios.post(`/api/forum/replies/${replyId}/upvote`, {}, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-  }
+  // kept for legacy compatibility but voting is now handled inside ReplyCard directly
 
   const handleUpvoteThread = async () => {
     if (!user || threadLiked) return
@@ -486,7 +529,6 @@ export default function ForumThread() {
                 key={reply.id}
                 reply={reply}
                 threadId={threadId}
-                onUpvote={handleUpvoteReply}
                 onReplyPosted={handleReplyPosted}
                 depth={0}
               />

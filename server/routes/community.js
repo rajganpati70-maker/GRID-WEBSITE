@@ -349,26 +349,91 @@ router.post('/forum/:threadId/upvote', authMiddleware, async (req, res) => {
   }
 })
 
-// Upvote reply
+// Legacy upvote reply (kept for compatibility)
 router.post('/forum/replies/:replyId/upvote', authMiddleware, async (req, res) => {
   try {
     const { replyId } = req.params
-    const voteRes = await pool.query(
-      `INSERT INTO forum_votes (user_id, target_type, target_id) VALUES ($1, 'reply', $2)
-       ON CONFLICT (user_id, target_type, target_id) DO NOTHING RETURNING id`,
+    const existing = await pool.query(
+      `SELECT vote_type FROM forum_votes WHERE user_id=$1 AND target_type='reply' AND target_id=$2`,
       [req.user.id, replyId]
     )
-    let likesRes
-    if (voteRes.rows.length > 0) {
-      likesRes = await pool.query(
-        `UPDATE forum_replies SET likes = likes + 1 WHERE id=$1 RETURNING likes`,
-        [replyId]
+    if (existing.rows.length === 0) {
+      await pool.query(
+        `INSERT INTO forum_votes (user_id, target_type, target_id, vote_type) VALUES ($1, 'reply', $2, 'up')`,
+        [req.user.id, replyId]
       )
-    } else {
-      likesRes = await pool.query('SELECT likes FROM forum_replies WHERE id=$1', [replyId])
+      await pool.query(`UPDATE forum_replies SET likes = likes + 1 WHERE id=$1`, [replyId])
     }
-    res.json({ likes: likesRes.rows[0]?.likes || 0 })
+    const r = await pool.query('SELECT likes, dislikes FROM forum_replies WHERE id=$1', [replyId])
+    res.json({ likes: r.rows[0]?.likes || 0, dislikes: r.rows[0]?.dislikes || 0, userVote: 'up' })
   } catch (err) {
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// Helpful / not-helpful vote on a reply (up or down, togglable)
+router.post('/forum/replies/:replyId/vote', authMiddleware, async (req, res) => {
+  try {
+    const { replyId } = req.params
+    const { type } = req.body // 'up' or 'down'
+    if (type !== 'up' && type !== 'down') return res.status(400).json({ message: 'Invalid vote type' })
+
+    const existing = await pool.query(
+      `SELECT vote_type FROM forum_votes WHERE user_id=$1 AND target_type='reply' AND target_id=$2`,
+      [req.user.id, replyId]
+    )
+
+    if (existing.rows.length > 0) {
+      const current = existing.rows[0].vote_type
+      if (current === type) {
+        // Toggle off — remove vote
+        await pool.query(
+          `DELETE FROM forum_votes WHERE user_id=$1 AND target_type='reply' AND target_id=$2`,
+          [req.user.id, replyId]
+        )
+        if (type === 'up') {
+          await pool.query(`UPDATE forum_replies SET likes = GREATEST(0, likes - 1) WHERE id=$1`, [replyId])
+        } else {
+          await pool.query(`UPDATE forum_replies SET dislikes = GREATEST(0, dislikes - 1) WHERE id=$1`, [replyId])
+        }
+        const r = await pool.query('SELECT likes, dislikes FROM forum_replies WHERE id=$1', [replyId])
+        return res.json({ likes: r.rows[0]?.likes || 0, dislikes: r.rows[0]?.dislikes || 0, userVote: null })
+      } else {
+        // Switch vote
+        await pool.query(
+          `UPDATE forum_votes SET vote_type=$1 WHERE user_id=$2 AND target_type='reply' AND target_id=$3`,
+          [type, req.user.id, replyId]
+        )
+        if (type === 'up') {
+          await pool.query(
+            `UPDATE forum_replies SET likes = likes + 1, dislikes = GREATEST(0, dislikes - 1) WHERE id=$1`,
+            [replyId]
+          )
+        } else {
+          await pool.query(
+            `UPDATE forum_replies SET dislikes = dislikes + 1, likes = GREATEST(0, likes - 1) WHERE id=$1`,
+            [replyId]
+          )
+        }
+        const r = await pool.query('SELECT likes, dislikes FROM forum_replies WHERE id=$1', [replyId])
+        return res.json({ likes: r.rows[0]?.likes || 0, dislikes: r.rows[0]?.dislikes || 0, userVote: type })
+      }
+    } else {
+      // New vote
+      await pool.query(
+        `INSERT INTO forum_votes (user_id, target_type, target_id, vote_type) VALUES ($1, 'reply', $2, $3)`,
+        [req.user.id, replyId, type]
+      )
+      if (type === 'up') {
+        await pool.query(`UPDATE forum_replies SET likes = likes + 1 WHERE id=$1`, [replyId])
+      } else {
+        await pool.query(`UPDATE forum_replies SET dislikes = dislikes + 1 WHERE id=$1`, [replyId])
+      }
+      const r = await pool.query('SELECT likes, dislikes FROM forum_replies WHERE id=$1', [replyId])
+      return res.json({ likes: r.rows[0]?.likes || 0, dislikes: r.rows[0]?.dislikes || 0, userVote: type })
+    }
+  } catch (err) {
+    console.error('Vote error:', err)
     res.status(500).json({ message: 'Internal server error' })
   }
 })
