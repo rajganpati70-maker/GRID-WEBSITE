@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NewThreadModal from '../components/NewThreadModal'
 import axios from 'axios'
+import FloatingLogos from '../components/FloatingLogos'
 
 const MOCK_THREADS = [
   { id:1, title:'What actually works for reducing hallucinations in production LLMs?', category:'LLMs', author:'rahul_gupta', replies:64, views:2840, likes:142, pinned:true, hot:true, created_at:new Date(Date.now()-7200000).toISOString(), excerpt:'We tried RAG, fine-tuning, and CoT prompting. Here is what actually moved the needle and what is still snake oil...' },
@@ -117,6 +118,7 @@ export default function Forum() {
 
   return (
     <div style={{ background:'#02020e' }}>
+      <FloatingLogos />
 
       {/* ── Hero ── */}
       <section className="page-hero relative overflow-hidden">
@@ -145,7 +147,7 @@ export default function Forum() {
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} style={{ display:'flex', flexDirection:'column', gap:16, marginBottom:28 }}>
             <div style={{ display:'flex', gap:12, flexWrap:'wrap' }}>
               <div style={{ position:'relative', flex:1, minWidth:240 }}>
-                <Search style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)', width:16, height:16, color:'#374151' }} />
+                <Search style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)', width:16, height:16, color:'rgba(140,160,190,0.5)' }} />
                 <input type="text" placeholder="Search discussions..." value={search} onChange={e => setSearch(e.target.value)} className="input-field" style={{ paddingLeft:44 }} />
               </div>
               <button onClick={handleNewThread} className="btn-primary" style={{ display:'flex', alignItems:'center', gap:7, fontSize:12.5, whiteSpace:'nowrap', padding:'10px 20px' }}>

@@ -6,6 +6,7 @@ import {
   Zap, Trophy, Globe, ChevronRight, Star,
 } from 'lucide-react'
 import axios from 'axios'
+import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── ML Event data ──────────────────────────────────────────────────────── */
 const MOCK_EVENTS = [
@@ -378,6 +379,7 @@ export default function Events() {
 
   return (
     <div style={{ background:'#02020e', minHeight:'100vh' }}>
+      <FloatingLogos />
 
       {/* ── Hero ── */}
       <section className="page-hero relative overflow-hidden">

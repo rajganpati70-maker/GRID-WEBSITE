@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Brain, FlaskConical, Users, Globe, ArrowRight } from 'lucide-react'
+import FloatingLogos from '../components/FloatingLogos'
 
 const MILESTONES = [
   { year: '2019', title: 'GRID Founded', desc: 'Five ML researchers, one group chat, and a shared frustration — good ML resources were everywhere but the people were scattered. We built the room.' },
@@ -25,6 +26,7 @@ const iv = { initial:{opacity:0,y:24}, whileInView:{opacity:1,y:0}, viewport:{on
 export default function About() {
   return (
     <div style={{ background:'#02020e' }}>
+      <FloatingLogos />
 
       {/* ── Hero ── */}
       <section className="page-hero relative overflow-hidden">

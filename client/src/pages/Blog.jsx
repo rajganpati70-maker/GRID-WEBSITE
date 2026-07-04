@@ -8,6 +8,7 @@ import {
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import BlogEditor from '../components/BlogEditor'
+import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Mock fallback ──────────────────────────────────────────────────────── */
 const MOCK_POSTS = [
@@ -88,6 +89,7 @@ export default function Blog() {
 
   return (
     <div style={{ background:'#02020e' }}>
+      <FloatingLogos />
 
       {/* ── Hero ── */}
       <section className="page-hero relative overflow-hidden">

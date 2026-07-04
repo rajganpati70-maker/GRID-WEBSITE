@@ -6,6 +6,7 @@ import {
   Sparkles, ArrowRight, Zap, Lock, Globe, Code2,
   BarChart2, Database, Box, Rocket
 } from 'lucide-react'
+import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Floating node positions for the neural net visual ─────────────── */
 const NODES = [
@@ -272,6 +273,7 @@ export default function Projects() {
 
   return (
     <div style={{ background:'#02020e', overflowX:'hidden' }}>
+      <FloatingLogos />
 
       {/* ══════════════════ HERO ══════════════════ */}
       <section style={{ position:'relative', minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', overflow:'hidden', padding:'120px 24px 80px' }}>
