@@ -54,7 +54,7 @@ const lp = (a, b) => `M ${a[0]} ${a[1]} L ${b[0]} ${b[1]}`
 const ORBS = [
   {
     id: 'bl',
-    pos:        { bottom: '4%', left: '2.5%' },
+    pos:        { top: `calc(50% - ${SIZE / 2}px)`, left: '2.5%' },
     floatDur:   6.8,
     floatDx:    7,
     floatPhase: 0,
@@ -67,7 +67,7 @@ const ORBS = [
   },
   {
     id: 'bc',
-    pos:        { bottom: '2%', left: `calc(50% - ${SIZE / 2}px)` },
+    pos:        { top: `calc(50% - ${SIZE / 2}px)`, left: `calc(50% - ${SIZE / 2}px)` },
     floatDur:   7.6,
     floatDx:    4,
     floatPhase: -2.5,
@@ -80,7 +80,7 @@ const ORBS = [
   },
   {
     id: 'br',
-    pos:        { bottom: '4%', right: '2.5%' },
+    pos:        { top: `calc(50% - ${SIZE / 2}px)`, right: '2.5%' },
     floatDur:   6.2,
     floatDx:   -7,
     floatPhase: -1.4,
