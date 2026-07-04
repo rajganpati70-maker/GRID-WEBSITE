@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Send, X, Sparkles, Bot } from 'lucide-react'
 import axios from 'axios'
 import GRIDLogoIcon from './GRIDLogoIcon'
@@ -38,6 +38,31 @@ const QUICK_PROMPTS = [
   'Show me events',
   'Find projects',
 ]
+
+const SUGGESTION_POOL = [
+  { text: 'What is GRID?', keywords: ['what', 'grid', 'about', 'community'] },
+  { text: 'How do I join GRID?', keywords: ['join', 'register', 'sign up', 'account'] },
+  { text: 'Show me upcoming events', keywords: ['event', 'hackathon', 'workshop', 'conference', 'meetup'] },
+  { text: "What's trending on the forum?", keywords: ['forum', 'discussion', 'thread', 'trending', 'hot'] },
+  { text: 'Find open source projects', keywords: ['project', 'open source', 'github', 'repo'] },
+  { text: 'Show me the blog', keywords: ['blog', 'article', 'read', 'post'] },
+  { text: 'Who are the GRID members?', keywords: ['member', 'people', 'researcher', 'team'] },
+  { text: 'How do I log in?', keywords: ['login', 'log in', 'sign in'] },
+  { text: 'Open my dashboard', keywords: ['dashboard', 'profile', 'my account', 'my stats'], to: '/dashboard' },
+  { text: 'Take me to Events', keywords: ['event'], to: '/events' },
+  { text: 'Take me to the Forum', keywords: ['forum'], to: '/forum' },
+  { text: 'Take me to Projects', keywords: ['project'], to: '/projects' },
+  { text: 'Take me to the Blog', keywords: ['blog'], to: '/blog' },
+  { text: 'Take me to Members', keywords: ['member'], to: '/members' },
+]
+
+function getSuggestions(query) {
+  const q = query.trim().toLowerCase()
+  if (!q) return []
+  return SUGGESTION_POOL
+    .filter(s => s.text.toLowerCase().includes(q) || s.keywords.some(k => k.includes(q) || q.includes(k)))
+    .slice(0, 5)
+}
 
 const KB = [
   {
@@ -143,6 +168,7 @@ function getReply(input, liveData) {
 
 export default function GridAIBot() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [showTeaser, setShowTeaser] = useState(false)
   const [teaserIndex, setTeaserIndex] = useState(0)
@@ -150,8 +176,11 @@ export default function GridAIBot() {
   const [typing, setTyping] = useState(false)
   const [messages, setMessages] = useState(loadStoredMessages)
   const [liveData, setLiveData] = useState({ events: [], forum: [] })
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const scrollRef = useRef(null)
   const teaserTimerRef = useRef(null)
+  const suggestions = getSuggestions(input)
 
   // Pull live events + forum data once so the assistant can answer with real info
   useEffect(() => {
@@ -198,6 +227,8 @@ export default function GridAIBot() {
   const send = (text) => {
     const trimmed = (text ?? input).trim()
     if (!trimmed) return
+    setShowSuggestions(false)
+    setActiveSuggestion(-1)
     setMessages(m => [...m, { role: 'user', text: trimmed }])
     setInput('')
     setTyping(true)
@@ -208,9 +239,37 @@ export default function GridAIBot() {
     }, 650 + Math.random() * 500)
   }
 
+  const selectSuggestion = (s) => {
+    if (s.to) {
+      setShowSuggestions(false)
+      setInput('')
+      setOpen(false)
+      navigate(s.to)
+      return
+    }
+    send(s.text)
+  }
+
   const onSubmit = (e) => {
     e.preventDefault()
+    if (showSuggestions && activeSuggestion >= 0 && suggestions[activeSuggestion]) {
+      selectSuggestion(suggestions[activeSuggestion])
+      return
+    }
     send()
+  }
+
+  const onInputKeyDown = (e) => {
+    if (!showSuggestions || !suggestions.length) return
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      setActiveSuggestion(i => (i + 1) % suggestions.length)
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      setActiveSuggestion(i => (i - 1 + suggestions.length) % suggestions.length)
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false)
+    }
   }
 
   return (
@@ -337,23 +396,67 @@ export default function GridAIBot() {
             </div>
 
             {/* Input */}
-            <form onSubmit={onSubmit} className="flex items-center gap-2 px-3 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(0,212,255,0.14)' }}>
-              <input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Type your question..."
-                className="flex-1 bg-transparent outline-none text-sm px-2 py-2 rounded-xl"
-                style={{ color: '#e8f2ff', border: '1px solid rgba(0,212,255,0.14)' }}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim()}
-                className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40"
-                style={{ background: 'linear-gradient(135deg,#0066ff,#00d4ff)', boxShadow: '0 0 16px rgba(0,180,255,0.4)' }}
-              >
-                <Send size={15} color="#fff" />
-              </button>
-            </form>
+            <div className="relative flex-shrink-0" style={{ borderTop: '1px solid rgba(0,212,255,0.14)' }}>
+              <AnimatePresence>
+                {showSuggestions && suggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-3 right-3 bottom-full mb-2 rounded-2xl overflow-hidden"
+                    style={{
+                      background: 'rgba(6,12,26,0.98)',
+                      border: '1px solid rgba(0,212,255,0.25)',
+                      boxShadow: '0 -8px 24px rgba(0,0,0,0.4)',
+                      backdropFilter: 'blur(12px)',
+                    }}
+                  >
+                    {suggestions.map((s, i) => (
+                      <button
+                        key={s.text}
+                        type="button"
+                        onMouseDown={(e) => { e.preventDefault(); selectSuggestion(s) }}
+                        onMouseEnter={() => setActiveSuggestion(i)}
+                        className="w-full text-left px-3.5 py-2.5 text-[12.5px] flex items-center gap-2 transition-colors"
+                        style={{
+                          color: i === activeSuggestion ? '#00d4ff' : 'rgba(220,230,245,0.88)',
+                          background: i === activeSuggestion ? 'rgba(0,212,255,0.1)' : 'transparent',
+                          borderBottom: i < suggestions.length - 1 ? '1px solid rgba(0,212,255,0.08)' : 'none',
+                        }}
+                      >
+                        {s.to ? <Sparkles size={12} style={{ flexShrink: 0, opacity: 0.7 }} /> : <Bot size={12} style={{ flexShrink: 0, opacity: 0.7 }} />}
+                        {s.text}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <form onSubmit={onSubmit} className="flex items-center gap-2 px-3 py-3">
+                <input
+                  value={input}
+                  onChange={e => {
+                    setInput(e.target.value)
+                    setShowSuggestions(true)
+                    setActiveSuggestion(-1)
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+                  onKeyDown={onInputKeyDown}
+                  placeholder="Type your question..."
+                  className="flex-1 bg-transparent outline-none text-sm px-2 py-2 rounded-xl"
+                  style={{ color: '#e8f2ff', border: '1px solid rgba(0,212,255,0.14)' }}
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim()}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 disabled:opacity-40"
+                  style={{ background: 'linear-gradient(135deg,#0066ff,#00d4ff)', boxShadow: '0 0 16px rgba(0,180,255,0.4)' }}
+                >
+                  <Send size={15} color="#fff" />
+                </button>
+              </form>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
