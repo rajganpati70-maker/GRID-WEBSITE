@@ -8,6 +8,7 @@ import MagneticCursor from './components/MagneticCursor'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import GridAIBot from './components/GridAIBot'
+import FloatingGridOrbs from './components/FloatingGridOrbs'
 import Home from './pages/Home'
 import About from './pages/About'
 import Members from './pages/Members'
@@ -86,6 +87,7 @@ const Layout = () => {
       </main>
       {!hideFooter && <Footer />}
       <GridAIBot />
+      <FloatingGridOrbs />
     </div>
   )
 }
