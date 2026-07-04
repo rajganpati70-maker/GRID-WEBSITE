@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import axios from 'axios'
 import GRIDLogoHero      from '../components/GRIDLogoHero'
-import GRIDHeroBackground from '../components/GRIDHeroBackground'
+import FloatingLogos     from '../components/FloatingLogos'
 import ParticleNetwork   from '../components/ParticleNetwork'
 import HolographicCard  from '../components/HolographicCard'
 import MagneticButton   from '../components/MagneticButton'
@@ -444,8 +444,6 @@ export default function Home() {
   const b2y = useTransform(sy, [0,1], [40, -40])
   const b3x = useTransform(sx, [0,1], [-90, 90])
   const b3y = useTransform(sy, [0,1], [-65, 65])
-  const bgX = useTransform(sx, [0,1], [-28, 28])
-  const bgY = useTransform(sy, [0,1], [-20, 20])
   const dotX= useTransform(sx, [0,1], [-14, 14])
   const dotY= useTransform(sy, [0,1], [-10, 10])
 
@@ -481,6 +479,9 @@ export default function Home() {
   return (
     <div style={{ background:'#02020e', overflow:'hidden' }}>
 
+      {/* Ambient floating GRID marks — drift around the page corners as you scroll */}
+      <FloatingLogos />
+
       {/* ════════════════════════  HERO  ════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
 
@@ -492,11 +493,6 @@ export default function Home() {
 
         {/* 3-D Particle network */}
         <ParticleNetwork opacity={0.55} />
-
-        {/* ── GRID Logo — full-hero ghost background ── */}
-        <motion.div style={{ x: bgX, y: bgY }} className="absolute inset-0 pointer-events-none">
-          <GRIDHeroBackground opacity={0.07} />
-        </motion.div>
 
         {/* Aurora blobs — each on its own parallax layer */}
         <motion.div style={{ x: b1x, y: b1y, position:'absolute', top:'5%', right:'2%', width:640, height:640, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,82,204,0.18) 0%,transparent 70%)', filter:'blur(100px)', animation:'aurora1 22s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
@@ -580,7 +576,7 @@ export default function Home() {
               ].map(({ v, l }) => (
                 <div key={l} className="stat-card py-3">
                   <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:20, letterSpacing:'-0.03em', marginBottom:2 }} className="text-gradient">{v}</div>
-                  <div style={{ fontFamily:'Inter,sans-serif', fontSize:10, color:'#374151', letterSpacing:'0.14em', textTransform:'uppercase', fontWeight:500 }}>{l}</div>
+                  <div style={{ fontFamily:'Inter,sans-serif', fontSize:10, color:'rgba(160,178,205,0.75)', letterSpacing:'0.14em', textTransform:'uppercase', fontWeight:500 }}>{l}</div>
                 </div>
               ))}
             </motion.div>
@@ -591,7 +587,7 @@ export default function Home() {
         {/* Scroll hint */}
         <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:2, duration:0.6 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span style={{ fontSize:9, color:'#1f2937', letterSpacing:'0.35em', textTransform:'uppercase', fontFamily:'Inter,sans-serif' }}>scroll</span>
+          <span style={{ fontSize:9, color:'rgba(140,160,190,0.55)', letterSpacing:'0.35em', textTransform:'uppercase', fontFamily:'Inter,sans-serif' }}>scroll</span>
           <motion.div animate={{ y:[0,7,0] }} transition={{ repeat:Infinity, duration:1.8 }}
             style={{ width:1, height:38, background:'linear-gradient(to bottom,rgba(0,212,255,0.55),transparent)', borderRadius:1 }} />
         </motion.div>
