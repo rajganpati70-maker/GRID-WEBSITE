@@ -5,6 +5,7 @@ import {
   ArrowRight, ChevronRight, Star,
   Brain, Database, GitBranch, Layers, Cpu, BarChart2,
   BookOpen, FlaskConical, Network, Github, Linkedin, Globe,
+  Microscope, Share2, Rocket,
 } from 'lucide-react'
 import axios from 'axios'
 import GRIDLogoHero      from '../components/GRIDLogoHero'
@@ -109,13 +110,13 @@ function EventCard({ event, i }) {
           <div className="px-5 pt-5 pb-4 flex-shrink-0" style={{ background:'linear-gradient(180deg,rgba(0,212,255,0.04) 0%,transparent 100%)', borderBottom:'1px solid rgba(0,212,255,0.07)' }}>
             <div className="flex items-center justify-between mb-3">
               <span style={{ background:s.badge.bg, border:`1px solid ${s.badge.bd}`, color:s.badge.tx, fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100 }}>{event.type||'Event'}</span>
-              <span style={{ fontSize:11, color:'#4b5563' }}>{dateStr}</span>
+              <span style={{ fontSize:11, color:'rgba(150,168,195,0.6)' }}>{dateStr}</span>
             </div>
             <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#e8eef8', lineHeight:1.35 }}>{event.title}</h3>
           </div>
           <div className="px-5 py-4 flex flex-col flex-1">
             {event.description && <p className="line-clamp-2 flex-1 mb-3" style={{ fontSize:13, color:'rgba(140,160,190,0.75)', lineHeight:1.6 }}>{event.description}</p>}
-            {event.location && <div className="flex items-center gap-1.5 mt-auto" style={{ fontSize:11.5, color:'#4b5563' }}>📍 {event.location}</div>}
+            {event.location && <div className="flex items-center gap-1.5 mt-auto" style={{ fontSize:11.5, color:'rgba(150,168,195,0.65)' }}>📍 {event.location}</div>}
           </div>
         </Link>
       </HolographicCard>
@@ -594,20 +595,44 @@ export default function Home() {
       </section>
 
       {/* ════════════  VALUE PROPS  ════════════ */}
-      <section className="py-16 px-6 relative">
-        <div className="absolute inset-0" style={{ background:'linear-gradient(90deg,rgba(0,82,204,0.03) 0%,rgba(0,212,255,0.03) 50%,rgba(109,40,217,0.03) 100%)' }} />
-        <div className="relative max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          {[
-            { n:'Research First',       b:'Every conversation is grounded in rigorous ML — from theory to deployment, papers to benchmarks.' },
-            { n:'Build in Public',      b:'Share experiments, training logs, model weights, and real failure modes with peers who get it.' },
-            { n:'Accelerate Together',  b:'Progress faster with code reviews, paper reading groups, and direct access to ML specialists.' },
-          ].map(({ n, b }, i) => (
-            <motion.div key={n} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.12, duration:0.55 }} className="px-4">
-              <div style={{ width:32, height:2, background:'linear-gradient(90deg,#0066ff,#00d4ff)', borderRadius:2, margin:'0 auto 14px' }} />
-              <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#e8eef8', marginBottom:8 }}>{n}</h3>
-              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:13.5, color:'rgba(140,160,190,0.72)', lineHeight:1.65 }}>{b}</p>
-            </motion.div>
-          ))}
+      <section className="relative py-24 px-6 overflow-hidden">
+        <div className="absolute inset-0" style={{ background:'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0,82,204,0.08) 0%, transparent 65%)' }} />
+        <div className="grid-bg absolute inset-0 opacity-15" />
+
+        <div className="relative max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <SectionLabel>Why researchers stay</SectionLabel>
+            <motion.h2 {...iv} className="section-title text-3xl md:text-[2.2rem] text-white">
+              Three principles that <span className="text-gradient">shape everything here</span>
+            </motion.h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative">
+            {/* Connecting line across desktop columns */}
+            <div className="hidden md:block absolute top-[38px] left-[16.6%] right-[16.6%] pointer-events-none" style={{ height:1, background:'linear-gradient(90deg,transparent,rgba(0,212,255,0.18),rgba(0,212,255,0.18),transparent)' }} />
+
+            {[
+              { icon:Microscope, n:'01', title:'Research First',      b:'Every conversation is grounded in rigorous ML — from theory to deployment, papers to benchmarks.', accent:'#00d4ff' },
+              { icon:Share2,     n:'02', title:'Build in Public',     b:'Share experiments, training logs, model weights, and real failure modes with peers who get it.', accent:'#7b2fff' },
+              { icon:Rocket,     n:'03', title:'Accelerate Together', b:'Progress faster with code reviews, paper reading groups, and direct access to ML specialists.', accent:'#4ade80' },
+            ].map(({ icon:Icon, n, title, b, accent }, i) => (
+              <motion.div key={title} initial={{ opacity:0, y:26 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.12, duration:0.6, ease:'easeOut' }}>
+                <div className="premium-card rounded-2xl p-7 h-full relative" style={{ textAlign:'left' }}>
+                  <span style={{
+                    position:'absolute', top:18, right:22, fontFamily:'"Plus Jakarta Sans",sans-serif',
+                    fontWeight:800, fontSize:34, letterSpacing:'-0.03em', color:'rgba(255,255,255,0.04)',
+                  }}>{n}</span>
+
+                  <div className="relative w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ background:`linear-gradient(135deg, ${accent}22, ${accent}0a)`, border:`1px solid ${accent}35`, boxShadow:`0 0 24px ${accent}18` }}>
+                    <Icon style={{ width:20, height:20, color:accent }} />
+                  </div>
+
+                  <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:17, color:'#f0f6ff', marginBottom:10, letterSpacing:'-0.01em' }}>{title}</h3>
+                  <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:13.5, color:'rgba(150,168,195,0.78)', lineHeight:1.7 }}>{b}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
