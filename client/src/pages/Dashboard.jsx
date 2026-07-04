@@ -161,7 +161,7 @@ export default function Dashboard() {
           ].map(({ label, value, icon: Icon, color }, i) => (
             <motion.div
               key={label}
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1, duration: 0.5 }}
+              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ delay: i * 0.1, duration: 0.5 }}
               className="stat-card"
             >
               <Icon className={`w-6 h-6 ${color} mx-auto mb-2`} />
@@ -174,7 +174,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Activity Feed */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
+            initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.7 }}
             className="lg:col-span-2 glass-card rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -186,8 +186,9 @@ export default function Dashboard() {
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-20px' }}
+                  transition={{ delay: i * 0.08, duration: 0.4 }}
                   className="flex items-start gap-4 p-3 rounded-xl hover:bg-grid-cyan/5 transition-all duration-200 cursor-pointer"
                 >
                   <div className="w-9 h-9 rounded-xl bg-grid-cyan/10 border border-grid-cyan/20 flex items-center justify-center flex-shrink-0">
@@ -205,7 +206,7 @@ export default function Dashboard() {
           {/* Quick Actions + Badges */}
           <div className="space-y-6">
             <motion.div
-              initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.3 }}
+              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.7 }}
               className="glass-card rounded-2xl p-6"
             >
               <h2 className="font-orbitron text-sm font-bold text-white tracking-wide mb-4">Quick Access</h2>
@@ -225,7 +226,7 @@ export default function Dashboard() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.4 }}
+              initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.7, delay: 0.1 }}
               className="glass-card rounded-2xl p-6"
             >
               <h2 className="font-orbitron text-sm font-bold text-white tracking-wide mb-4">Your Badges</h2>
@@ -244,7 +245,7 @@ export default function Dashboard() {
         {/* Community Stats */}
         {communityStats && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.5 }}
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ duration: 0.7 }}
             className="glass-card rounded-2xl p-6"
           >
             <h2 className="font-orbitron text-sm font-bold text-white tracking-wide mb-6 flex items-center gap-2">
