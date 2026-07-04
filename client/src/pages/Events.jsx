@@ -248,11 +248,233 @@ function FeaturedEvent({ event }) {
   )
 }
 
+const jak = '"Plus Jakarta Sans",sans-serif'
+
+function EventTags({ tags, color, max=3 }) {
+  return (
+    <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
+      {(tags||[]).slice(0,max).map(t => (
+        <span key={t} style={{
+          fontSize:10, fontWeight:600, fontFamily:jak,
+          background:`${color}0a`, border:`1px solid ${color}1e`, color,
+          padding:'3px 9px', borderRadius:100, letterSpacing:'0.04em',
+        }}>{t}</span>
+      ))}
+    </div>
+  )
+}
+
+function RegisterBtn({ color, label='Register' }) {
+  return (
+    <button style={{
+      width:'100%', padding:'10px',
+      background:`${color}0f`, border:`1px solid ${color}25`,
+      borderRadius:10, color,
+      fontFamily:jak, fontWeight:700,
+      fontSize:12, letterSpacing:'0.04em', cursor:'pointer',
+      display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+      transition:'all 0.2s ease',
+    }}
+    onMouseEnter={e=>{ e.currentTarget.style.background=`${color}14`; e.currentTarget.style.borderColor=`${color}40` }}
+    onMouseLeave={e=>{ e.currentTarget.style.background=`${color}06`; e.currentTarget.style.borderColor=`${color}25` }}>
+      {label} <ArrowRight style={{ width:13,height:13 }} />
+    </button>
+  )
+}
+
+/* ─── VARIANT 0 — "Classic" vertical stacked card ───────────────────────── */
+function EventClassic({ event, meta, Icon, dateStr }) {
+  return (
+    <div style={{
+      height:'100%', display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
+      border:`1px solid ${meta.color}18`, borderRadius:20, overflow:'hidden', position:'relative',
+      boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55), 0 0 30px ${meta.color}06`,
+    }}>
+      <div style={{ height:3, background:event.accentGrad || `linear-gradient(90deg,${meta.color},#0066ff)`, flexShrink:0 }} />
+      <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, borderRadius:'50%', background:`radial-gradient(circle,${meta.color}0e 0%,transparent 70%)`, filter:'blur(20px)', pointerEvents:'none' }} />
+      <div style={{ padding:'22px 22px 16px', borderBottom:'1px solid rgba(255,255,255,0.04)', flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:14 }}>
+          <div style={{ width:42, height:42, borderRadius:12, flexShrink:0, background:`linear-gradient(135deg, ${meta.color}18, ${meta.color}08)`, border:`1px solid ${meta.color}22`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Icon style={{ width:18, height:18, color:meta.color }} />
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:5 }}>
+            <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
+            <span style={{ fontSize:11, color:'rgba(140,160,190,0.5)' }}>{dateStr}</span>
+          </div>
+        </div>
+        <h3 style={{ fontFamily:jak, fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.01em' }}>{event.title}</h3>
+      </div>
+      <div style={{ padding:'16px 22px', display:'flex', flexDirection:'column', flex:1 }}>
+        <p style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.7)', lineHeight:1.65, marginBottom:16, flex:1, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description ?? event.desc}</p>
+        <div style={{ display:'flex', flexDirection:'column', gap:7, marginBottom:16 }}>
+          {[{ Icon:Clock, text:event.time }, { Icon:MapPin, text:event.location }, { Icon:Users, text:`${(event.attendees||0).toLocaleString()} attending` }].map(({ Icon:Ic, text }) => text && (
+            <div key={text} style={{ display:'flex', alignItems:'center', gap:7, fontSize:12, color:'rgba(140,160,190,0.55)', fontFamily:jak }}>
+              <Ic style={{ width:12, height:12, color:meta.color, opacity:0.7, flexShrink:0 }} />{text}
+            </div>
+          ))}
+        </div>
+        <div style={{ marginBottom:18 }}><EventTags tags={event.tags} color={meta.color} /></div>
+        <RegisterBtn color={meta.color} />
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 1 — "Split Rail": colored side column with date block ────────── */
+function EventRail({ event, meta, Icon, dateStr }) {
+  const day = event.date ? new Date(event.date).getDate() : '—'
+  const month = event.date ? new Date(event.date).toLocaleString('default', { month:'short' }) : ''
+  return (
+    <div style={{
+      height:'100%', display:'flex',
+      background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
+      border:`1px solid ${meta.color}18`, borderRadius:20, overflow:'hidden', position:'relative',
+      boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55)`,
+    }}>
+      <div style={{
+        width:88, flexShrink:0, background:`linear-gradient(180deg, ${meta.color}22, ${meta.color}06)`,
+        borderRight:`1px solid ${meta.color}22`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:6, padding:'20px 8px',
+      }}>
+        <Icon style={{ width:20, height:20, color:meta.color, opacity:0.85 }} />
+        <div style={{ fontFamily:jak, fontWeight:900, fontSize:30, color:'#f0f6ff', lineHeight:1 }}>{day}</div>
+        <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', color:meta.color }}>{month}</div>
+      </div>
+      <div style={{ flex:1, padding:'20px 20px', display:'flex', flexDirection:'column' }}>
+        <span style={{ alignSelf:'flex-start', background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100, fontFamily:jak, marginBottom:10 }}>{event.type}</span>
+        <h3 style={{ fontFamily:jak, fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.01em', marginBottom:10 }}>{event.title}</h3>
+        <p style={{ fontFamily:jak, fontSize:12, color:'rgba(140,160,190,0.7)', lineHeight:1.6, marginBottom:12, flex:1, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description ?? event.desc}</p>
+        <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:12, flexWrap:'wrap' }}>
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:11.5, color:'rgba(140,160,190,0.6)', fontFamily:jak }}><MapPin style={{ width:11,height:11, color:meta.color }} />{event.location}</span>
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:11.5, color:'rgba(140,160,190,0.6)', fontFamily:jak }}><Users style={{ width:11,height:11, color:meta.color }} />{(event.attendees||0).toLocaleString()}</span>
+        </div>
+        <RegisterBtn color={meta.color} />
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 2 — "Ticket Stub": perforated divider, stub notches ──────────── */
+function EventTicket({ event, meta, Icon, dateStr }) {
+  return (
+    <div style={{
+      height:'100%', display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
+      border:`1px solid ${meta.color}18`, borderRadius:20, overflow:'hidden', position:'relative',
+      boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55)`,
+    }}>
+      <div style={{ padding:'20px 22px 16px', display:'flex', alignItems:'center', gap:14 }}>
+        <div style={{ width:46, height:46, borderRadius:'50%', flexShrink:0, background:`linear-gradient(135deg, ${meta.color}22, ${meta.color}08)`, border:`1px solid ${meta.color}30`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <Icon style={{ width:20, height:20, color:meta.color }} />
+        </div>
+        <div style={{ flex:1 }}>
+          <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'2px 8px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
+          <div style={{ fontSize:11, color:'rgba(140,160,190,0.5)', marginTop:5, fontFamily:jak }}>{dateStr} · {event.time}</div>
+        </div>
+      </div>
+      <h3 style={{ fontFamily:jak, fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.01em', padding:'0 22px 18px' }}>{event.title}</h3>
+
+      {/* Perforated divider with stub notches */}
+      <div style={{ position:'relative', height:0 }}>
+        <div style={{ position:'absolute', left:-11, top:-11, width:22, height:22, borderRadius:'50%', background:'#02020e' }} />
+        <div style={{ position:'absolute', right:-11, top:-11, width:22, height:22, borderRadius:'50%', background:'#02020e' }} />
+        <div style={{ borderTop:`2px dashed ${meta.color}30`, margin:'0 22px' }} />
+      </div>
+
+      <div style={{ padding:'18px 22px', display:'flex', flexDirection:'column', flex:1 }}>
+        <p style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.7)', lineHeight:1.6, marginBottom:14, flex:1, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description ?? event.desc}</p>
+        <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.6)', fontFamily:jak, marginBottom:8 }}>
+          <MapPin style={{ width:12,height:12, color:meta.color }} />{event.location}
+        </div>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.6)', fontFamily:jak }}>
+            <Users style={{ width:12,height:12, color:meta.color }} />{(event.attendees||0).toLocaleString()} attending
+          </div>
+          <EventTags tags={event.tags} color={meta.color} max={1} />
+        </div>
+        <RegisterBtn color={meta.color} label="Get Ticket" />
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 3 — "HUD Corners": bracket corners + watermark index ─────────── */
+function EventHud({ event, meta, Icon, dateStr, i }) {
+  const corner = { position:'absolute', width:16, height:16, border:`2px solid ${meta.color}55` }
+  return (
+    <div style={{
+      height:'100%', display:'flex', flexDirection:'column', position:'relative',
+      background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
+      border:`1px solid rgba(255,255,255,0.05)`, borderRadius:14, overflow:'hidden',
+    }}>
+      <div style={{ ...corner, top:10, left:10, borderRight:'none', borderBottom:'none' }} />
+      <div style={{ ...corner, top:10, right:10, borderLeft:'none', borderBottom:'none' }} />
+      <div style={{ ...corner, bottom:10, left:10, borderRight:'none', borderTop:'none' }} />
+      <div style={{ ...corner, bottom:10, right:10, borderLeft:'none', borderTop:'none' }} />
+      <div style={{
+        position:'absolute', right:8, bottom:-6, fontFamily:jak, fontWeight:900, fontSize:96,
+        color:`${meta.color}08`, lineHeight:1, pointerEvents:'none', userSelect:'none',
+      }}>{String(i+1).padStart(2,'0')}</div>
+      <div style={{ padding:'30px 28px', display:'flex', flexDirection:'column', flex:1, position:'relative', zIndex:1 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
+          <Icon style={{ width:16, height:16, color:meta.color }} />
+          <span style={{ fontFamily:jak, fontWeight:700, fontSize:10.5, letterSpacing:'0.16em', textTransform:'uppercase', color:meta.color }}>{event.type}</span>
+          <span style={{ marginLeft:'auto', fontSize:11, color:'rgba(140,160,190,0.5)', fontFamily:jak }}>{dateStr}</span>
+        </div>
+        <h3 style={{ fontFamily:jak, fontWeight:800, fontSize:17, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.02em', marginBottom:12 }}>{event.title}</h3>
+        <p style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.7)', lineHeight:1.65, marginBottom:18, flex:1, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description ?? event.desc}</p>
+        <div style={{ display:'flex', gap:16, marginBottom:16, flexWrap:'wrap' }}>
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:11.5, color:'rgba(140,160,190,0.6)', fontFamily:jak }}><Clock style={{ width:11,height:11, color:meta.color }} />{event.time}</span>
+          <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:11.5, color:'rgba(140,160,190,0.6)', fontFamily:jak }}><Users style={{ width:11,height:11, color:meta.color }} />{(event.attendees||0).toLocaleString()}</span>
+        </div>
+        <RegisterBtn color={meta.color} />
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 4 — "Ribbon": diagonal type ribbon + centered icon ───────────── */
+function EventRibbon({ event, meta, Icon, dateStr }) {
+  return (
+    <div style={{
+      height:'100%', display:'flex', flexDirection:'column', position:'relative', overflow:'hidden',
+      background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
+      border:`1px solid ${meta.color}18`, borderRadius:20,
+      boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55)`,
+    }}>
+      <div style={{
+        position:'absolute', top:14, right:-38, width:150, transform:'rotate(45deg)',
+        background:event.accentGrad || `linear-gradient(90deg,${meta.color},#0066ff)`,
+        textAlign:'center', padding:'4px 0', zIndex:2,
+        fontFamily:jak, fontWeight:800, fontSize:9.5, letterSpacing:'0.1em', textTransform:'uppercase', color:'#050514',
+      }}>{event.type}</div>
+      <div style={{ padding:'30px 24px 20px', display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center' }}>
+        <div style={{ position:'relative', marginBottom:16 }}>
+          <div style={{ position:'absolute', inset:-8, borderRadius:'50%', background:`radial-gradient(circle,${meta.color}22 0%,transparent 70%)`, filter:'blur(6px)' }} />
+          <div style={{ width:60, height:60, borderRadius:18, position:'relative', background:`linear-gradient(135deg, ${meta.color}22, ${meta.color}08)`, border:`1px solid ${meta.color}30`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <Icon style={{ width:26, height:26, color:meta.color }} />
+          </div>
+        </div>
+        <h3 style={{ fontFamily:jak, fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.35, letterSpacing:'-0.01em', marginBottom:10, maxWidth:230 }}>{event.title}</h3>
+        <div style={{ fontSize:11.5, color:'rgba(140,160,190,0.55)', fontFamily:jak, marginBottom:14 }}>{dateStr} · {event.time}</div>
+      </div>
+      <div style={{ padding:'0 22px 20px', display:'flex', flexDirection:'column', flex:1 }}>
+        <p style={{ fontFamily:jak, fontSize:12, color:'rgba(140,160,190,0.7)', lineHeight:1.6, marginBottom:14, flex:1, textAlign:'center', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description ?? event.desc}</p>
+        <div style={{ display:'flex', justifyContent:'center', marginBottom:16 }}><EventTags tags={event.tags} color={meta.color} max={2} /></div>
+        <RegisterBtn color={meta.color} />
+      </div>
+    </div>
+  )
+}
+
+const EVENT_VARIANTS = [EventClassic, EventRail, EventTicket, EventHud, EventRibbon]
+
 /* ─── Regular event card ─────────────────────────────────────────────────── */
 function EventCard({ event, i }) {
   const meta = typeMeta(event.type)
   const Icon = event.icon || Brain
   const dateStr = event.date ? new Date(event.date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—'
+  const Variant = EVENT_VARIANTS[i % EVENT_VARIANTS.length]
 
   return (
     <motion.div
@@ -263,103 +485,7 @@ function EventCard({ event, i }) {
       whileHover={{ y:-5, transition:{ duration:0.25 } }}
       style={{ height:'100%' }}
     >
-      <div style={{
-        height:'100%', display:'flex', flexDirection:'column',
-        background:'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
-        border:`1px solid ${meta.color}18`,
-        borderRadius:20, overflow:'hidden', position:'relative',
-        backdropFilter:'blur(28px)',
-        boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55), 0 0 30px ${meta.color}06`,
-        transition:'box-shadow 0.3s ease, border-color 0.3s ease',
-      }}
-      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${meta.color}35`; e.currentTarget.style.boxShadow=`0 0 0 1px rgba(255,255,255,0.035) inset, 0 24px 64px rgba(0,0,0,0.65), 0 0 50px ${meta.color}12` }}
-      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${meta.color}18`; e.currentTarget.style.boxShadow=`0 0 0 1px rgba(255,255,255,0.02) inset, 0 16px 48px rgba(0,0,0,0.55), 0 0 30px ${meta.color}06` }}>
-
-        {/* Accent bar */}
-        <div style={{ height:3, background:event.accentGrad || `linear-gradient(90deg,${meta.color},#0066ff)`, flexShrink:0 }} />
-
-        {/* Corner glow */}
-        <div style={{ position:'absolute', top:-30, right:-30, width:120, height:120, borderRadius:'50%', background:`radial-gradient(circle,${meta.color}0e 0%,transparent 70%)`, filter:'blur(20px)', pointerEvents:'none' }} />
-
-        {/* Header */}
-        <div style={{ padding:'22px 22px 16px', borderBottom:`1px solid rgba(255,255,255,0.04)`, flexShrink:0 }}>
-          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, marginBottom:14 }}>
-            {/* Icon */}
-            <div style={{
-              width:42, height:42, borderRadius:12, flexShrink:0,
-              background:`linear-gradient(135deg, ${meta.color}18, ${meta.color}08)`,
-              border:`1px solid ${meta.color}22`,
-              display:'flex', alignItems:'center', justifyContent:'center',
-            }}>
-              <Icon style={{ width:18, height:18, color:meta.color }} />
-            </div>
-            {/* Type badge + date */}
-            <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:5 }}>
-              <span style={{
-                background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color,
-                fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase',
-                padding:'3px 9px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif',
-              }}>{event.type}</span>
-              <span style={{ fontSize:11, color:'rgba(140,160,190,0.5)', fontFamily:'Inter,sans-serif' }}>{dateStr}</span>
-            </div>
-          </div>
-          <h3 style={{
-            fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700,
-            fontSize:15, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.01em',
-          }}>{event.title}</h3>
-        </div>
-
-        {/* Body */}
-        <div style={{ padding:'16px 22px', display:'flex', flexDirection:'column', flex:1 }}>
-          <p style={{
-            fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:12.5,
-            color:'rgba(140,160,190,0.7)', lineHeight:1.65,
-            marginBottom:16, flex:1,
-            display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden',
-          }}>{event.description ?? event.desc}</p>
-
-          {/* Event meta */}
-          <div style={{ display:'flex', flexDirection:'column', gap:7, marginBottom:16 }}>
-            {[
-              { Icon:Clock,  text:event.time },
-              { Icon:MapPin, text:event.location },
-              { Icon:Users,  text:`${(event.attendees||0).toLocaleString()} attending` },
-            ].map(({ Icon:Ic, text }) => text && (
-              <div key={text} style={{ display:'flex', alignItems:'center', gap:7, fontSize:12, color:'rgba(140,160,190,0.55)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-                <Ic style={{ width:12, height:12, color:meta.color, opacity:0.7, flexShrink:0 }} />
-                {text}
-              </div>
-            ))}
-          </div>
-
-          {/* Tags */}
-          <div style={{ display:'flex', flexWrap:'wrap', gap:5, marginBottom:18 }}>
-            {(event.tags||[]).slice(0,3).map(t => (
-              <span key={t} style={{
-                fontSize:10, fontWeight:600, fontFamily:'"Plus Jakarta Sans",sans-serif',
-                background:`${meta.color}0a`, border:`1px solid ${meta.color}1e`, color:meta.color,
-                padding:'3px 9px', borderRadius:100, letterSpacing:'0.04em',
-              }}>{t}</span>
-            ))}
-          </div>
-
-          {/* Register button */}
-          <button style={{
-            width:'100%', padding:'10px',
-            background:`${meta.color}0f`,
-            border:`1px solid ${meta.color}25`,
-            borderRadius:10, color:meta.color,
-            fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700,
-            fontSize:12, letterSpacing:'0.04em', cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center', gap:6,
-            transition:'all 0.2s ease',
-          }}
-          onMouseEnter={e=>{ e.currentTarget.style.background=`${meta.color}14`; e.currentTarget.style.borderColor=`${meta.color}40` }}
-          onMouseLeave={e=>{ e.currentTarget.style.background=`${meta.color}06`; e.currentTarget.style.borderColor=`${meta.color}25` }}>
-            Register <ArrowRight style={{ width:13,height:13 }} />
-          </button>
-        </div>
-      </div>
+      <Variant event={event} meta={meta} Icon={Icon} dateStr={dateStr} i={i} />
     </motion.div>
   )
 }
