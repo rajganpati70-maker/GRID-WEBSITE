@@ -102,12 +102,15 @@ router.put('/profile', authMiddleware, async (req, res) => {
   }
 })
 
-// Blog posts
+// Blog posts list
 router.get('/blog', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20
     const { rows } = await pool.query(`
-      SELECT bp.*, u.username as author FROM blog_posts bp
+      SELECT bp.id, bp.title, bp.excerpt, bp.category, bp.tags,
+             bp.views, bp.likes, bp.read_time, bp.cover_image, bp.created_at,
+             u.username as author, u.avatar_color as author_avatar_color, u.role as author_role
+      FROM blog_posts bp
       LEFT JOIN users u ON bp.author_id = u.id
       WHERE bp.published = true
       ORDER BY bp.created_at DESC LIMIT $1
@@ -115,6 +118,63 @@ router.get('/blog', async (req, res) => {
     res.json({ posts: rows })
   } catch (err) {
     res.json({ posts: [] })
+  }
+})
+
+// Single blog post
+router.get('/blog/:postId', async (req, res) => {
+  try {
+    const { postId } = req.params
+    const { rows } = await pool.query(`
+      SELECT bp.*, u.username as author, u.avatar_color as author_avatar_color,
+             u.role as author_role, u.bio as author_bio
+      FROM blog_posts bp
+      LEFT JOIN users u ON bp.author_id = u.id
+      WHERE bp.id = $1 AND bp.published = true
+    `, [postId])
+    if (rows.length === 0) return res.status(404).json({ message: 'Post not found' })
+    await pool.query('UPDATE blog_posts SET views = views + 1 WHERE id = $1', [postId])
+    res.json({ post: { ...rows[0], views: rows[0].views + 1 } })
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// Create blog post
+router.post('/blog', authMiddleware, async (req, res) => {
+  try {
+    const { title, content, category, tags, cover_image } = req.body
+    if (!title?.trim() || !content?.trim()) return res.status(400).json({ message: 'Title and content are required' })
+    const stripped = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+    const words = stripped.split(' ').filter(Boolean).length
+    const readTime = `${Math.max(1, Math.ceil(words / 200))} min`
+    const excerpt = stripped.slice(0, 220) + (stripped.length > 220 ? '…' : '')
+    const cleanTags = Array.isArray(tags) ? tags.slice(0, 8) : []
+    const { rows } = await pool.query(
+      `INSERT INTO blog_posts (title, excerpt, content, author_id, category, tags, cover_image, read_time, published)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true) RETURNING *`,
+      [title.trim().slice(0, 255), excerpt, content, req.user.id,
+       category || 'General', cleanTags, cover_image || '', readTime]
+    )
+    const post = rows[0]
+    const userRes = await pool.query('SELECT username, avatar_color, role FROM users WHERE id=$1', [req.user.id])
+    res.status(201).json({ post: { ...post, author: userRes.rows[0]?.username, author_avatar_color: userRes.rows[0]?.avatar_color } })
+  } catch (err) {
+    console.error('Create blog post error:', err)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// Like a blog post
+router.post('/blog/:postId/like', authMiddleware, async (req, res) => {
+  try {
+    const { postId } = req.params
+    const { rows } = await pool.query(
+      `UPDATE blog_posts SET likes = likes + 1 WHERE id=$1 RETURNING likes`, [postId]
+    )
+    res.json({ likes: rows[0]?.likes || 0 })
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' })
   }
 })
 

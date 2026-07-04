@@ -11,6 +11,7 @@ import About from './pages/About'
 import Members from './pages/Members'
 import Events from './pages/Events'
 import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
 import Projects from './pages/Projects'
 import Forum from './pages/Forum'
 import ForumThread from './pages/ForumThread'
@@ -49,6 +50,7 @@ const Layout = () => {
           <Route path="/members" element={<Members />} />
           <Route path="/events" element={<Events />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:postId" element={<BlogPost />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/forum" element={<Forum />} />
           <Route path="/forum/:threadId" element={<ForumThread />} />

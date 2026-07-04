@@ -1,50 +1,90 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Search, Clock, User, ArrowRight, Brain, TrendingUp, BookOpen } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
+import {
+  Search, Clock, User, ArrowRight, BookOpen, TrendingUp,
+  PenLine, Eye, Heart, Calendar, Plus
+} from 'lucide-react'
 import axios from 'axios'
+import { useAuth } from '../context/AuthContext'
+import BlogEditor from '../components/BlogEditor'
 
+/* ─── Mock fallback ──────────────────────────────────────────────────────── */
 const MOCK_POSTS = [
-  { id:1, title:'How I fine-tuned a 7B LLM on a single A100 — and what I learned', category:'LLMs', author:'rahul_gupta', readTime:'14 min', excerpt:'Gradient checkpointing, 4-bit quantisation, and LoRA made this possible. Here is the full setup, the mistakes I made, and the metrics that actually mattered.', featured:true, date:'2025-06-28' },
-  { id:2, title:'Flash Attention explained from first principles', category:'Research Papers', author:'aryan_sharma', readTime:'18 min', excerpt:'A walkthrough of the Flash Attention paper — why naive softmax attention is memory-bound, how tiling fixes it, and what the benchmarks actually mean for your training runs.', featured:false, date:'2025-06-24' },
-  { id:3, title:'MLOps patterns that saved us in production', category:'MLOps', author:'priya_nair', readTime:'11 min', excerpt:'Feature stores, shadow deployment, and canary model releases. Three patterns we did not take seriously until they would have saved us a lot of pain.', featured:false, date:'2025-06-20' },
-  { id:4, title:'Why your val loss is lying to you', category:'Training', author:'dev_malhotra', readTime:'9 min', excerpt:'Leakage, distribution shift, and the sneaky ways evaluation metrics can mislead you into shipping a broken model. Real examples from the GRID community.', featured:false, date:'2025-06-17' },
-  { id:5, title:'Diffusion models: a visual intuition for score matching', category:'Computer Vision', author:'sneha_patel', readTime:'20 min', excerpt:'Skip the math-heavy derivation. Here is a visual, intuition-first explanation of score matching and how it leads to the diffusion models everyone is building with.', featured:false, date:'2025-06-12' },
-  { id:6, title:'RLHF from scratch — what the papers do not tell you', category:'RL', author:'vikram_singh', readTime:'16 min', excerpt:'Reward modelling, PPO instability, and the alignment tax. A practitioner\'s honest account of implementing RLHF, including what still does not work well.', featured:false, date:'2025-06-08' },
+  { id:1, title:'How I fine-tuned a 7B LLM on a single A100 — and what I learned', category:'LLMs', author:'rahul_gupta', read_time:'14 min', excerpt:'Gradient checkpointing, 4-bit quantisation, and LoRA made this possible. Here is the full setup, the mistakes I made, and the metrics that actually mattered.', featured:true, created_at:'2025-06-28', views:2840, likes:142 },
+  { id:2, title:'Flash Attention explained from first principles', category:'Research Papers', author:'aryan_sharma', read_time:'18 min', excerpt:'A walkthrough of the Flash Attention paper — why naive softmax attention is memory-bound, how tiling fixes it, and what the benchmarks actually mean for your training runs.', created_at:'2025-06-24', views:1920, likes:98 },
+  { id:3, title:'MLOps patterns that saved us in production', category:'MLOps', author:'priya_nair', read_time:'11 min', excerpt:'Feature stores, shadow deployment, and canary model releases. Three patterns we did not take seriously until they would have saved us a lot of pain.', created_at:'2025-06-20', views:1640, likes:75 },
+  { id:4, title:'Why your val loss is lying to you', category:'Training', author:'dev_malhotra', read_time:'9 min', excerpt:'Leakage, distribution shift, and the sneaky ways evaluation metrics can mislead you into shipping a broken model. Real examples from the GRID community.', created_at:'2025-06-17', views:3100, likes:189 },
+  { id:5, title:'Diffusion models: a visual intuition for score matching', category:'Computer Vision', author:'sneha_patel', read_time:'20 min', excerpt:'Skip the math-heavy derivation. Here is a visual, intuition-first explanation of score matching and how it leads to the diffusion models everyone is building with.', created_at:'2025-06-12', views:2200, likes:134 },
+  { id:6, title:'RLHF from scratch — what the papers do not tell you', category:'RL', author:'vikram_singh', read_time:'16 min', excerpt:'Reward modelling, PPO instability, and the alignment tax. A practitioner\'s honest account of implementing RLHF, including what still does not work well.', created_at:'2025-06-08', views:1780, likes:91 },
 ]
 
 const CAT_COLORS = {
-  'LLMs':            { color:'#00d4ff', bg:'rgba(0,212,255,0.08)',  border:'rgba(0,212,255,0.25)'  },
-  'Research Papers': { color:'#7b2fff', bg:'rgba(123,47,255,0.08)', border:'rgba(123,47,255,0.25)' },
-  'MLOps':           { color:'#4ade80', bg:'rgba(74,222,128,0.08)', border:'rgba(74,222,128,0.25)' },
-  'Training':        { color:'#f59e0b', bg:'rgba(245,158,11,0.08)', border:'rgba(245,158,11,0.25)' },
-  'Computer Vision': { color:'#ec4899', bg:'rgba(236,72,153,0.08)', border:'rgba(236,72,153,0.25)' },
-  'RL':              { color:'#0066ff', bg:'rgba(0,102,255,0.08)',  border:'rgba(0,102,255,0.25)'  },
+  'LLMs':            { color:'#00d4ff', bg:'rgba(0,212,255,0.08)',  border:'rgba(0,212,255,0.28)'  },
+  'Research Papers': { color:'#a78bfa', bg:'rgba(167,139,250,0.08)', border:'rgba(167,139,250,0.28)' },
+  'MLOps':           { color:'#4ade80', bg:'rgba(74,222,128,0.08)', border:'rgba(74,222,128,0.28)' },
+  'Training':        { color:'#fbbf24', bg:'rgba(251,191,36,0.08)', border:'rgba(251,191,36,0.28)' },
+  'Fine-tuning':     { color:'#f97316', bg:'rgba(249,115,22,0.08)', border:'rgba(249,115,22,0.28)' },
+  'Computer Vision': { color:'#f472b6', bg:'rgba(244,114,182,0.08)', border:'rgba(244,114,182,0.28)' },
+  'RL':              { color:'#60a5fa', bg:'rgba(96,165,250,0.08)',  border:'rgba(96,165,250,0.28)'  },
+  'General':         { color:'#94a3b8', bg:'rgba(148,163,184,0.08)', border:'rgba(148,163,184,0.28)' },
+}
+const CATS = ['All', 'LLMs', 'Research Papers', 'MLOps', 'Training', 'Fine-tuning', 'Computer Vision', 'RL']
+function catMeta(c) { return CAT_COLORS[c] || { color:'#00d4ff', bg:'rgba(0,212,255,0.08)', border:'rgba(0,212,255,0.28)' } }
+
+const GRAD = [
+  'linear-gradient(135deg,#0052cc,#00d4ff)',
+  'linear-gradient(135deg,#7b2fff,#00d4ff)',
+  'linear-gradient(135deg,#ec4899,#7b2fff)',
+  'linear-gradient(135deg,#4ade80,#00d4ff)',
+  'linear-gradient(135deg,#f59e0b,#ec4899)',
+]
+function Avatar({ name, color, size = 36 }) {
+  const idx = (name?.charCodeAt(0) || 0) % GRAD.length
+  return (
+    <div style={{ width:size, height:size, borderRadius:size/3, background:color || GRAD[idx], display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:800, fontSize:size*0.38, flexShrink:0 }}>
+      {name?.[0]?.toUpperCase() || '?'}
+    </div>
+  )
 }
 
-const CATS = ['All', 'LLMs', 'Research Papers', 'MLOps', 'Training', 'Computer Vision', 'RL']
-
-function catMeta(cat) { return CAT_COLORS[cat] || { color:'#00d4ff', bg:'rgba(0,212,255,0.08)', border:'rgba(0,212,255,0.25)' } }
+function formatDate(d) {
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' })
+}
 
 export default function Blog() {
-  const [posts, setPosts] = useState([])
-  const [search, setSearch] = useState('')
-  const [cat, setCat] = useState('All')
+  const navigate = useNavigate()
+  const { user } = useAuth()
+  const [posts, setPosts]           = useState([])
+  const [search, setSearch]         = useState('')
+  const [cat, setCat]               = useState('All')
+  const [showEditor, setShowEditor] = useState(false)
+  const [loading, setLoading]       = useState(true)
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true)
     axios.get('/api/blog').then(r => {
       setPosts(r.data.posts?.length > 0 ? r.data.posts : MOCK_POSTS)
     }).catch(() => setPosts(MOCK_POSTS))
-  }, [])
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { load() }, [])
 
   const filtered = posts.filter(p => {
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-      (p.excerpt || '').toLowerCase().includes(search.toLowerCase())
-    const matchCat = cat === 'All' || p.category === cat
-    return matchSearch && matchCat
+    const q = search.toLowerCase()
+    return (p.title?.toLowerCase().includes(q) || (p.excerpt||'').toLowerCase().includes(q))
+      && (cat === 'All' || p.category === cat)
   })
 
   const featured = filtered[0]
-  const rest = filtered.slice(1)
+  const rest     = filtered.slice(1)
+
+  const handlePublished = (post) => {
+    setPosts(prev => [post, ...prev])
+    if (post?.id) navigate(`/blog/${post.id}`)
+  }
 
   return (
     <div style={{ background:'#02020e' }}>
@@ -61,10 +101,24 @@ export default function Blog() {
             <h1 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(2rem,5vw,3.5rem)', letterSpacing:'-0.04em', color:'#f0f6ff', marginBottom:18, lineHeight:1.1 }}>
               THE GRID <span className="text-gradient">BLOG</span>
             </h1>
-            <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:17, color:'rgba(160,180,210,0.78)', maxWidth:520, margin:'0 auto', lineHeight:1.75 }}>
+            <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:17, color:'rgba(160,180,210,0.78)', maxWidth:520, margin:'0 auto 28px', lineHeight:1.75 }}>
               In-depth ML articles written by practitioners — paper breakdowns, training war stories,
               MLOps patterns, and honest post-mortems from the people actually doing the work.
             </p>
+            {user && (
+              <motion.button
+                initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.3 }}
+                onClick={() => setShowEditor(true)}
+                style={{
+                  display:'inline-flex', alignItems:'center', gap:8, padding:'13px 28px', borderRadius:14,
+                  border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)',
+                  color:'#fff', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700,
+                  boxShadow:'0 4px 28px rgba(0,102,255,0.35)',
+                }}
+              >
+                <PenLine style={{ width:15, height:15 }} /> Write a Post
+              </motion.button>
+            )}
           </motion.div>
         </div>
       </section>
@@ -72,131 +126,181 @@ export default function Blog() {
       <section style={{ padding:'40px 16px 80px' }}>
         <div style={{ maxWidth:1280, margin:'0 auto' }}>
 
-          {/* Search + Filters */}
-          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} style={{ display:'flex', flexDirection:'column', gap:16, marginBottom:36 }}>
-            <div style={{ position:'relative', maxWidth:480 }}>
-              <Search style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)', width:16, height:16, color:'#374151' }} />
-              <input type="text" placeholder="Search articles..." value={search} onChange={e => setSearch(e.target.value)} className="input-field" style={{ paddingLeft:44 }} />
+          {/* Search + filters */}
+          <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} style={{ display:'flex', flexDirection:'column', gap:14, marginBottom:36 }}>
+            <div style={{ display:'flex', gap:12, flexWrap:'wrap', alignItems:'center' }}>
+              <div style={{ position:'relative', flex:1, minWidth:240 }}>
+                <Search style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)', width:15, height:15, color:'rgba(100,120,150,0.5)' }} />
+                <input type="text" placeholder="Search articles…" value={search} onChange={e => setSearch(e.target.value)}
+                  style={{ width:'100%', boxSizing:'border-box', paddingLeft:44, paddingRight:16, paddingTop:10, paddingBottom:10, borderRadius:12, background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', color:'#e8eef8', fontSize:13.5, fontFamily:'"Plus Jakarta Sans",sans-serif', outline:'none' }}
+                  onFocus={e=>e.target.style.borderColor='rgba(0,212,255,0.28)'} onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.07)'}
+                />
+              </div>
+              {!user && (
+                <button onClick={() => navigate('/register')} style={{ display:'flex', alignItems:'center', gap:7, padding:'10px 20px', borderRadius:12, border:'1px solid rgba(0,212,255,0.25)', background:'transparent', cursor:'pointer', color:'#00d4ff', fontSize:13, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, whiteSpace:'nowrap' }}>
+                  <PenLine style={{ width:13, height:13 }} /> Write a Post
+                </button>
+              )}
             </div>
-            <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+            <div style={{ display:'flex', gap:7, flexWrap:'wrap' }}>
               {CATS.map(c => {
-                const active = cat === c
-                const m = catMeta(c)
+                const active = cat === c; const m = catMeta(c)
                 return (
                   <button key={c} onClick={() => setCat(c)} style={{
-                    padding:'8px 16px', borderRadius:10,
-                    fontSize:11, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase',
-                    fontFamily:'"Plus Jakarta Sans",sans-serif', cursor:'pointer', transition:'all 0.2s ease',
+                    padding:'7px 15px', borderRadius:10, fontSize:10.5, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase',
+                    fontFamily:'"Plus Jakarta Sans",sans-serif', cursor:'pointer', transition:'all 0.18s',
                     background: active ? m.bg : 'rgba(255,255,255,0.03)',
-                    border: active ? `1px solid ${m.border}` : '1px solid rgba(255,255,255,0.07)',
-                    color: active ? m.color : 'rgba(140,160,190,0.6)',
+                    border: active ? `1px solid ${m.border}` : '1px solid rgba(255,255,255,0.06)',
+                    color: active ? m.color : 'rgba(120,140,170,0.6)',
                   }}>{c}</button>
                 )
               })}
             </div>
           </motion.div>
 
-          {/* Featured Post */}
-          {featured && (
+          {/* Loading */}
+          {loading && (
+            <div style={{ display:'flex', justifyContent:'center', padding:'60px 0' }}>
+              <div style={{ width:36, height:36, border:'2px solid rgba(0,212,255,0.2)', borderTopColor:'#00d4ff', borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+            </div>
+          )}
+
+          {/* Featured post */}
+          {!loading && featured && (
             <motion.div
-              initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7 }}
+              initial={{ opacity:0, y:28 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
+              onClick={() => featured.id && navigate(`/blog/${featured.id}`)}
               style={{
                 position:'relative', borderRadius:22, overflow:'hidden', marginBottom:28, cursor:'pointer',
                 background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
-                border:`1px solid ${catMeta(featured.category).color}22`,
-                boxShadow:`0 0 0 1px rgba(255,255,255,0.02) inset, 0 28px 70px rgba(0,0,0,0.6)`,
+                border:`1px solid ${catMeta(featured.category).color}20`,
+                boxShadow:`0 28px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.02) inset`,
+                transition:'transform 0.25s, box-shadow 0.25s',
               }}
+              onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow=`0 36px 80px rgba(0,0,0,0.55), 0 0 40px ${catMeta(featured.category).color}0a` }}
+              onMouseLeave={e=>{ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow=`0 28px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.02) inset` }}
             >
+              {featured.cover_image && (
+                <img src={featured.cover_image} alt={featured.title} style={{ width:'100%', height:260, objectFit:'cover' }} onError={e=>e.target.style.display='none'} />
+              )}
               <div style={{ height:3, background:`linear-gradient(90deg,${catMeta(featured.category).color},#0066ff)` }} />
-              <div style={{ position:'absolute', top:-40, right:-40, width:240, height:240, borderRadius:'50%', background:`radial-gradient(circle,${catMeta(featured.category).color}0c 0%,transparent 70%)`, filter:'blur(40px)', pointerEvents:'none' }} />
-              <div style={{ padding:'36px 40px', position:'relative' }}>
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20, flexWrap:'wrap' }}>
-                  <span style={{ background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.28)', color:'#fbbf24', fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, display:'flex', alignItems:'center', gap:5, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+              <div style={{ position:'absolute', top:-40, right:-40, width:240, height:240, borderRadius:'50%', background:`radial-gradient(circle,${catMeta(featured.category).color}0a 0%,transparent 70%)`, filter:'blur(40px)', pointerEvents:'none' }} />
+              <div style={{ padding:'32px 36px' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:18, flexWrap:'wrap' }}>
+                  <span style={{ background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.28)', color:'#fbbf24', fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, display:'flex', alignItems:'center', gap:5, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
                     <TrendingUp style={{ width:10, height:10 }} /> Featured
                   </span>
-                  <span style={{ background:catMeta(featured.category).bg, border:`1px solid ${catMeta(featured.category).border}`, color:catMeta(featured.category).color, fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+                  <span style={{ background:catMeta(featured.category).bg, border:`1px solid ${catMeta(featured.category).border}`, color:catMeta(featured.category).color, fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
                     {featured.category}
                   </span>
                 </div>
-                <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.3rem,3vw,2rem)', color:'#f0f6ff', letterSpacing:'-0.03em', lineHeight:1.2, marginBottom:16, maxWidth:700 }}>
+                <h2 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, fontSize:'clamp(1.3rem,3vw,2rem)', color:'#f0f6ff', letterSpacing:'-0.03em', lineHeight:1.2, marginBottom:14, maxWidth:720 }}>
                   {featured.title}
                 </h2>
-                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(160,180,210,0.78)', lineHeight:1.72, marginBottom:24, maxWidth:640 }}>
+                <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(160,180,210,0.75)', lineHeight:1.7, marginBottom:22, maxWidth:680 }}>
                   {featured.excerpt}
                 </p>
-                <div style={{ display:'flex', alignItems:'center', gap:24, flexWrap:'wrap', marginBottom:24 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:20, flexWrap:'wrap' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+                    <Avatar name={featured.author} color={featured.author_avatar_color} size={32} />
+                    <span style={{ fontSize:13, color:'rgba(160,180,210,0.7)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>@{featured.author}</span>
+                  </div>
                   {[
-                    { Icon:User,     text:`@${featured.author}` },
-                    { Icon:Clock,    text:`${featured.readTime} read` },
-                    { Icon:BookOpen, text:featured.date },
+                    { Icon:Clock,    text:`${featured.read_time || featured.readTime} read` },
+                    { Icon:Eye,      text:`${(featured.views||0).toLocaleString()} views` },
+                    { Icon:Heart,    text:`${featured.likes||0}` },
+                    { Icon:Calendar, text:formatDate(featured.created_at) },
                   ].map(({ Icon, text }) => (
-                    <div key={text} style={{ display:'flex', alignItems:'center', gap:7, fontSize:13, color:'rgba(140,160,190,0.6)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-                      <Icon style={{ width:14, height:14, color:'#00d4ff', opacity:0.8 }} />
-                      {text}
+                    <div key={text} style={{ display:'flex', alignItems:'center', gap:5, fontSize:12.5, color:'rgba(120,140,170,0.55)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+                      <Icon style={{ width:13, height:13 }} /> {text}
                     </div>
                   ))}
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:13.5, color:catMeta(featured.category).color, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}>
-                  Read article <ArrowRight style={{ width:14, height:14 }} />
+                  <div style={{ marginLeft:'auto', display:'flex', alignItems:'center', gap:7, fontSize:13.5, color:catMeta(featured.category).color, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}>
+                    Read article <ArrowRight style={{ width:14, height:14 }} />
+                  </div>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Article Grid */}
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:18 }}>
-            {rest.map((post, i) => {
-              const m = catMeta(post.category)
-              return (
-                <motion.div
-                  key={post.id}
-                  initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
-                  transition={{ delay:i*0.07, duration:0.5 }}
-                  whileHover={{ y:-4, transition:{ duration:0.25 } }}
-                  style={{
-                    background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
-                    border:`1px solid ${m.color}16`,
-                    borderRadius:18, overflow:'hidden', cursor:'pointer',
-                    transition:'border-color 0.3s ease, box-shadow 0.3s ease',
-                  }}
-                  onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${m.color}30`; e.currentTarget.style.boxShadow=`0 0 40px ${m.color}0a` }}
-                  onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${m.color}16`; e.currentTarget.style.boxShadow='none' }}
-                >
-                  <div style={{ height:3, background:`linear-gradient(90deg,${m.color},#0066ff)` }} />
-                  <div style={{ padding:'22px' }}>
-                    <span style={{ background:m.bg, border:`1px solid ${m.border}`, color:m.color, fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif', display:'inline-block', marginBottom:14 }}>
-                      {post.category}
-                    </span>
-                    <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.35, letterSpacing:'-0.01em', marginBottom:10 }}>
-                      {post.title}
-                    </h3>
-                    <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:12.5, color:'rgba(140,160,190,0.7)', lineHeight:1.65, marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
-                      {post.excerpt}
-                    </p>
-                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:14, borderTop:`1px solid ${m.color}0e` }}>
-                      <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-                        <User style={{ width:12, height:12, color:m.color, opacity:0.7 }} />
-                        @{post.author}
-                      </div>
-                      <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-                        <Clock style={{ width:12, height:12, color:m.color, opacity:0.7 }} />
-                        {post.readTime}
+          {/* Article grid */}
+          {!loading && (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:18 }}>
+              {rest.map((post, i) => {
+                const m = catMeta(post.category)
+                return (
+                  <motion.div
+                    key={post.id}
+                    initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+                    transition={{ delay:i*0.06, duration:0.45 }}
+                    onClick={() => post.id && navigate(`/blog/${post.id}`)}
+                    style={{
+                      background:'linear-gradient(160deg,rgba(6,6,24,0.98),rgba(4,4,18,0.96))',
+                      border:`1px solid ${m.color}14`,
+                      borderRadius:18, overflow:'hidden', cursor:'pointer', display:'flex', flexDirection:'column',
+                    }}
+                    whileHover={{ y:-4, transition:{ duration:0.22 } }}
+                    onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${m.color}2e`; e.currentTarget.style.boxShadow=`0 0 36px ${m.color}09` }}
+                    onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${m.color}14`; e.currentTarget.style.boxShadow='none' }}
+                  >
+                    {post.cover_image && (
+                      <img src={post.cover_image} alt={post.title} style={{ width:'100%', height:160, objectFit:'cover' }} onError={e=>e.target.style.display='none'} />
+                    )}
+                    <div style={{ height:3, background:`linear-gradient(90deg,${m.color},#0066ff)`, flexShrink:0 }} />
+                    <div style={{ padding:'20px 22px', flex:1, display:'flex', flexDirection:'column' }}>
+                      <span style={{ background:m.bg, border:`1px solid ${m.border}`, color:m.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'3px 10px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif', display:'inline-block', marginBottom:12 }}>
+                        {post.category}
+                      </span>
+                      <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#f0f6ff', lineHeight:1.35, letterSpacing:'-0.01em', marginBottom:10, flex:1 }}>
+                        {post.title}
+                      </h3>
+                      <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:12.5, color:'rgba(130,150,180,0.7)', lineHeight:1.65, marginBottom:16, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>
+                        {post.excerpt}
+                      </p>
+                      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', paddingTop:12, borderTop:`1px solid ${m.color}0d` }}>
+                        <div style={{ display:'flex', alignItems:'center', gap:7 }}>
+                          <Avatar name={post.author} color={post.author_avatar_color} size={26} />
+                          <span style={{ fontSize:11.5, color:'rgba(120,140,170,0.6)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>@{post.author}</span>
+                        </div>
+                        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                          <div style={{ display:'flex', alignItems:'center', gap:4, fontSize:11.5, color:'rgba(120,140,170,0.5)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+                            <Eye style={{ width:11, height:11 }} />{(post.views||0).toLocaleString()}
+                          </div>
+                          <div style={{ display:'flex', alignItems:'center', gap:4, fontSize:11.5, color:'rgba(120,140,170,0.5)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+                            <Clock style={{ width:11, height:11 }} />{post.read_time || post.readTime}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {/* Empty */}
+          {!loading && filtered.length === 0 && (
             <div style={{ textAlign:'center', padding:'80px 0' }}>
-              <BookOpen style={{ width:40, height:40, color:'rgba(0,212,255,0.25)', margin:'0 auto 16px' }} />
-              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:15, color:'rgba(140,160,190,0.5)' }}>No articles found — try a different search.</p>
+              <BookOpen style={{ width:44, height:44, color:'rgba(0,212,255,0.2)', margin:'0 auto 16px' }} />
+              <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(130,150,180,0.5)', marginBottom:22 }}>
+                {search ? 'No articles match your search.' : 'No articles yet.'}
+              </p>
+              {user && (
+                <button onClick={() => setShowEditor(true)} style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'12px 24px', borderRadius:12, border:'none', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:13, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, cursor:'pointer' }}>
+                  <PenLine style={{ width:14, height:14 }} /> Be the first to write
+                </button>
+              )}
             </div>
           )}
         </div>
       </section>
+
+      {/* Blog editor */}
+      <AnimatePresence>
+        {showEditor && (
+          <BlogEditor onClose={() => setShowEditor(false)} onPublished={handlePublished} />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

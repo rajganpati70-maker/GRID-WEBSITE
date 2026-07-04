@@ -8,6 +8,9 @@ const pool = new Pool({
 const initDB = async () => {
   const client = await pool.connect()
   try {
+    // Add new columns to existing tables if they don't exist
+    await client.query(`ALTER TABLE blog_posts ADD COLUMN IF NOT EXISTS cover_image TEXT DEFAULT ''`).catch(() => {})
+
     await client.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -41,6 +44,7 @@ const initDB = async () => {
         views INTEGER DEFAULT 0,
         likes INTEGER DEFAULT 0,
         read_time VARCHAR(20) DEFAULT '5 min',
+        cover_image TEXT DEFAULT '',
         created_at TIMESTAMP DEFAULT NOW()
       );
 
