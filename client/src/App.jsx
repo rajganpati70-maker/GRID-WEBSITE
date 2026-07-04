@@ -7,6 +7,7 @@ import { ToastProvider } from './components/ToastContainer'
 import MagneticCursor from './components/MagneticCursor'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import GridAIBot from './components/GridAIBot'
 import Home from './pages/Home'
 import About from './pages/About'
 import Members from './pages/Members'
@@ -84,6 +85,7 @@ const Layout = () => {
         </AnimatePresence>
       </main>
       {!hideFooter && <Footer />}
+      <GridAIBot />
     </div>
   )
 }
