@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken')
 
-if (!process.env.JWT_SECRET) {
-  console.warn('[GRID] WARNING: JWT_SECRET is not set — using insecure default. Set a strong secret in production.')
+if (!process.env.JWT_SECRET && !process.env.SESSION_SECRET) {
+  console.warn('[GRID] WARNING: JWT_SECRET is not set — using insecure default. Set JWT_SECRET in production.')
 }
-const JWT_SECRET = process.env.JWT_SECRET || 'grid_community_secret_2025'
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || 'grid_community_secret_2025'
 
 const authMiddleware = (req, res, next) => {
   const header = req.headers.authorization

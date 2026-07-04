@@ -10,7 +10,21 @@ const app = express()
 const server = http.createServer(app)
 const PORT = process.env.PORT || 3001
 
-app.use(cors({ origin: true, credentials: true }))
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : null
+app.use(cors({
+  origin: (origin, cb) => {
+    // Allow requests with no origin (server-to-server, curl, mobile apps)
+    if (!origin) return cb(null, true)
+    if (!ALLOWED_ORIGINS) return cb(null, true) // dev fallback: allow all
+    const isAllowed = ALLOWED_ORIGINS.some(allowed =>
+      origin === allowed || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co')
+    )
+    cb(isAllowed ? null : new Error('CORS: origin not allowed'), isAllowed)
+  },
+  credentials: true
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

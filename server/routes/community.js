@@ -76,7 +76,7 @@ router.get('/profile/:username', async (req, res) => {
 // Update own profile
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { bio, skills, location, avatar_color, github_url, twitter_url, linkedin_url, website_url, role } = req.body
+    const { bio, skills, location, avatar_color, github_url, twitter_url, linkedin_url, website_url } = req.body
     let cleanSkills = []
     if (Array.isArray(skills)) {
       cleanSkills = skills.filter(s => typeof s === 'string' && s.trim()).slice(0, 20).map(s => s.trim())
@@ -86,13 +86,13 @@ router.put('/profile', authMiddleware, async (req, res) => {
 
     const { rows } = await pool.query(
       `UPDATE users SET bio=$1, skills=$2, location=$3, avatar_color=$4,
-        github_url=$5, twitter_url=$6, linkedin_url=$7, website_url=$8, role=$9, updated_at=NOW()
-       WHERE id=$10
+        github_url=$5, twitter_url=$6, linkedin_url=$7, website_url=$8, updated_at=NOW()
+       WHERE id=$9
        RETURNING id, username, email, role, bio, reputation, avatar_color, skills,
                  location, github_url, twitter_url, linkedin_url, website_url, created_at`,
       [bio ?? '', cleanSkills, location ?? '', avatar_color ?? '',
        github_url ?? '', twitter_url ?? '', linkedin_url ?? '', website_url ?? '',
-       role ?? 'Developer', req.user.id]
+       req.user.id]
     )
     if (rows.length === 0) return res.status(404).json({ message: 'User not found' })
     res.json({ user: rows[0] })
