@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { NotificationProvider } from './context/NotificationContext'
 import { ToastProvider } from './components/ToastContainer'
@@ -35,6 +36,24 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/login" replace />
 }
 
+const PAGE_TRANSITION = {
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+  transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+}
+
+const PageTransition = ({ children }) => (
+  <motion.div
+    initial={PAGE_TRANSITION.initial}
+    animate={PAGE_TRANSITION.animate}
+    exit={PAGE_TRANSITION.exit}
+    transition={PAGE_TRANSITION.transition}
+  >
+    {children}
+  </motion.div>
+)
+
 const Layout = () => {
   const { user } = useAuth()
   const location = useLocation()
@@ -44,23 +63,25 @@ const Layout = () => {
     <div className="min-h-screen flex flex-col bg-grid-black">
       <Navbar />
       <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:postId" element={<BlogPost />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/forum" element={<Forum />} />
-          <Route path="/forum/:threadId" element={<ForumThread />} />
-          <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
-          <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+            <Route path="/members" element={<PageTransition><Members /></PageTransition>} />
+            <Route path="/events" element={<PageTransition><Events /></PageTransition>} />
+            <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+            <Route path="/blog/:postId" element={<PageTransition><BlogPost /></PageTransition>} />
+            <Route path="/projects" element={<PageTransition><Projects /></PageTransition>} />
+            <Route path="/forum" element={<PageTransition><Forum /></PageTransition>} />
+            <Route path="/forum/:threadId" element={<PageTransition><ForumThread /></PageTransition>} />
+            <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+            <Route path="/profile/:username" element={<PageTransition><Profile /></PageTransition>} />
+            <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <PageTransition><Login /></PageTransition>} />
+            <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <PageTransition><Register /></PageTransition>} />
+            <Route path="/dashboard" element={<ProtectedRoute><PageTransition><Dashboard /></PageTransition></ProtectedRoute>} />
+            <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+          </Routes>
+        </AnimatePresence>
       </main>
       {!hideFooter && <Footer />}
     </div>
