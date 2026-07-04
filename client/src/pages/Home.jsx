@@ -459,14 +459,14 @@ export default function Home() {
         <div style={{ position:'absolute', bottom:'10%', right:'5%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle,rgba(109,40,217,0.10) 0%,transparent 70%)', filter:'blur(80px)', animation:'aurora2 28s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
         <div style={{ position:'absolute', top:'40%', left:'2%', width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(0,212,255,0.06) 0%,transparent 70%)', filter:'blur(90px)', animation:'aurora3 18s ease-in-out infinite', pointerEvents:'none', zIndex:0 }} />
 
-        {/* ── Split layout: Text left · Logo right ── */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-28 pb-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-6">
+        {/* ── Hero text ── */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-28 pb-20 flex flex-col items-center">
 
-          {/* ── LEFT: Text content ── */}
-          <div className="flex-1 min-w-0 text-center lg:text-left">
+          {/* ── Text content ── */}
+          <div className="w-full text-center">
 
             {/* Status badge */}
-            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }} className="mb-7 flex justify-center lg:justify-start">
+            <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05, duration:0.5 }} className="mb-7 flex justify-center">
               <span className="tag">
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background:'#4ade80', boxShadow:'0 0 6px #4ade80' }} />
                 12,000 ML researchers online now
@@ -484,7 +484,7 @@ export default function Home() {
             </motion.div>
 
             <motion.p initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.28, duration:0.65 }}
-              className="max-w-xl mb-10 text-base md:text-lg leading-relaxed mx-auto lg:mx-0"
+              className="max-w-xl mb-10 text-base md:text-lg leading-relaxed mx-auto"
               style={{ color:'rgba(170,186,210,0.82)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
               The world's most focused Machine Learning community —{' '}
               <strong style={{ color:'#e8eef8', fontWeight:700 }}>researchers, engineers, and builders</strong>{' '}
@@ -493,7 +493,7 @@ export default function Home() {
 
             {/* CTAs */}
             <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.42, duration:0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-14">
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
               <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/register'}>
                 Join GRID free <ArrowRight style={{ width:16,height:16 }} />
               </MagneticButton>
@@ -504,7 +504,7 @@ export default function Home() {
 
             {/* Stats row */}
             <motion.div initial={{ opacity:0, y:18 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.58, duration:0.6 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto lg:mx-0">
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
               {[
                 { v:'12k+',  l:'ML Researchers' },
                 { v:'900+',  l:'ML Projects' },
@@ -517,11 +517,6 @@ export default function Home() {
                 </div>
               ))}
             </motion.div>
-          </div>
-
-          {/* ── RIGHT: Large GRID Logo ── */}
-          <div className="flex-shrink-0 flex items-center justify-center w-full lg:w-[460px] xl:w-[520px]">
-            <GRIDLogoHero size={440} />
           </div>
 
         </div>
