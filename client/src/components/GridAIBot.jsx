@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Send, X, Sparkles, Bot } from 'lucide-react'
+import { Send, X, Sparkles, Bot, Mic, MicOff } from 'lucide-react'
 import axios from 'axios'
 import GRIDLogoIcon from './GRIDLogoIcon'
 
@@ -178,9 +178,61 @@ export default function GridAIBot() {
   const [liveData, setLiveData] = useState({ events: [], forum: [] })
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
+  const [listening, setListening] = useState(false)
+  const [voiceSupported, setVoiceSupported] = useState(false)
   const scrollRef = useRef(null)
   const teaserTimerRef = useRef(null)
+  const recognitionRef = useRef(null)
   const suggestions = getSuggestions(input)
+
+  // Set up voice input (Web Speech API) once, if the browser supports it
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      setVoiceSupported(false)
+      return
+    }
+    setVoiceSupported(true)
+    const recognition = new SpeechRecognition()
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.lang = 'en-US'
+
+    recognition.onresult = (event) => {
+      let transcript = ''
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript
+      }
+      setInput(transcript)
+      setShowSuggestions(true)
+    }
+    recognition.onend = () => setListening(false)
+    recognition.onerror = () => setListening(false)
+
+    recognitionRef.current = recognition
+    return () => {
+      recognition.onresult = null
+      recognition.onend = null
+      recognition.onerror = null
+      try { recognition.abort() } catch {}
+    }
+  }, [])
+
+  const toggleListening = () => {
+    const recognition = recognitionRef.current
+    if (!recognition) return
+    if (listening) {
+      recognition.stop()
+      setListening(false)
+      return
+    }
+    setOpen(true)
+    setInput('')
+    try {
+      recognition.start()
+      setListening(true)
+    } catch {}
+  }
 
   // Pull live events + forum data once so the assistant can answer with real info
   useEffect(() => {
@@ -443,10 +495,33 @@ export default function GridAIBot() {
                   onFocus={() => setShowSuggestions(true)}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
                   onKeyDown={onInputKeyDown}
-                  placeholder="Type your question..."
+                  placeholder={listening ? 'Listening...' : 'Type your question...'}
                   className="flex-1 bg-transparent outline-none text-sm px-2 py-2 rounded-xl"
-                  style={{ color: '#e8f2ff', border: '1px solid rgba(0,212,255,0.14)' }}
+                  style={{ color: '#e8f2ff', border: listening ? '1px solid rgba(0,212,255,0.5)' : '1px solid rgba(0,212,255,0.14)' }}
                 />
+                {voiceSupported && (
+                  <button
+                    type="button"
+                    onClick={toggleListening}
+                    aria-label={listening ? 'Stop voice input' : 'Speak your question'}
+                    className="relative w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                    style={
+                      listening
+                        ? { background: 'rgba(255,60,60,0.15)', border: '1px solid rgba(255,80,80,0.5)' }
+                        : { background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.25)' }
+                    }
+                  >
+                    {listening && (
+                      <motion.span
+                        className="absolute inset-0 rounded-xl pointer-events-none"
+                        style={{ border: '1.5px solid rgba(255,80,80,0.6)' }}
+                        animate={{ scale: [1, 1.35, 1.35], opacity: [0.6, 0, 0] }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut' }}
+                      />
+                    )}
+                    {listening ? <MicOff size={15} color="#ff5c5c" /> : <Mic size={15} color="#00d4ff" />}
+                  </button>
+                )}
                 <button
                   type="submit"
                   disabled={!input.trim()}
