@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Brain, Quote } from 'lucide-react'
+import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Core team data ─────────────────────────────────────────────────────── */
 const FACES = [
@@ -147,6 +148,7 @@ function FaceCard({ p, i }) {
 export default function Members() {
   return (
     <div style={{ background:'#02020e' }}>
+      <FloatingLogos />
 
       {/* ── Hero ── */}
       <section className="page-hero relative overflow-hidden">

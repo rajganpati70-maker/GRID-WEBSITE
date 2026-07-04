@@ -5,6 +5,7 @@ import { LayoutDashboard, Star, Code2, MessageSquare, Calendar, TrendingUp, Zap,
 import { useAuth } from '../context/AuthContext'
 import EditProfileModal from '../components/EditProfileModal'
 import axios from 'axios'
+import FloatingLogos from '../components/FloatingLogos'
 
 const QUICK_LINKS = [
   { label: 'Browse Members', href: '/members', icon: LayoutDashboard },
@@ -55,6 +56,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-4">
+      <FloatingLogos />
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
       <div className="max-w-7xl mx-auto relative">
 
@@ -193,7 +195,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-300 font-inter leading-snug">{text}</p>
-                    <span className="text-xs text-gray-600 font-rajdhani tracking-wide">{time}</span>
+                    <span className="text-xs text-gray-500 font-rajdhani tracking-wide">{time}</span>
                   </div>
                 </motion.div>
               ))}
@@ -216,7 +218,7 @@ export default function Dashboard() {
                   >
                     <Icon className="w-4 h-4 text-grid-cyan/60 group-hover:text-grid-cyan transition-colors" />
                     <span className="text-sm text-gray-400 group-hover:text-white transition-colors font-rajdhani tracking-wide">{label}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-gray-600 group-hover:text-grid-cyan ml-auto transition-colors" />
+                    <ArrowRight className="w-3.5 h-3.5 text-gray-500 group-hover:text-grid-cyan ml-auto transition-colors" />
                   </Link>
                 ))}
               </div>
