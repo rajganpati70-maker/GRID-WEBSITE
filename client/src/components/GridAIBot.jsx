@@ -180,6 +180,7 @@ export default function GridAIBot() {
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [listening, setListening] = useState(false)
   const [voiceSupported, setVoiceSupported] = useState(false)
+  const [feedback, setFeedback] = useState({}) // msgIndex → 'up' | 'down'
   const scrollRef = useRef(null)
   const teaserTimerRef = useRef(null)
   const recognitionRef = useRef(null)
@@ -275,6 +276,17 @@ export default function GridAIBot() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages, typing, open])
+
+  const handleFeedback = async (msgIndex, vote) => {
+    if (feedback[msgIndex]) return // already voted
+    setFeedback(f => ({ ...f, [msgIndex]: vote }))
+    // find the user question that preceded this bot reply
+    const question = messages.slice(0, msgIndex).findLast?.(m => m.role === 'user')?.text ?? ''
+    const answer = messages[msgIndex]?.text ?? ''
+    try {
+      await axios.post('/api/bot-feedback', { question, answer, vote })
+    } catch {}
+  }
 
   const send = (text) => {
     const trimmed = (text ?? input).trim()
@@ -386,7 +398,7 @@ export default function GridAIBot() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
-                  className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
                   <div
                     className="max-w-[86%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed"
@@ -408,6 +420,46 @@ export default function GridAIBot() {
                       </Link>
                     )}
                   </div>
+
+                  {/* Helpful? feedback row — only on non-greeting bot messages */}
+                  {m.role === 'bot' && i > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                      className="flex items-center gap-1 mt-1 ml-1"
+                    >
+                      {feedback[i] ? (
+                        <span style={{ fontSize: 10, color: 'rgba(0,212,255,0.55)', letterSpacing: '0.06em' }}>
+                          {feedback[i] === 'up' ? '👍 Thanks!' : '👎 Got it'}
+                        </span>
+                      ) : (
+                        <>
+                          <span style={{ fontSize: 10, color: 'rgba(150,170,200,0.45)', letterSpacing: '0.06em', marginRight: 2 }}>Helpful?</span>
+                          <button
+                            onClick={() => handleFeedback(i, 'up')}
+                            aria-label="Helpful"
+                            className="w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-150"
+                            style={{ color: 'rgba(0,212,255,0.45)', border: '1px solid rgba(0,212,255,0.15)' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,212,255,0.12)'; e.currentTarget.style.color = '#00d4ff'; e.currentTarget.style.borderColor = 'rgba(0,212,255,0.4)' }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(0,212,255,0.45)'; e.currentTarget.style.borderColor = 'rgba(0,212,255,0.15)' }}
+                          >
+                            👍
+                          </button>
+                          <button
+                            onClick={() => handleFeedback(i, 'down')}
+                            aria-label="Not helpful"
+                            className="w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-150"
+                            style={{ color: 'rgba(150,170,200,0.4)', border: '1px solid rgba(150,170,200,0.12)' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,100,100,0.1)'; e.currentTarget.style.color = 'rgba(255,120,120,0.85)'; e.currentTarget.style.borderColor = 'rgba(255,100,100,0.3)' }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(150,170,200,0.4)'; e.currentTarget.style.borderColor = 'rgba(150,170,200,0.12)' }}
+                          >
+                            👎
+                          </button>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
                 </motion.div>
               ))}
               {typing && (

@@ -438,6 +438,22 @@ router.post('/forum/replies/:replyId/vote', authMiddleware, async (req, res) => 
   }
 })
 
+// Bot feedback
+router.post('/bot-feedback', async (req, res) => {
+  try {
+    const { question, answer, vote } = req.body
+    if (vote !== 'up' && vote !== 'down') return res.status(400).json({ message: 'Invalid vote' })
+    await pool.query(
+      `INSERT INTO bot_feedback (question, answer, vote) VALUES ($1, $2, $3)`,
+      [question?.slice(0, 1000) ?? '', answer?.slice(0, 2000) ?? '', vote]
+    )
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('Bot feedback error:', err)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
 // Dashboard stats
 router.get('/dashboard', authMiddleware, async (req, res) => {
   try {

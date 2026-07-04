@@ -103,6 +103,14 @@ const initDB = async () => {
         updated_at TIMESTAMP DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS bot_feedback (
+        id SERIAL PRIMARY KEY,
+        question TEXT,
+        answer TEXT NOT NULL,
+        vote VARCHAR(5) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+
       CREATE TABLE IF NOT EXISTS forum_votes (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
