@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
 
-if (!process.env.JWT_SECRET && !process.env.SESSION_SECRET) {
-  console.warn('[GRID] WARNING: JWT_SECRET is not set — using insecure default. Set JWT_SECRET in production.')
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET
+if (!JWT_SECRET) {
+  console.error('[GRID] FATAL: JWT_SECRET (or SESSION_SECRET) must be set. Exiting.')
+  process.exit(1)
 }
-const JWT_SECRET = process.env.JWT_SECRET || process.env.SESSION_SECRET || 'grid_community_secret_2025'
 
 const authMiddleware = (req, res, next) => {
   const header = req.headers.authorization

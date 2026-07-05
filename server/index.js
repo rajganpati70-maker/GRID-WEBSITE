@@ -38,9 +38,11 @@ app.get('/api/health', (req, res) => res.json({ status: 'online', service: 'GRID
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')))
-  app.get('*', (req, res) => {
+  app.get('*', (req, res, next) => {
     if (!req.path.startsWith('/api') && !req.path.startsWith('/ws')) {
       res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+    } else {
+      next()
     }
   })
 }
