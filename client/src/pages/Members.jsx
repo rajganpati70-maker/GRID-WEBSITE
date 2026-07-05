@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Brain, Quote, Sparkles, Hexagon, Zap, Star, Award } from 'lucide-react'
+import { Brain, Quote, Sparkles, Zap } from 'lucide-react'
 import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Core team data ─────────────────────────────────────────────────────── */
@@ -54,27 +54,57 @@ const FACES = [
     quote:'Details coming soon.',
     tags:['Research','ML'],
   },
+  {
+    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
+    photo: null,
+    gradient:'linear-gradient(135deg,#7b2fff,#ec4899)',    glow:'#7b2fff',
+    quote:'Something exciting is on its way. Stay tuned.',
+    tags:['GRID'],
+  },
+  {
+    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
+    photo: null,
+    gradient:'linear-gradient(135deg,#4ade80,#0066ff)',    glow:'#4ade80',
+    quote:'Something exciting is on its way. Stay tuned.',
+    tags:['GRID'],
+  },
 ]
 
 /* ─── Shared ──────────────────────────────────────────────────────────────── */
 const jak = '"Plus Jakarta Sans",sans-serif'
 
-function FacePhoto({ p, size, borderRadius='50%' }) {
-  const wrap = {
-    width:size, height:size, borderRadius, overflow:'hidden', flexShrink:0, position:'relative',
-    border:'2.5px solid rgba(255,255,255,0.15)',
-    boxShadow:`0 0 55px ${p.glow}45, 0 14px 44px rgba(0,0,0,0.6)`,
+/* Full-bleed banner helper — photo fills entire banner, gradient falls back to initials */
+function BannerPhoto({ p, height = 260 }) {
+  if (p.photo) {
+    return (
+      <>
+        <img
+          src={p.photo} alt={p.name}
+          style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }}
+        />
+        {/* Subtle bottom scrim so card content below reads on dark bg */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120,
+          background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.55) 55%, transparent 100%)' }} />
+      </>
+    )
   }
-  if (p.photo) return (
-    <div style={wrap}>
-      <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
-    </div>
-  )
   return (
-    <div style={{ ...wrap, background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
-      <span style={{ fontFamily:jak, fontWeight:900, fontSize:Math.round(size/3), color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
-    </div>
+    <>
+      <div style={{ position:'absolute', inset:0, background:p.gradient, opacity:0.18 }} />
+      <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${p.glow}09 1px,transparent 1px),linear-gradient(90deg,${p.glow}09 1px,transparent 1px)`, backgroundSize:'30px 30px' }} />
+      <div style={{ position:'absolute', top:-20, left:'50%', transform:'translateX(-50%)', width:360, height:260, background:`radial-gradient(circle,${p.glow}30 0%,transparent 65%)`, filter:'blur(40px)' }} />
+      <div style={{ position:'absolute', bottom:0, left:0, right:0, height:110, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+      <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <div style={{ position:'relative' }}>
+          <div style={{ position:'absolute', inset:-14, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}35 0%,transparent 70%)`, filter:'blur(16px)' }} />
+          <div style={{ width:110, height:110, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center',
+            border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 55px ${p.glow}45, 0 14px 44px rgba(0,0,0,0.6)` }}>
+            <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+            <span style={{ fontFamily:jak, fontWeight:900, fontSize:37, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
+          </div>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -86,28 +116,16 @@ function Tags({ tags, glow }) {
   )
 }
 
-/* ─── VARIANT 0 — "Grand Portrait": full-bleed gradient banner, giant circle ── */
+/* ─── VARIANT 0 — "Grand Portrait" ─────────────────────────────────────── */
 function CardAurora({ p }) {
   return (
     <div style={{ height:'100%', display:'flex', flexDirection:'column',
       background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))' }}>
-      {/* Full-bleed banner 220px */}
-      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        <div style={{ position:'absolute', inset:0, background:p.gradient, opacity:0.18 }} />
-        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${p.glow}09 1px,transparent 1px),linear-gradient(90deg,${p.glow}09 1px,transparent 1px)`, backgroundSize:'30px 30px' }} />
-        <div style={{ position:'absolute', top:-20, left:'50%', transform:'translateX(-50%)', width:360, height:260, background:`radial-gradient(circle,${p.glow}30 0%,transparent 65%)`, filter:'blur(40px)' }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:100, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Large circle — real photo when available */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ position:'relative' }}>
-            <div style={{ position:'absolute', inset:-14, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}35 0%,transparent 70%)`, filter:'blur(16px)' }} />
-            <FacePhoto p={p} size={112} borderRadius='50%' />
-            <div style={{ position:'absolute', bottom:5, right:5, width:18, height:18, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 14px #4ade80' }} />
-          </div>
-        </div>
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        <BannerPhoto p={p} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient, zIndex:2 }} />
+        <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #060618', boxShadow:'0 0 10px #4ade80', zIndex:2 }} />
       </div>
-      {/* Content */}
       <div style={{ padding:'22px 26px 28px', display:'flex', flexDirection:'column', flex:1 }}>
         <div style={{ textAlign:'center', marginBottom:16 }}>
           <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{p.name}</div>
@@ -125,37 +143,22 @@ function CardAurora({ p }) {
   )
 }
 
-/* ─── VARIANT 1 — "Cinematic Slash": diagonal color cut, watermark name ──────── */
+/* ─── VARIANT 1 — "Cinematic Slash" ─────────────────────────────────────── */
 function CardAngular({ p }) {
   return (
     <div style={{ height:'100%', display:'flex', flexDirection:'column', background:'rgba(4,4,16,0.99)', position:'relative' }}>
-      {/* Banner with diagonal slash */}
-      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        {/* Full gradient fill */}
-        <div style={{ position:'absolute', inset:0, background:p.gradient }} />
-        {/* Dark overlay diagonal right */}
-        <div style={{ position:'absolute', inset:0, background:'linear-gradient(160deg,rgba(4,4,16,0) 0%,rgba(4,4,16,0.9) 100%)', clipPath:'polygon(42% 0,100% 0,100% 100%,30% 100%)' }} />
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        <BannerPhoto p={p} />
+        {/* Diagonal dark overlay on right (only when no photo) */}
+        {!p.photo && <div style={{ position:'absolute', inset:0, background:'linear-gradient(160deg,rgba(4,4,16,0) 0%,rgba(4,4,16,0.9) 100%)', clipPath:'polygon(42% 0,100% 0,100% 100%,30% 100%)' }} />}
         {/* Scan lines */}
-        <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)' }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
-        {/* Photo left / watermark initials fallback */}
-        <div style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)' }}>
-          {p.photo
-            ? <div style={{ width:88, height:88, borderRadius:'50%', overflow:'hidden', border:'2.5px solid rgba(255,255,255,0.18)', boxShadow:`0 0 36px ${p.glow}45` }}>
-                <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
-              </div>
-            : <span style={{ fontFamily:jak, fontWeight:900, fontSize:96, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em', display:'block' }}>{p.initials}</span>
-          }
-        </div>
+        {!p.photo && <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)' }} />}
         {/* Role badge top-right */}
         <div style={{ position:'absolute', top:18, right:18, zIndex:2 }}>
           <span style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.75)', background:'rgba(0,0,0,0.35)', border:'1px solid rgba(255,255,255,0.15)', padding:'4px 10px', borderRadius:100 }}>{p.position}</span>
         </div>
-        {/* Shimmer border on gradient side */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient, zIndex:2 }} />
       </div>
-      {/* Content */}
       <div style={{ padding:'18px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
         <div style={{ marginBottom:14 }}>
           <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:3 }}>{p.name}</div>
@@ -171,31 +174,24 @@ function CardAngular({ p }) {
   )
 }
 
-/* ─── VARIANT 2 — "Radar Iris": concentric rings banner, centered portrait ───── */
+/* ─── VARIANT 2 — "Radar Iris" ───────────────────────────────────────────── */
 function CardHex({ p }) {
   return (
     <div style={{ height:'100%', display:'flex', flexDirection:'column',
       background:'linear-gradient(160deg,rgba(5,5,20,0.99),rgba(3,3,14,0.98))' }}>
-      {/* Radar banner */}
-      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0, background:`radial-gradient(ellipse at 50% 60%,${p.glow}16 0%,transparent 65%)` }}>
-        {/* Concentric rings */}
-        {[100,80,60,40,20].map((r,i) => <div key={i} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${p.glow}${['24','1c','14','0e','08'][i]}` }} />)}
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0,
+        background: p.photo ? 'transparent' : `radial-gradient(ellipse at 50% 60%,${p.glow}16 0%,transparent 65%)` }}>
+        <BannerPhoto p={p} />
+        {/* Concentric rings — always visible, subtle on top of photo */}
+        {[100,80,60,40,20].map((r,i) => <div key={i} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${p.glow}${p.photo ? ['10','0c','09','06','04'][i] : ['24','1c','14','0e','08'][i]}`, zIndex:1 }} />)}
         {/* Crosshair */}
-        <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${p.glow}1c,transparent)`, transform:'translateY(-50%)' }} />
-        <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${p.glow}1c,transparent)`, transform:'translateX(-50%)' }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
-        {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Centered avatar — real photo when available */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ position:'relative' }}>
-            <FacePhoto p={p} size={96} borderRadius='50%' />
-            <div style={{ position:'absolute', bottom:0, right:0, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
-          </div>
-        </div>
+        {!p.photo && <>
+          <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${p.glow}1c,transparent)`, transform:'translateY(-50%)' }} />
+          <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${p.glow}1c,transparent)`, transform:'translateX(-50%)' }} />
+        </>}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient, zIndex:2 }} />
+        <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80', zIndex:2 }} />
       </div>
-      {/* Content */}
       <div style={{ padding:'20px 26px 26px', display:'flex', flexDirection:'column', flex:1 }}>
         <div style={{ textAlign:'center', marginBottom:14 }}>
           <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{p.name}</div>
@@ -210,37 +206,20 @@ function CardHex({ p }) {
   )
 }
 
-/* ─── VARIANT 3 — "Spectrum Rail": wide left gradient rail + editorial layout ── */
+/* ─── VARIANT 3 — "Spectrum Rail" ───────────────────────────────────────── */
 function CardRail({ p }) {
   return (
     <div style={{ height:'100%', display:'flex',
       background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))' }}>
-      {/* Left rail */}
       <div style={{ width:8, flexShrink:0, background:p.gradient, boxShadow:`4px 0 24px ${p.glow}30` }} />
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
-        {/* Banner */}
-        <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
-          <div style={{ position:'absolute', inset:0, background:p.gradient, opacity:0.13 }} />
-          {/* Horizontal scan bands */}
-          {[0,1,2,3].map(i => <div key={i} style={{ position:'absolute', left:0, right:0, top:`${i*26}%`, height:'10%', background:`linear-gradient(90deg,${p.glow}08,${p.glow}14,${p.glow}08)` }} />)}
-          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-          {/* Photo / initials rotated square */}
-          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <div style={{ position:'relative' }}>
-              {p.photo
-                ? <div style={{ width:116, height:116, borderRadius:28, overflow:'hidden', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.15)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
-                    <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', transform:'rotate(6deg) scale(1.15)' }} />
-                  </div>
-                : <div style={{ width:116, height:116, background:p.gradient, borderRadius:28, display:'flex', alignItems:'center', justifyContent:'center', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
-                    <div style={{ position:'absolute', inset:0, borderRadius:26, background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
-                    <span style={{ fontFamily:jak, fontWeight:900, fontSize:38, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(6deg)', position:'relative', zIndex:1 }}>{p.initials}</span>
-                  </div>
-              }
-              <div style={{ position:'absolute', bottom:2, right:-2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
-            </div>
-          </div>
+        <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          <BannerPhoto p={p} />
+          {/* Horizontal scan bands — only without photo */}
+          {!p.photo && [0,1,2,3].map(i => <div key={i} style={{ position:'absolute', left:0, right:0, top:`${i*26}%`, height:'10%', background:`linear-gradient(90deg,${p.glow}08,${p.glow}14,${p.glow}08)` }} />)}
+          <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient, zIndex:2 }} />
+          <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80', zIndex:2 }} />
         </div>
-        {/* Content */}
         <div style={{ padding:'18px 22px 24px', display:'flex', flexDirection:'column', flex:1 }}>
           <div style={{ marginBottom:12 }}>
             <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:3 }}>{p.name}</div>
@@ -255,50 +234,51 @@ function CardRail({ p }) {
   )
 }
 
-/* ─── VARIANT 4 — "HUD Portrait": bracket corners, number watermark, neon glow ─ */
+/* ─── VARIANT 4 — "HUD Portrait" ────────────────────────────────────────── */
 function CardPrism({ p, uid }) {
   const br = { position:'absolute', width:20, height:20 }
   return (
     <div style={{ height:'100%', display:'flex', flexDirection:'column',
       background:'rgba(3,3,14,0.99)', position:'relative' }}>
       <style>{`@keyframes shimmer_m${uid}{0%{background-position:0% 50%}100%{background-position:200% 50%}}`}</style>
-      {/* Animated shimmer border */}
       <div style={{ position:'absolute', inset:0, borderRadius:'inherit', padding:1, zIndex:0,
         background:`linear-gradient(120deg,${p.glow}55,transparent 30%,transparent 70%,${p.glow}55)`,
         backgroundSize:'220% 220%', animation:`shimmer_m${uid} 5s linear infinite`,
         WebkitMask:'linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0)',
         WebkitMaskComposite:'xor', maskComposite:'exclude', pointerEvents:'none' }} />
-      {/* Banner */}
-      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${p.glow}14` }}>
-        <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% 60%,${p.glow}1c 0%,transparent 65%)` }} />
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${p.glow}14` }}>
+        <BannerPhoto p={p} />
         {/* Watermark number */}
-        <div style={{ position:'absolute', right:12, bottom:-8, fontFamily:jak, fontWeight:900, fontSize:110, color:`${p.glow}09`, lineHeight:1, userSelect:'none', pointerEvents:'none' }}>{String(uid+1).padStart(2,'0')}</div>
+        <div style={{ position:'absolute', right:12, bottom:-8, fontFamily:jak, fontWeight:900, fontSize:110, color:`${p.glow}${p.photo ? '07' : '09'}`, lineHeight:1, userSelect:'none', pointerEvents:'none', zIndex:1 }}>{String(uid+1).padStart(2,'0')}</div>
         {/* HUD brackets */}
-        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55` }} />
-        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55` }} />
-        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55` }} />
-        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55` }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(3,3,14,0.99),transparent)' }} />
-        {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Center — real photo when available */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
-          <FacePhoto p={p} size={100} borderRadius='50%' />
-          <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:`${p.glow}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase' }}>
-            <Sparkles style={{ width:10, height:10 }} />{p.position}
-          </div>
-        </div>
+        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55`, zIndex:2 }} />
+        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55`, zIndex:2 }} />
+        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55`, zIndex:2 }} />
+        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55`, zIndex:2 }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient, zIndex:2 }} />
         {/* Online indicator */}
-        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5 }}>
+        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5, zIndex:2 }}>
           <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px #4ade80' }} />
           <span style={{ fontFamily:jak, fontSize:9.5, color:'rgba(74,222,128,0.7)', fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase' }}>Online</span>
         </div>
+        {/* Position label when no photo */}
+        {!p.photo && (
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10, zIndex:1 }}>
+            <div style={{ width:110, height:110, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center',
+              border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 55px ${p.glow}45` }}>
+              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+              <span style={{ fontFamily:jak, fontWeight:900, fontSize:37, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
+            </div>
+            <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:`${p.glow}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase' }}>
+              <Sparkles style={{ width:10, height:10 }} />{p.position}
+            </div>
+          </div>
+        )}
       </div>
-      {/* Content */}
       <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1, position:'relative', zIndex:1 }}>
         <div style={{ textAlign:'center', marginBottom:14 }}>
           <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:4 }}>{p.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', background:p.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{p.position}</div>
           <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.55)' }}>{p.specialty}</div>
         </div>
         <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', textAlign:'center', fontStyle:'italic', flex:1, marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
@@ -327,7 +307,7 @@ function FaceCard({ p, i }) {
         boxShadow: hov ? `0 36px 88px rgba(0,0,0,0.7),0 0 70px ${p.glow}14` : `0 16px 48px rgba(0,0,0,0.5)`,
         transform: hov ? 'translateY(-8px)' : 'translateY(0)',
         transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)',
-        display:'flex', flexDirection:'column', position:'relative', minHeight:520,
+        display:'flex', flexDirection:'column', position:'relative', minHeight:540,
       }}
     >
       <V p={p} hov={hov} uid={i} />
@@ -362,14 +342,12 @@ export default function Members() {
 
       {/* ══════════════ MEET THE FACES ══════════════ */}
       <section style={{ padding:'72px 0 80px', position:'relative', overflow:'hidden' }}>
-        {/* Background layers */}
         <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg, rgba(0,30,80,0.08) 0%, transparent 60%)' }} />
         <div className="absolute inset-0 grid-bg opacity-15" />
         <div style={{ position:'absolute', top:'10%', left:'50%', transform:'translateX(-50%)', width:900, height:400, borderRadius:'50%', background:'radial-gradient(ellipse,rgba(0,82,204,0.07) 0%,transparent 70%)', filter:'blur(80px)', pointerEvents:'none' }} />
 
         <div style={{ maxWidth:1280, margin:'0 auto', padding:'0 24px' }}>
 
-          {/* Heading */}
           <motion.div
             initial={{ opacity:0, y:28 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.65 }}
             style={{ textAlign:'center', marginBottom:52 }}
@@ -381,22 +359,20 @@ export default function Members() {
               The faces <span style={{ background:'linear-gradient(135deg,#0066ff,#00d4ff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>behind GRID.</span>
             </h2>
             <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(160,180,210,0.7)', maxWidth:560, margin:'0 auto', lineHeight:1.75 }}>
-              Seven ML researchers and engineers who decided the community they wanted
+              Nine ML researchers and engineers who decided the community they wanted
               to be part of didn't exist — so they built it from zero.
             </p>
           </motion.div>
 
-          {/* Cards — horizontal scroll on mobile, 3-col grid on desktop */}
           <div style={{
             display:'grid',
             gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))',
             gap:18,
           }}>
-            {FACES.map((p, i) => <FaceCard key={p.name} p={p} i={i} />)}
+            {FACES.map((p, i) => <FaceCard key={`${p.name}-${i}`} p={p} i={i} />)}
           </div>
         </div>
 
-        {/* Bottom fade + divider */}
         <div style={{ marginTop:64, height:1, background:'linear-gradient(90deg,transparent,rgba(0,212,255,0.15),transparent)', maxWidth:900, margin:'64px auto 0' }} />
       </section>
 

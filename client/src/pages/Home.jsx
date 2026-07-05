@@ -342,6 +342,30 @@ const CORE_MEMBERS = [
     tags: ['Research', 'ML'],
     github: '#', linkedin: '#',
   },
+  {
+    id: 8,
+    name: 'Coming Soon',
+    position: 'GRID Member',
+    specialty: 'Details coming soon…',
+    initials: '?',
+    photo: null,
+    gradient: 'linear-gradient(135deg, #7b2fff 0%, #ec4899 100%)',
+    glowColor: '#7b2fff',
+    tags: ['GRID'],
+    github: '#', linkedin: '#',
+  },
+  {
+    id: 9,
+    name: 'Coming Soon',
+    position: 'GRID Member',
+    specialty: 'Details coming soon…',
+    initials: '?',
+    photo: null,
+    gradient: 'linear-gradient(135deg, #4ade80 0%, #0066ff 100%)',
+    glowColor: '#4ade80',
+    tags: ['GRID'],
+    github: '#', linkedin: '#',
+  },
 ]
 
 /* ─── CoreMemberCard — 5 ultra-premium variants (each structurally unique) ─ */
@@ -391,22 +415,31 @@ function MemberV0({ member }) {
       transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
       onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.7),0 0 70px ${member.glowColor}18` }}
       onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}1e`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.6),0 0 40px ${member.glowColor}08` }}>
-      {/* Top gradient accent */}
-      <div style={{ height:3, background:member.gradient, flexShrink:0 }} />
       {/* Visual banner */}
-      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.16 }} />
-        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${member.glowColor}09 1px,transparent 1px),linear-gradient(90deg,${member.glowColor}09 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
-        <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:240, background:`radial-gradient(circle,${member.glowColor}2e 0%,transparent 65%)`, filter:'blur(36px)' }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        {/* Large photo / initials circle */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ position:'relative' }}>
-            <div style={{ position:'absolute', inset:-12, borderRadius:'50%', background:`radial-gradient(circle,${member.glowColor}32 0%,transparent 70%)`, filter:'blur(14px)' }} />
-            <MemberPhoto m={member} size={104} borderRadius='50%' />
-            <div style={{ position:'absolute', bottom:5, right:5, width:17, height:17, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
-          </div>
-        </div>
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {member.photo
+          ? <>
+              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.55) 55%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.16 }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${member.glowColor}09 1px,transparent 1px),linear-gradient(90deg,${member.glowColor}09 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
+              <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:240, background:`radial-gradient(circle,${member.glowColor}2e 0%,transparent 65%)`, filter:'blur(36px)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div style={{ position:'relative' }}>
+                  <div style={{ position:'absolute', inset:-12, borderRadius:'50%', background:`radial-gradient(circle,${member.glowColor}32 0%,transparent 70%)`, filter:'blur(14px)' }} />
+                  <div style={{ width:104, height:104, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 50px ${member.glowColor}45` }}>
+                    <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+                    <span style={{ fontFamily:jak, fontWeight:900, fontSize:34, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{member.initials}</span>
+                  </div>
+                </div>
+              </div>
+            </>
+        }
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient, zIndex:2 }} />
+        <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80', zIndex:2 }} />
       </div>
       {/* Content */}
       <div style={{ padding:'22px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -435,34 +468,29 @@ function MemberV1({ member }) {
       transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
       onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}40`; e.currentTarget.style.transform='translateY(-7px)' }}
       onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}18`; e.currentTarget.style.transform='translateY(0)' }}>
-      {/* Visual banner — diagonal slash design */}
-      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        {/* Left gradient slab */}
-        <div style={{ position:'absolute', inset:0, background:member.gradient }} />
-        {/* Dark overlay diagonal */}
-        <div style={{ position:'absolute', inset:0, background:'rgba(4,4,16,0.88)', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
-        {/* Blueprint grid on dark side */}
-        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)`, backgroundSize:'24px 24px', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:70, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
-        {/* Scan lines on gradient */}
-        <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)', clipPath:'polygon(0 0,46% 0,36% 100%,0 100%)' }} />
-        {/* Photo / initials in left slab */}
-        <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'42%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          {member.photo
-            ? <div style={{ width:80, height:80, borderRadius:'50%', overflow:'hidden', border:'2.5px solid rgba(255,255,255,0.18)', boxShadow:`0 0 32px ${member.glowColor}40` }}>
-                <img src={member.photo} alt={member.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+      {/* Visual banner — full-bleed photo or diagonal slash */}
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {member.photo
+          ? <>
+              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(4,4,16,0.98) 0%, rgba(4,4,16,0.55) 55%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:member.gradient }} />
+              <div style={{ position:'absolute', inset:0, background:'rgba(4,4,16,0.88)', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)`, backgroundSize:'24px 24px', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:70, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)', clipPath:'polygon(0 0,46% 0,36% 100%,0 100%)' }} />
+              <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'42%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <span style={{ fontFamily:jak, fontWeight:900, fontSize:56, color:'rgba(0,0,0,0.42)', letterSpacing:'-0.04em' }}>{member.initials}</span>
               </div>
-            : <span style={{ fontFamily:jak, fontWeight:900, fontSize:56, color:'rgba(0,0,0,0.42)', letterSpacing:'-0.04em' }}>{member.initials}</span>
-          }
-        </div>
-        {/* Role text on right */}
-        <div style={{ position:'absolute', right:18, top:'50%', transform:'translateY(-50%)', textAlign:'right' }}>
-          <div style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', color:member.glowColor, marginBottom:6 }}>{member.position}</div>
-          <div style={{ height:2, width:28, background:member.glowColor, borderRadius:1, marginLeft:'auto', opacity:0.6 }} />
-        </div>
-        {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
+              <div style={{ position:'absolute', right:18, top:'50%', transform:'translateY(-50%)', textAlign:'right' }}>
+                <div style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', color:member.glowColor, marginBottom:6 }}>{member.position}</div>
+                <div style={{ height:2, width:28, background:member.glowColor, borderRadius:1, marginLeft:'auto', opacity:0.6 }} />
+              </div>
+            </>
+        }
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient, zIndex:2 }} />
       </div>
       {/* Content */}
       <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -495,26 +523,31 @@ function MemberV2({ member }) {
       transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
       onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.7),0 0 60px ${member.glowColor}14` }}
       onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}18`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.6)` }}>
-      {/* Visual banner — radar rings */}
-      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0, background:`radial-gradient(ellipse at 50% 60%, ${member.glowColor}14 0%, transparent 65%)` }}>
-        {/* Concentric rings */}
-        {[90,72,54,36,18].map((r,idx) => (
-          <div key={idx} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${member.glowColor}${['22','1c','16','10','0a'][idx]}` }} />
-        ))}
-        {/* Crosshair lines */}
-        <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}18,transparent)`, transform:'translateY(-50%)' }} />
-        <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${member.glowColor}18,transparent)`, transform:'translateX(-50%)' }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
-        {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
-        {/* Center photo / initials */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ position:'relative' }}>
-            <MemberPhoto m={member} size={86} borderRadius='50%' />
-            <div style={{ position:'absolute', bottom:0, right:0, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
-          </div>
-        </div>
+      {/* Visual banner — full-bleed photo or radar rings */}
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0,
+        background: member.photo ? 'transparent' : `radial-gradient(ellipse at 50% 60%, ${member.glowColor}14 0%, transparent 65%)` }}>
+        {member.photo
+          ? <>
+              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(5,5,20,0.98) 0%, rgba(5,5,20,0.55) 55%, transparent 100%)' }} />
+            </>
+          : <>
+              {[90,72,54,36,18].map((r,idx) => (
+                <div key={idx} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${member.glowColor}${['22','1c','16','10','0a'][idx]}` }} />
+              ))}
+              <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}18,transparent)`, transform:'translateY(-50%)' }} />
+              <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${member.glowColor}18,transparent)`, transform:'translateX(-50%)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div style={{ width:86, height:86, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 50px ${member.glowColor}45` }}>
+                  <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+                  <span style={{ fontFamily:jak, fontWeight:900, fontSize:28, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{member.initials}</span>
+                </div>
+              </div>
+            </>
+        }
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient, zIndex:2 }} />
+        <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80', zIndex:2 }} />
       </div>
       {/* Content */}
       <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -547,26 +580,25 @@ function MemberV3({ member }) {
       <div style={{ width:6, flexShrink:0, background:member.gradient, boxShadow:`4px 0 20px ${member.glowColor}30` }} />
       <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
         {/* Visual banner in right section */}
-        <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
-          <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.12 }} />
-          {/* Horizontal bands */}
-          {[0,1,2,3].map(idx => <div key={idx} style={{ position:'absolute', left:0, right:0, top:`${idx*26}%`, height:'12%', background:`linear-gradient(90deg,${member.glowColor}06,${member.glowColor}12,${member.glowColor}06)` }} />)}
-          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-          {/* Large photo / initials */}
-          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <div style={{ position:'relative' }}>
-              {member.photo
-                ? <div style={{ width:108, height:108, borderRadius:24, overflow:'hidden', border:'2px solid rgba(255,255,255,0.15)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
-                    <img src={member.photo} alt={member.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', transform:'rotate(4deg) scale(1.12)' }} />
-                  </div>
-                : <div style={{ width:108, height:108, borderRadius:24, background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
+        <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          {member.photo
+            ? <>
+                <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+                <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.55) 55%, transparent 100%)' }} />
+              </>
+            : <>
+                <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.12 }} />
+                {[0,1,2,3].map(idx => <div key={idx} style={{ position:'absolute', left:0, right:0, top:`${idx*26}%`, height:'12%', background:`linear-gradient(90deg,${member.glowColor}06,${member.glowColor}12,${member.glowColor}06)` }} />)}
+                <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+                <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <div style={{ width:108, height:108, borderRadius:24, background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
                     <div style={{ position:'absolute', inset:0, borderRadius:22, background:'linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 55%)' }} />
                     <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(4deg)' }}>{member.initials}</span>
                   </div>
-              }
-              <div style={{ position:'absolute', bottom:2, right:2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 10px #4ade80' }} />
-            </div>
-          </div>
+                </div>
+              </>
+          }
+          <div style={{ position:'absolute', bottom:12, right:12, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 10px #4ade80', zIndex:2 }} />
         </div>
         {/* Content */}
         <div style={{ padding:'18px 22px 24px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -597,24 +629,35 @@ function MemberV4({ member, i }) {
       onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.75),0 0 60px ${member.glowColor}16` }}
       onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}1c`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.65)` }}>
       {/* Visual banner */}
-      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${member.glowColor}14` }}>
-        <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% 60%, ${member.glowColor}18 0%, transparent 65%)` }} />
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${member.glowColor}14` }}>
+        {member.photo
+          ? <>
+              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(3,3,14,0.98) 0%, rgba(3,3,14,0.55) 55%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% 60%, ${member.glowColor}18 0%, transparent 65%)` }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(3,3,14,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
+                <div style={{ width:96, height:96, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 50px ${member.glowColor}45` }}>
+                  <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+                  <span style={{ fontFamily:jak, fontWeight:900, fontSize:32, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{member.initials}</span>
+                </div>
+                <div style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.22em', textTransform:'uppercase', color:`${member.glowColor}80` }}>RESEARCHER</div>
+              </div>
+            </>
+        }
         {/* Watermark index number */}
-        <div style={{ position:'absolute', right:16, bottom:-10, fontFamily:jak, fontWeight:900, fontSize:100, color:`${member.glowColor}09`, lineHeight:1, pointerEvents:'none', userSelect:'none' }}>{String(i+1).padStart(2,'0')}</div>
+        <div style={{ position:'absolute', right:16, bottom:-10, fontFamily:jak, fontWeight:900, fontSize:100, color:`${member.glowColor}${member.photo ? '07' : '09'}`, lineHeight:1, pointerEvents:'none', userSelect:'none', zIndex:1 }}>{String(i+1).padStart(2,'0')}</div>
         {/* HUD corner brackets */}
-        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55` }} />
-        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55` }} />
-        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55` }} />
-        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55` }} />
-        {/* Center content */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
-          <MemberPhoto m={member} size={96} borderRadius='50%' />
-          <div style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.22em', textTransform:'uppercase', color:`${member.glowColor}80` }}>RESEARCHER</div>
-        </div>
+        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55`, zIndex:2 }} />
+        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55`, zIndex:2 }} />
+        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55`, zIndex:2 }} />
+        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55`, zIndex:2 }} />
         {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient, zIndex:2 }} />
         {/* Status */}
-        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5, fontSize:9.5, color:`${member.glowColor}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase' }}>
+        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5, fontSize:9.5, color:`${member.glowColor}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', zIndex:2 }}>
           <div style={{ width:6, height:6, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px #4ade80' }} /> ONLINE
         </div>
       </div>
@@ -936,7 +979,7 @@ export default function Home() {
               The faces <span className="text-gradient">behind the community.</span>
             </motion.h2>
             <motion.p {...iv} className="text-sm max-w-xl mx-auto mt-4" style={{ color:'rgba(140,160,190,0.7)', lineHeight:1.75 }}>
-              Seven ML researchers and engineers who decided the community they wanted
+              Nine ML researchers and engineers who decided the community they wanted
               to be part of didn't exist yet — so they built it from scratch.
             </motion.p>
           </div>
