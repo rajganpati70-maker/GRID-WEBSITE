@@ -260,107 +260,112 @@ function EventCard({ event, i }) {
 const CORE_MEMBERS = [
   {
     id: 1,
-    name: 'Aryan Sharma',
-    position: 'Founder & CEO',
-    specialty: 'Deep Learning Research',
-    initials: 'AS',
-    gradient: 'linear-gradient(135deg, #0052cc 0%, #00d4ff 100%)',
-    glowColor: '#00d4ff',
-    tags: ['Transformers', 'LLMs', 'Research'],
+    name: 'Moumita Mandal',
+    position: 'Community Lead',
+    specialty: 'ML Research & Community',
+    initials: 'MM',
+    photo: '/members/moumita.jpg',
+    gradient: 'linear-gradient(135deg, #ec4899 0%, #7b2fff 100%)',
+    glowColor: '#ec4899',
+    tags: ['Research', 'Community', 'ML'],
     github: '#', linkedin: '#',
   },
   {
     id: 2,
-    name: 'Priya Nair',
-    position: 'Co-founder & CTO',
-    specialty: 'MLOps & Infrastructure',
-    initials: 'PN',
+    name: 'Ritusree Chanda',
+    position: 'Research Associate',
+    specialty: 'Deep Learning',
+    initials: 'RC',
+    photo: '/members/ritusree.jpg',
     gradient: 'linear-gradient(135deg, #7b2fff 0%, #00d4ff 100%)',
     glowColor: '#7b2fff',
-    tags: ['MLOps', 'Distributed Training', 'Infra'],
+    tags: ['Deep Learning', 'NLP', 'Research'],
     github: '#', linkedin: '#',
   },
   {
     id: 3,
-    name: 'Rahul Gupta',
-    position: 'Head of Research',
-    specialty: 'NLP & Transformers',
-    initials: 'RG',
-    gradient: 'linear-gradient(135deg, #0066ff 0%, #7b2fff 100%)',
-    glowColor: '#0066ff',
-    tags: ['NLP', 'BERT', 'Fine-tuning'],
+    name: 'Krishna Raj Barnwal',
+    position: 'ML Engineer',
+    specialty: 'Computer Vision & Systems',
+    initials: 'KB',
+    photo: '/members/krishna.jpg',
+    gradient: 'linear-gradient(135deg, #0066ff 0%, #00d4ff 100%)',
+    glowColor: '#00d4ff',
+    tags: ['CV', 'Systems', 'ML'],
     github: '#', linkedin: '#',
   },
   {
     id: 4,
-    name: 'Sneha Patel',
-    position: 'Computer Vision Lead',
-    specialty: 'CNNs & Generative AI',
-    initials: 'SP',
-    gradient: 'linear-gradient(135deg, #ec4899 0%, #7b2fff 100%)',
-    glowColor: '#ec4899',
-    tags: ['CNNs', 'Diffusion', 'GANs'],
+    name: 'Coming Soon',
+    position: 'GRID Member',
+    specialty: 'Details coming soon…',
+    initials: '?',
+    photo: null,
+    gradient: 'linear-gradient(135deg, #0052cc 0%, #00d4ff 100%)',
+    glowColor: '#0052cc',
+    tags: ['GRID'],
     github: '#', linkedin: '#',
   },
   {
     id: 5,
-    name: 'Vikram Singh',
-    position: 'RL Research Lead',
-    specialty: 'Reinforcement Learning',
-    initials: 'VS',
-    gradient: 'linear-gradient(135deg, #00d4ff 0%, #4ade80 100%)',
-    glowColor: '#4ade80',
-    tags: ['RL', 'Policy Gradient', 'RLHF'],
+    name: 'Aditya Gaurav',
+    position: 'ML Researcher',
+    specialty: 'Machine Learning & AI',
+    initials: 'AG',
+    photo: '/members/aditya.jpg',
+    gradient: 'linear-gradient(135deg, #0052cc 0%, #7b2fff 100%)',
+    glowColor: '#6366f1',
+    tags: ['ML', 'Research', 'AI'],
     github: '#', linkedin: '#',
   },
   {
     id: 6,
-    name: 'Ananya Krishnan',
-    position: 'Data Science Lead',
-    specialty: 'Statistical ML & Analytics',
-    initials: 'AK',
-    gradient: 'linear-gradient(135deg, #f59e0b 0%, #ec4899 100%)',
-    glowColor: '#f59e0b',
-    tags: ['Statistics', 'XGBoost', 'Feature Eng.'],
+    name: 'Member 6',
+    position: 'Researcher',
+    specialty: 'GRID Community',
+    initials: 'M6',
+    photo: '/members/om.png',
+    gradient: 'linear-gradient(135deg, #00d4ff 0%, #4ade80 100%)',
+    glowColor: '#4ade80',
+    tags: ['Research', 'ML'],
     github: '#', linkedin: '#',
   },
   {
     id: 7,
-    name: 'Dev Malhotra',
-    position: 'Open Source Lead',
-    specialty: 'ML Frameworks & Tools',
-    initials: 'DM',
-    gradient: 'linear-gradient(135deg, #0052cc 0%, #4ade80 100%)',
-    glowColor: '#0052cc',
-    tags: ['PyTorch', 'JAX', 'Open Source'],
-    github: '#', linkedin: '#',
-  },
-  {
-    id: 8,
-    name: 'Riya Joshi',
-    position: 'AI Safety Lead',
-    specialty: 'Alignment & Responsible AI',
-    initials: 'RJ',
-    gradient: 'linear-gradient(135deg, #7b2fff 0%, #f59e0b 100%)',
-    glowColor: '#a78bfa',
-    tags: ['AI Safety', 'Alignment', 'Ethics'],
-    github: '#', linkedin: '#',
-  },
-  {
-    id: 9,
-    name: 'Karan Mehta',
-    position: 'Education Lead',
-    specialty: 'ML Curriculum & Teaching',
-    initials: 'KM',
-    gradient: 'linear-gradient(135deg, #00d4ff 0%, #0066ff 100%)',
-    glowColor: '#00d4ff',
-    tags: ['Curriculum', 'Mentorship', 'Research'],
+    name: 'Member 7',
+    position: 'Researcher',
+    specialty: 'GRID Community',
+    initials: 'M7',
+    photo: '/members/member7.jpg',
+    gradient: 'linear-gradient(135deg, #f59e0b 0%, #ec4899 100%)',
+    glowColor: '#f59e0b',
+    tags: ['Research', 'ML'],
     github: '#', linkedin: '#',
   },
 ]
 
 /* ─── CoreMemberCard — 5 ultra-premium variants (each structurally unique) ─ */
 const jak = '"Plus Jakarta Sans",sans-serif'
+
+/* Renders real photo when available, initials circle as fallback */
+function MemberPhoto({ m, size, borderRadius='50%' }) {
+  const wrap = {
+    width:size, height:size, borderRadius, overflow:'hidden', flexShrink:0, position:'relative',
+    border:'2.5px solid rgba(255,255,255,0.15)',
+    boxShadow:`0 0 50px ${m.glowColor}45, 0 12px 40px rgba(0,0,0,0.55)`,
+  }
+  if (m.photo) return (
+    <div style={wrap}>
+      <img src={m.photo} alt={m.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+    </div>
+  )
+  return (
+    <div style={{ ...wrap, background:m.gradient, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+      <span style={{ fontFamily:jak, fontWeight:900, fontSize:Math.round(size/3), color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{m.initials}</span>
+    </div>
+  )
+}
 
 function SocialRow({ member }) {
   return (
@@ -394,14 +399,11 @@ function MemberV0({ member }) {
         <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${member.glowColor}09 1px,transparent 1px),linear-gradient(90deg,${member.glowColor}09 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
         <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:240, background:`radial-gradient(circle,${member.glowColor}2e 0%,transparent 65%)`, filter:'blur(36px)' }} />
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        {/* Large initials circle */}
+        {/* Large photo / initials circle */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ position:'relative' }}>
             <div style={{ position:'absolute', inset:-12, borderRadius:'50%', background:`radial-gradient(circle,${member.glowColor}32 0%,transparent 70%)`, filter:'blur(14px)' }} />
-            <div style={{ width:104, height:104, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45,0 12px 40px rgba(0,0,0,0.55)`, position:'relative' }}>
-              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)', pointerEvents:'none' }} />
-              <span style={{ fontFamily:jak, fontWeight:900, fontSize:34, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{member.initials}</span>
-            </div>
+            <MemberPhoto m={member} size={104} borderRadius='50%' />
             <div style={{ position:'absolute', bottom:5, right:5, width:17, height:17, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
           </div>
         </div>
@@ -445,9 +447,14 @@ function MemberV1({ member }) {
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:70, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
         {/* Scan lines on gradient */}
         <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)', clipPath:'polygon(0 0,46% 0,36% 100%,0 100%)' }} />
-        {/* Initials in left slab */}
+        {/* Photo / initials in left slab */}
         <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'42%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <span style={{ fontFamily:jak, fontWeight:900, fontSize:56, color:'rgba(0,0,0,0.42)', letterSpacing:'-0.04em' }}>{member.initials}</span>
+          {member.photo
+            ? <div style={{ width:80, height:80, borderRadius:'50%', overflow:'hidden', border:'2.5px solid rgba(255,255,255,0.18)', boxShadow:`0 0 32px ${member.glowColor}40` }}>
+                <img src={member.photo} alt={member.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              </div>
+            : <span style={{ fontFamily:jak, fontWeight:900, fontSize:56, color:'rgba(0,0,0,0.42)', letterSpacing:'-0.04em' }}>{member.initials}</span>
+          }
         </div>
         {/* Role text on right */}
         <div style={{ position:'absolute', right:18, top:'50%', transform:'translateY(-50%)', textAlign:'right' }}>
@@ -501,14 +508,13 @@ function MemberV2({ member }) {
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
         {/* Top bar */}
         <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
-        {/* Center initials */}
+        {/* Center photo / initials */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ width:86, height:86, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:`2px solid rgba(255,255,255,0.14)`, boxShadow:`0 0 40px ${member.glowColor}50,0 8px 32px rgba(0,0,0,0.5)` }}>
-            <span style={{ fontFamily:jak, fontWeight:900, fontSize:28, color:'#fff', letterSpacing:'-0.02em' }}>{member.initials}</span>
+          <div style={{ position:'relative' }}>
+            <MemberPhoto m={member} size={86} borderRadius='50%' />
+            <div style={{ position:'absolute', bottom:0, right:0, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
           </div>
         </div>
-        {/* Status dot */}
-        <div style={{ position:'absolute', top:'50%', left:'50%', transform:`translate(${86/2-6}px, ${86/2-6}px)`, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
       </div>
       {/* Content */}
       <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -546,13 +552,18 @@ function MemberV3({ member }) {
           {/* Horizontal bands */}
           {[0,1,2,3].map(idx => <div key={idx} style={{ position:'absolute', left:0, right:0, top:`${idx*26}%`, height:'12%', background:`linear-gradient(90deg,${member.glowColor}06,${member.glowColor}12,${member.glowColor}06)` }} />)}
           <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-          {/* Large initials */}
+          {/* Large photo / initials */}
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <div style={{ position:'relative' }}>
-              <div style={{ width:108, height:108, borderRadius:24, background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
-                <div style={{ position:'absolute', inset:0, borderRadius:22, background:'linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 55%)' }} />
-                <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(4deg)' }}>{member.initials}</span>
-              </div>
+              {member.photo
+                ? <div style={{ width:108, height:108, borderRadius:24, overflow:'hidden', border:'2px solid rgba(255,255,255,0.15)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
+                    <img src={member.photo} alt={member.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', transform:'rotate(4deg) scale(1.12)' }} />
+                  </div>
+                : <div style={{ width:108, height:108, borderRadius:24, background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
+                    <div style={{ position:'absolute', inset:0, borderRadius:22, background:'linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 55%)' }} />
+                    <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(4deg)' }}>{member.initials}</span>
+                  </div>
+              }
               <div style={{ position:'absolute', bottom:2, right:2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 10px #4ade80' }} />
             </div>
           </div>
@@ -597,10 +608,7 @@ function MemberV4({ member, i }) {
         <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55` }} />
         {/* Center content */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
-          <div style={{ width:96, height:96, background:member.gradient, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 50px ${member.glowColor}50`, border:'2px solid rgba(255,255,255,0.12)' }}>
-            <div style={{ position:'absolute', width:96, height:96, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
-            <span style={{ fontFamily:jak, fontWeight:900, fontSize:30, color:'#fff', letterSpacing:'-0.02em', position:'relative' }}>{member.initials}</span>
-          </div>
+          <MemberPhoto m={member} size={96} borderRadius='50%' />
           <div style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.22em', textTransform:'uppercase', color:`${member.glowColor}80` }}>RESEARCHER</div>
         </div>
         {/* Top bar */}
@@ -928,7 +936,7 @@ export default function Home() {
               The faces <span className="text-gradient">behind the community.</span>
             </motion.h2>
             <motion.p {...iv} className="text-sm max-w-xl mx-auto mt-4" style={{ color:'rgba(140,160,190,0.7)', lineHeight:1.75 }}>
-              Nine ML researchers and engineers who decided the community they wanted
+              Seven ML researchers and engineers who decided the community they wanted
               to be part of didn't exist yet — so they built it from scratch.
             </motion.p>
           </div>

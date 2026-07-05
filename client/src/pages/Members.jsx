@@ -6,63 +6,77 @@ import FloatingLogos from '../components/FloatingLogos'
 /* ─── Core team data ─────────────────────────────────────────────────────── */
 const FACES = [
   {
-    name:'Aryan Sharma',    initials:'AS', position:'Founder & CEO',         specialty:'Deep Learning Research',
-    gradient:'linear-gradient(135deg,#0052cc,#00d4ff)',    glow:'#00d4ff',
-    quote:'We built GRID because the best ML conversations were happening in fragmented DMs. That problem deserved a real solution.',
-    tags:['Transformers','LLMs','RLHF'],
-  },
-  {
-    name:'Priya Nair',      initials:'PN', position:'Co-founder & CTO',       specialty:'MLOps & Infrastructure',
-    gradient:'linear-gradient(135deg,#7b2fff,#00d4ff)',    glow:'#7b2fff',
-    quote:'I obsess over the invisible work — the infra that lets 12,000 researchers collaborate without friction. If it feels seamless, we did our job.',
-    tags:['Distributed Training','Kubernetes','Ray'],
-  },
-  {
-    name:'Rahul Gupta',     initials:'RG', position:'Head of Research',       specialty:'NLP & Transformers',
-    gradient:'linear-gradient(135deg,#0066ff,#7b2fff)',    glow:'#0066ff',
-    quote:'Every week we read a paper together that most of the internet will misunderstand. That is exactly why this community exists.',
-    tags:['NLP','BERT','Fine-tuning'],
-  },
-  {
-    name:'Sneha Patel',     initials:'SP', position:'Computer Vision Lead',   specialty:'CNNs & Generative AI',
+    name:'Moumita Mandal',   initials:'MM', position:'Community Lead',        specialty:'ML Research & Community',
+    photo:'/members/moumita.jpg',
     gradient:'linear-gradient(135deg,#ec4899,#7b2fff)',    glow:'#ec4899',
-    quote:'Diffusion models changed everything I thought I knew about generation. I want every CV researcher to have someone to work through that with.',
-    tags:['CNNs','Diffusion','GANs'],
+    quote:'Building a community means creating a space where every researcher feels their question matters — no question is too basic when you\'re pushing the frontier.',
+    tags:['Research','Community','ML'],
   },
   {
-    name:'Vikram Singh',    initials:'VS', position:'RL Research Lead',       specialty:'Reinforcement Learning',
+    name:'Ritusree Chanda',  initials:'RC', position:'Research Associate',    specialty:'Deep Learning',
+    photo:'/members/ritusree.jpg',
+    gradient:'linear-gradient(135deg,#7b2fff,#00d4ff)',    glow:'#7b2fff',
+    quote:'The best part of GRID is finding someone at 2am who has hit the exact same gradient explosion bug you have. Solidarity in the trenches.',
+    tags:['Deep Learning','NLP','Research'],
+  },
+  {
+    name:'Krishna Raj Barnwal', initials:'KB', position:'ML Engineer',        specialty:'Computer Vision & Systems',
+    photo:'/members/krishna.jpg',
+    gradient:'linear-gradient(135deg,#0066ff,#00d4ff)',    glow:'#00d4ff',
+    quote:'Systems thinking is underrated in ML. A model that trains in half the time lets you run twice the experiments. Speed is a research strategy.',
+    tags:['CV','Systems','ML'],
+  },
+  {
+    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
+    photo: null,
+    gradient:'linear-gradient(135deg,#0052cc,#00d4ff)',    glow:'#0052cc',
+    quote:'Something exciting is on its way. Stay tuned.',
+    tags:['GRID'],
+  },
+  {
+    name:'Aditya Gaurav',    initials:'AG', position:'ML Researcher',         specialty:'Machine Learning & AI',
+    photo:'/members/aditya.jpg',
+    gradient:'linear-gradient(135deg,#0052cc,#7b2fff)',    glow:'#6366f1',
+    quote:'Every model is a hypothesis about the world. I love the moment when the loss curve shows you that your hypothesis was right.',
+    tags:['ML','Research','AI'],
+  },
+  {
+    name:'Member 6',         initials:'M6', position:'Researcher',            specialty:'GRID Community',
+    photo:'/members/om.png',
     gradient:'linear-gradient(135deg,#00d4ff,#4ade80)',    glow:'#4ade80',
-    quote:'RL is the hardest subfield to learn alone. The reward signal is sparse and the feedback loops are long. Community changes that.',
-    tags:['PPO','RLHF','Policy Gradient'],
+    quote:'Details coming soon.',
+    tags:['Research','ML'],
   },
   {
-    name:'Ananya Krishnan', initials:'AK', position:'Data Science Lead',      specialty:'Statistical ML & Analytics',
+    name:'Member 7',         initials:'M7', position:'Researcher',            specialty:'GRID Community',
+    photo:'/members/member7.jpg',
     gradient:'linear-gradient(135deg,#f59e0b,#ec4899)',    glow:'#f59e0b',
-    quote:'Strong baselines beat fancy models in most real problems. I teach that, and GRID is where people finally start to believe it.',
-    tags:['Statistics','XGBoost','Feature Eng.'],
-  },
-  {
-    name:'Dev Malhotra',    initials:'DM', position:'Open Source Lead',       specialty:'ML Frameworks & Tools',
-    gradient:'linear-gradient(135deg,#0052cc,#4ade80)',    glow:'#0052cc',
-    quote:'If you have used a GRID training utility and it just worked — that was on purpose. Good tooling should be invisible.',
-    tags:['PyTorch','JAX','Open Source'],
-  },
-  {
-    name:'Riya Joshi',      initials:'RJ', position:'AI Safety Lead',         specialty:'Alignment & Responsible AI',
-    gradient:'linear-gradient(135deg,#7b2fff,#f59e0b)',    glow:'#a78bfa',
-    quote:'Safety is not a constraint on ML progress — it is a prerequisite for it. We built that into GRID from day one.',
-    tags:['AI Safety','Alignment','Interpretability'],
-  },
-  {
-    name:'Karan Mehta',     initials:'KM', position:'Education Lead',         specialty:'ML Curriculum & Teaching',
-    gradient:'linear-gradient(135deg,#00d4ff,#0066ff)',    glow:'#00d4ff',
-    quote:'Every concept in ML has a clean intuition underneath the notation. My job is to find it and hand it to you.',
-    tags:['Curriculum','Mentorship','Research'],
+    quote:'Details coming soon.',
+    tags:['Research','ML'],
   },
 ]
 
 /* ─── Shared ──────────────────────────────────────────────────────────────── */
 const jak = '"Plus Jakarta Sans",sans-serif'
+
+function FacePhoto({ p, size, borderRadius='50%' }) {
+  const wrap = {
+    width:size, height:size, borderRadius, overflow:'hidden', flexShrink:0, position:'relative',
+    border:'2.5px solid rgba(255,255,255,0.15)',
+    boxShadow:`0 0 55px ${p.glow}45, 0 14px 44px rgba(0,0,0,0.6)`,
+  }
+  if (p.photo) return (
+    <div style={wrap}>
+      <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+    </div>
+  )
+  return (
+    <div style={{ ...wrap, background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+      <span style={{ fontFamily:jak, fontWeight:900, fontSize:Math.round(size/3), color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
+    </div>
+  )
+}
 
 function Tags({ tags, glow }) {
   return (
@@ -84,14 +98,11 @@ function CardAurora({ p }) {
         <div style={{ position:'absolute', top:-20, left:'50%', transform:'translateX(-50%)', width:360, height:260, background:`radial-gradient(circle,${p.glow}30 0%,transparent 65%)`, filter:'blur(40px)' }} />
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:100, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
         <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Large circle */}
+        {/* Large circle — real photo when available */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
           <div style={{ position:'relative' }}>
             <div style={{ position:'absolute', inset:-14, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}35 0%,transparent 70%)`, filter:'blur(16px)' }} />
-            <div style={{ width:112, height:112, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 60px ${p.glow}50,0 16px 48px rgba(0,0,0,0.6)`, position:'relative' }}>
-              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
-              <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
-            </div>
+            <FacePhoto p={p} size={112} borderRadius='50%' />
             <div style={{ position:'absolute', bottom:5, right:5, width:18, height:18, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 14px #4ade80' }} />
           </div>
         </div>
@@ -128,9 +139,14 @@ function CardAngular({ p }) {
         <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)' }} />
         {/* Bottom fade */}
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
-        {/* Giant watermark initials */}
+        {/* Photo left / watermark initials fallback */}
         <div style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)' }}>
-          <span style={{ fontFamily:jak, fontWeight:900, fontSize:96, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em', display:'block' }}>{p.initials}</span>
+          {p.photo
+            ? <div style={{ width:88, height:88, borderRadius:'50%', overflow:'hidden', border:'2.5px solid rgba(255,255,255,0.18)', boxShadow:`0 0 36px ${p.glow}45` }}>
+                <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              </div>
+            : <span style={{ fontFamily:jak, fontWeight:900, fontSize:96, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em', display:'block' }}>{p.initials}</span>
+          }
         </div>
         {/* Role badge top-right */}
         <div style={{ position:'absolute', top:18, right:18, zIndex:2 }}>
@@ -171,13 +187,13 @@ function CardHex({ p }) {
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
         {/* Top bar */}
         <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Centered avatar */}
+        {/* Centered avatar — real photo when available */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
-          <div style={{ width:96, height:96, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}55,0 12px 40px rgba(0,0,0,0.55)` }}>
-            <span style={{ fontFamily:jak, fontWeight:900, fontSize:30, color:'#fff', letterSpacing:'-0.02em' }}>{p.initials}</span>
+          <div style={{ position:'relative' }}>
+            <FacePhoto p={p} size={96} borderRadius='50%' />
+            <div style={{ position:'absolute', bottom:0, right:0, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
           </div>
         </div>
-        <div style={{ position:'absolute', top:'50%', left:'50%', transform:`translate(${96/2-5}px,${96/2-5}px)`, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
       </div>
       {/* Content */}
       <div style={{ padding:'20px 26px 26px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -208,13 +224,18 @@ function CardRail({ p }) {
           {/* Horizontal scan bands */}
           {[0,1,2,3].map(i => <div key={i} style={{ position:'absolute', left:0, right:0, top:`${i*26}%`, height:'10%', background:`linear-gradient(90deg,${p.glow}08,${p.glow}14,${p.glow}08)` }} />)}
           <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-          {/* Initials - rotated square */}
+          {/* Photo / initials rotated square */}
           <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <div style={{ position:'relative' }}>
-              <div style={{ width:116, height:116, background:p.gradient, borderRadius:28, display:'flex', alignItems:'center', justifyContent:'center', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
-                <div style={{ position:'absolute', inset:0, borderRadius:26, background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
-                <span style={{ fontFamily:jak, fontWeight:900, fontSize:38, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(6deg)', position:'relative', zIndex:1 }}>{p.initials}</span>
-              </div>
+              {p.photo
+                ? <div style={{ width:116, height:116, borderRadius:28, overflow:'hidden', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.15)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
+                    <img src={p.photo} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', transform:'rotate(6deg) scale(1.15)' }} />
+                  </div>
+                : <div style={{ width:116, height:116, background:p.gradient, borderRadius:28, display:'flex', alignItems:'center', justifyContent:'center', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
+                    <div style={{ position:'absolute', inset:0, borderRadius:26, background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
+                    <span style={{ fontFamily:jak, fontWeight:900, fontSize:38, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(6deg)', position:'relative', zIndex:1 }}>{p.initials}</span>
+                  </div>
+              }
               <div style={{ position:'absolute', bottom:2, right:-2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
             </div>
           </div>
@@ -261,12 +282,9 @@ function CardPrism({ p, uid }) {
         <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(3,3,14,0.99),transparent)' }} />
         {/* Top bar */}
         <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
-        {/* Center */}
+        {/* Center — real photo when available */}
         <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
-          <div style={{ width:100, height:100, background:p.gradient, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}55,0 12px 40px rgba(0,0,0,0.55)` }}>
-            <div style={{ position:'absolute', width:100, height:100, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
-            <span style={{ fontFamily:jak, fontWeight:900, fontSize:32, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
-          </div>
+          <FacePhoto p={p} size={100} borderRadius='50%' />
           <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:`${p.glow}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase' }}>
             <Sparkles style={{ width:10, height:10 }} />{p.position}
           </div>
@@ -363,7 +381,7 @@ export default function Members() {
               The faces <span style={{ background:'linear-gradient(135deg,#0066ff,#00d4ff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>behind GRID.</span>
             </h2>
             <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(160,180,210,0.7)', maxWidth:560, margin:'0 auto', lineHeight:1.75 }}>
-              Nine ML researchers and engineers who decided the community they wanted
+              Seven ML researchers and engineers who decided the community they wanted
               to be part of didn't exist — so they built it from zero.
             </p>
           </motion.div>
