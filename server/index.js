@@ -18,9 +18,7 @@ app.use(cors({
     // Allow requests with no origin (server-to-server, curl, mobile apps)
     if (!origin) return cb(null, true)
     if (!ALLOWED_ORIGINS) return cb(null, true) // dev fallback: allow all
-    const isAllowed = ALLOWED_ORIGINS.some(allowed =>
-      origin === allowed || origin.endsWith('.replit.dev') || origin.endsWith('.repl.co')
-    )
+    const isAllowed = ALLOWED_ORIGINS.some(allowed => origin === allowed)
     cb(isAllowed ? null : new Error('CORS: origin not allowed'), isAllowed)
   },
   credentials: true
