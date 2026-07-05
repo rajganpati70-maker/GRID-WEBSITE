@@ -92,34 +92,166 @@ const FALLBACK_EVENTS = [
   { id:3, title:'GRID Research Summit 2025',               type:'conference', date:'2025-10-04', location:'Berlin, Germany', description:'Three days of ML research talks, poster sessions, and hands-on workshops with leading researchers.' },
 ]
 
-/* ─── Event card (minimal, for homepage) ─────────────────────────────────── */
 const EVT_S = {
-  hackathon:  { bar:'linear-gradient(90deg,#00d4ff,#0066ff)', badge:{bg:'rgba(0,212,255,0.1)',bd:'rgba(0,212,255,0.3)',tx:'#00d4ff'} },
-  workshop:   { bar:'linear-gradient(90deg,#7b2fff,#00d4ff)', badge:{bg:'rgba(123,47,255,0.1)',bd:'rgba(123,47,255,0.3)',tx:'#a78bfa'} },
-  conference: { bar:'linear-gradient(90deg,#0066ff,#7b2fff)', badge:{bg:'rgba(0,102,255,0.1)',bd:'rgba(0,102,255,0.3)',tx:'#60a5fa'} },
-  default:    { bar:'linear-gradient(90deg,#00d4ff,#0066ff)', badge:{bg:'rgba(0,212,255,0.07)',bd:'rgba(0,212,255,0.2)',tx:'#00d4ff'} },
+  hackathon:  { bar:'linear-gradient(135deg,#00d4ff,#0066ff)', accent:'#00d4ff', badge:{bg:'rgba(0,212,255,0.1)',bd:'rgba(0,212,255,0.3)',tx:'#00d4ff'} },
+  workshop:   { bar:'linear-gradient(135deg,#7b2fff,#00d4ff)', accent:'#a78bfa', badge:{bg:'rgba(123,47,255,0.1)',bd:'rgba(123,47,255,0.3)',tx:'#a78bfa'} },
+  conference: { bar:'linear-gradient(135deg,#0066ff,#7b2fff)', accent:'#60a5fa', badge:{bg:'rgba(0,102,255,0.1)',bd:'rgba(0,102,255,0.3)',tx:'#60a5fa'} },
+  default:    { bar:'linear-gradient(135deg,#00d4ff,#0066ff)', accent:'#00d4ff', badge:{bg:'rgba(0,212,255,0.07)',bd:'rgba(0,212,255,0.2)',tx:'#00d4ff'} },
 }
+
+/* ── Home Event Variant 0 — "Panorama": giant date in gradient header ── */
+function HomeEvtV0({ event, s, dateStr }) {
+  const d = event.date ? new Date(event.date) : null
+  const day = d ? d.getDate() : '—'
+  const mon = d ? d.toLocaleString('default',{month:'short'}).toUpperCase() : ''
+  const jak = '"Plus Jakarta Sans",sans-serif'
+  return (
+    <Link to="/events" style={{ display:'block', height:'100%', textDecoration:'none' }}>
+      <div style={{ height:'100%', minHeight:440, display:'flex', flexDirection:'column',
+        background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
+        border:`1px solid ${s.accent}18`, borderRadius:22, overflow:'hidden', position:'relative',
+        boxShadow:`0 20px 60px rgba(0,0,0,0.6), 0 0 40px ${s.accent}08`,
+        transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+        onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.borderColor=`${s.accent}38`; e.currentTarget.style.boxShadow=`0 36px 90px rgba(0,0,0,0.7),0 0 70px ${s.accent}18` }}
+        onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.borderColor=`${s.accent}18`; e.currentTarget.style.boxShadow=`0 20px 60px rgba(0,0,0,0.6),0 0 40px ${s.accent}08` }}>
+        {/* Visual header */}
+        <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          <div style={{ position:'absolute', inset:0, background:s.bar, opacity:0.2 }} />
+          <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${s.accent}0a 1px,transparent 1px),linear-gradient(90deg,${s.accent}0a 1px,transparent 1px)`, backgroundSize:'30px 30px' }} />
+          <div style={{ position:'absolute', top:-40, left:'50%', transform:'translateX(-50%)', width:320, height:220, background:`radial-gradient(circle,${s.accent}2a 0%,transparent 65%)`, filter:'blur(32px)' }} />
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:2 }}>
+            <div style={{ fontFamily:jak, fontWeight:900, fontSize:88, color:'#fff', lineHeight:1, letterSpacing:'-0.05em', textShadow:`0 0 60px ${s.accent}70` }}>{day}</div>
+            <div style={{ fontFamily:jak, fontWeight:800, fontSize:15, letterSpacing:'0.3em', color:s.accent, textTransform:'uppercase', textShadow:`0 0 20px ${s.accent}80` }}>{mon}</div>
+          </div>
+          <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:s.bar }} />
+          <div style={{ position:'absolute', top:16, right:16 }}>
+            <span style={{ background:s.badge.bg, border:`1px solid ${s.badge.bd}`, color:s.badge.tx, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'4px 11px', borderRadius:100, fontFamily:jak }}>{event.type||'Event'}</span>
+          </div>
+        </div>
+        {/* Content */}
+        <div style={{ padding:'22px 24px 24px', display:'flex', flexDirection:'column', flex:1 }}>
+          <h3 style={{ fontFamily:jak, fontWeight:800, fontSize:16.5, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.015em', marginBottom:10 }}>{event.title}</h3>
+          {event.description && <p style={{ fontSize:13, color:'rgba(140,160,190,0.72)', lineHeight:1.65, flex:1, marginBottom:16, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden', fontFamily:jak }}>{event.description}</p>}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:'auto' }}>
+            {event.location && <div style={{ fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:jak }}>📍 {event.location}</div>}
+            <div style={{ fontSize:12.5, color:s.accent, fontWeight:700, fontFamily:jak, display:'flex', alignItems:'center', gap:4 }}>View <ArrowRight style={{ width:13,height:13 }} /></div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+/* ── Home Event Variant 1 — "Diagonal Split": angled color slab + date ── */
+function HomeEvtV1({ event, s, dateStr }) {
+  const d = event.date ? new Date(event.date) : null
+  const day = d ? d.getDate() : '—'
+  const mon = d ? d.toLocaleString('default',{month:'short'}).toUpperCase() : ''
+  const jak = '"Plus Jakarta Sans",sans-serif'
+  return (
+    <Link to="/events" style={{ display:'block', height:'100%', textDecoration:'none' }}>
+      <div style={{ height:'100%', minHeight:440, display:'flex', flexDirection:'column',
+        background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
+        border:`1px solid ${s.accent}18`, borderRadius:22, overflow:'hidden', position:'relative',
+        boxShadow:`0 20px 60px rgba(0,0,0,0.6)`,
+        transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+        onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.borderColor=`${s.accent}38`; e.currentTarget.style.boxShadow=`0 36px 90px rgba(0,0,0,0.7)` }}
+        onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.borderColor=`${s.accent}18`; e.currentTarget.style.boxShadow=`0 20px 60px rgba(0,0,0,0.6)` }}>
+        {/* Visual header — diagonal split */}
+        <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          {/* Left gradient slab */}
+          <div style={{ position:'absolute', left:0, top:0, bottom:0, right:0, background:s.bar }} />
+          {/* Dark overlay right — clipped by polygon */}
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(160deg,rgba(6,6,24,0.0) 0%,rgba(4,4,18,0.92) 100%)', clipPath:'polygon(48% 0,100% 0,100% 100%,38% 100%)' }} />
+          {/* Scan lines overlay */}
+          <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,0,0,0.12) 4px,rgba(0,0,0,0.12) 5px)', pointerEvents:'none' }} />
+          {/* Bottom fade */}
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:70, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+          {/* Date left */}
+          <div style={{ position:'absolute', left:24, top:'50%', transform:'translateY(-50%)' }}>
+            <div style={{ fontFamily:jak, fontWeight:900, fontSize:80, color:'rgba(0,0,0,0.45)', lineHeight:1, letterSpacing:'-0.05em' }}>{day}</div>
+            <div style={{ fontFamily:jak, fontWeight:800, fontSize:13, letterSpacing:'0.22em', color:'rgba(0,0,0,0.38)', textTransform:'uppercase', marginTop:2 }}>{mon}</div>
+          </div>
+          {/* Right side overlay content */}
+          <div style={{ position:'absolute', right:20, top:'50%', transform:'translateY(-50%)', textAlign:'right' }}>
+            <span style={{ background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'rgba(220,235,255,0.75)', fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'4px 10px', borderRadius:100, fontFamily:jak }}>{event.type||'Event'}</span>
+          </div>
+          {/* Top accent */}
+          <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:s.bar }} />
+        </div>
+        {/* Content */}
+        <div style={{ padding:'20px 24px 24px', display:'flex', flexDirection:'column', flex:1 }}>
+          <h3 style={{ fontFamily:jak, fontWeight:800, fontSize:16.5, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.015em', marginBottom:10 }}>{event.title}</h3>
+          {event.description && <p style={{ fontSize:13, color:'rgba(140,160,190,0.72)', lineHeight:1.65, flex:1, marginBottom:16, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden', fontFamily:jak }}>{event.description}</p>}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:'auto' }}>
+            <span style={{ fontSize:11.5, color:'rgba(140,160,190,0.5)', fontFamily:jak }}>{dateStr}</span>
+            <div style={{ fontSize:12.5, color:s.accent, fontWeight:700, fontFamily:jak, display:'flex', alignItems:'center', gap:4 }}>Details <ChevronRight style={{ width:13,height:13 }} /></div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+/* ── Home Event Variant 2 — "HUD Console": terminal header + corner brackets ── */
+function HomeEvtV2({ event, s, dateStr }) {
+  const jak = '"Plus Jakarta Sans",sans-serif'
+  const br = { position:'absolute', width:18, height:18 }
+  return (
+    <Link to="/events" style={{ display:'block', height:'100%', textDecoration:'none' }}>
+      <div style={{ height:'100%', minHeight:440, display:'flex', flexDirection:'column',
+        background:'rgba(4,4,16,0.99)',
+        border:`1px solid ${s.accent}22`, borderRadius:18, overflow:'hidden', position:'relative',
+        boxShadow:`0 20px 60px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.02) inset`,
+        transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+        onMouseEnter={e=>{ e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.borderColor=`${s.accent}45`; e.currentTarget.style.boxShadow=`0 36px 90px rgba(0,0,0,0.75),0 0 0 1px rgba(255,255,255,0.03) inset` }}
+        onMouseLeave={e=>{ e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.borderColor=`${s.accent}22`; e.currentTarget.style.boxShadow=`0 20px 60px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.02) inset` }}>
+        {/* Console titlebar */}
+        <div style={{ height:42, background:'rgba(255,255,255,0.03)', borderBottom:`1px solid ${s.accent}15`, display:'flex', alignItems:'center', padding:'0 18px', gap:8, flexShrink:0 }}>
+          <div style={{ display:'flex', gap:5 }}>
+            {['#ff5f57','#ffbd2e','#28c841'].map(c => <div key={c} style={{ width:10, height:10, borderRadius:'50%', background:c, opacity:0.65 }} />)}
+          </div>
+          <div style={{ flex:1, fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:10.5, color:`${s.accent}65`, letterSpacing:'0.12em', textAlign:'center', textTransform:'uppercase' }}>GRID_EVENTS.{event.type?.toLowerCase()||'event'}</div>
+        </div>
+        {/* HUD visual area */}
+        <div style={{ height:164, position:'relative', overflow:'hidden', flexShrink:0, background:'rgba(255,255,255,0.015)', borderBottom:`1px solid rgba(255,255,255,0.04)` }}>
+          <div style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:280, height:180, background:`radial-gradient(circle,${s.accent}18 0%,transparent 70%)`, filter:'blur(28px)' }} />
+          <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.13) 3px,rgba(0,0,0,0.13) 4px)', pointerEvents:'none' }} />
+          {/* Corner brackets */}
+          <div style={{ ...br, top:12, left:12, borderTop:`2px solid ${s.accent}55`, borderLeft:`2px solid ${s.accent}55` }} />
+          <div style={{ ...br, top:12, right:12, borderTop:`2px solid ${s.accent}55`, borderRight:`2px solid ${s.accent}55` }} />
+          <div style={{ ...br, bottom:12, left:12, borderBottom:`2px solid ${s.accent}55`, borderLeft:`2px solid ${s.accent}55` }} />
+          <div style={{ ...br, bottom:12, right:12, borderBottom:`2px solid ${s.accent}55`, borderRight:`2px solid ${s.accent}55` }} />
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:6 }}>
+            <span style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.24em', textTransform:'uppercase', color:`${s.accent}75` }}>UPCOMING</span>
+            <div style={{ fontFamily:jak, fontWeight:900, fontSize:26, color:'#f0f6ff', letterSpacing:'-0.03em', textAlign:'center' }}>{dateStr}</div>
+            <span style={{ background:s.badge.bg, border:`1px solid ${s.badge.bd}`, color:s.badge.tx, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'3px 10px', borderRadius:100, fontFamily:jak }}>{event.type||'Event'}</span>
+          </div>
+        </div>
+        {/* Content */}
+        <div style={{ padding:'20px 22px 22px', display:'flex', flexDirection:'column', flex:1 }}>
+          <h3 style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.015em', marginBottom:10 }}>{event.title}</h3>
+          {event.description && <p style={{ fontSize:13, color:'rgba(140,160,190,0.72)', lineHeight:1.65, flex:1, marginBottom:14, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden', fontFamily:jak }}>{event.description}</p>}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:'auto' }}>
+            {event.location && <div style={{ fontSize:11.5, color:'rgba(140,160,190,0.5)', fontFamily:jak }}>📍 {event.location}</div>}
+            <div style={{ fontSize:12.5, color:s.accent, fontWeight:700, fontFamily:jak, display:'flex', alignItems:'center', gap:4 }}>Open <ChevronRight style={{ width:13,height:13 }} /></div>
+          </div>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+const HOME_EVT_VARIANTS = [HomeEvtV0, HomeEvtV1, HomeEvtV2]
+
 function EventCard({ event, i }) {
   const s = EVT_S[event.type?.toLowerCase()] || EVT_S.default
   const dateStr = event.date ? new Date(event.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—'
+  const V = HOME_EVT_VARIANTS[i % HOME_EVT_VARIANTS.length]
   return (
-    <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.55 }}>
-      <HolographicCard intensity={0.8}>
-        <Link to="/events" className="event-card flex flex-col h-full">
-          <div style={{ height:3, background:s.bar, flexShrink:0 }} />
-          <div className="px-5 pt-5 pb-4 flex-shrink-0" style={{ background:'linear-gradient(180deg,rgba(0,212,255,0.04) 0%,transparent 100%)', borderBottom:'1px solid rgba(0,212,255,0.07)' }}>
-            <div className="flex items-center justify-between mb-3">
-              <span style={{ background:s.badge.bg, border:`1px solid ${s.badge.bd}`, color:s.badge.tx, fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100 }}>{event.type||'Event'}</span>
-              <span style={{ fontSize:11, color:'rgba(150,168,195,0.6)' }}>{dateStr}</span>
-            </div>
-            <h3 style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:15, color:'#e8eef8', lineHeight:1.35 }}>{event.title}</h3>
-          </div>
-          <div className="px-5 py-4 flex flex-col flex-1">
-            {event.description && <p className="line-clamp-2 flex-1 mb-3" style={{ fontSize:13, color:'rgba(140,160,190,0.75)', lineHeight:1.6 }}>{event.description}</p>}
-            {event.location && <div className="flex items-center gap-1.5 mt-auto" style={{ fontSize:11.5, color:'rgba(150,168,195,0.65)' }}>📍 {event.location}</div>}
-          </div>
-        </Link>
-      </HolographicCard>
+    <motion.div initial={{ opacity:0, y:24 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1, duration:0.55 }} style={{ height:'100%' }}>
+      <V event={event} s={s} dateStr={dateStr} />
     </motion.div>
   )
 }
@@ -227,200 +359,287 @@ const CORE_MEMBERS = [
   },
 ]
 
+/* ─── CoreMemberCard — 5 ultra-premium variants (each structurally unique) ─ */
+const jak = '"Plus Jakarta Sans",sans-serif'
+
+function SocialRow({ member }) {
+  return (
+    <div style={{ display:'flex', gap:8, justifyContent:'center' }}>
+      {[{ Icon:Github, href:member.github }, { Icon:Linkedin, href:member.linkedin }, { Icon:Globe, href:member.github }].map(({ Icon, href }, idx) => (
+        <a key={idx} href={href||'#'} style={{ width:36, height:36, borderRadius:11, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(160,180,210,0.65)', transition:'all 0.2s ease' }}
+          onMouseEnter={e=>{ e.currentTarget.style.background=`${member.glowColor}15`; e.currentTarget.style.color=member.glowColor; e.currentTarget.style.borderColor=`${member.glowColor}35` }}
+          onMouseLeave={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.04)'; e.currentTarget.style.color='rgba(160,180,210,0.65)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.08)' }}>
+          <Icon style={{ width:15, height:15 }} />
+        </a>
+      ))}
+    </div>
+  )
+}
+
+/* V0 — "Plasma Banner": radial-glow header + giant centered initials */
+function MemberV0({ member }) {
+  return (
+    <div style={{ height:'100%', minHeight:480, display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
+      border:`1px solid ${member.glowColor}1e`, borderRadius:22, overflow:'hidden',
+      boxShadow:`0 24px 64px rgba(0,0,0,0.6),0 0 40px ${member.glowColor}08`,
+      transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.7),0 0 70px ${member.glowColor}18` }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}1e`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.6),0 0 40px ${member.glowColor}08` }}>
+      {/* Top gradient accent */}
+      <div style={{ height:3, background:member.gradient, flexShrink:0 }} />
+      {/* Visual banner */}
+      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.16 }} />
+        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${member.glowColor}09 1px,transparent 1px),linear-gradient(90deg,${member.glowColor}09 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
+        <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:240, background:`radial-gradient(circle,${member.glowColor}2e 0%,transparent 65%)`, filter:'blur(36px)' }} />
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+        {/* Large initials circle */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ position:'relative' }}>
+            <div style={{ position:'absolute', inset:-12, borderRadius:'50%', background:`radial-gradient(circle,${member.glowColor}32 0%,transparent 70%)`, filter:'blur(14px)' }} />
+            <div style={{ width:104, height:104, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45,0 12px 40px rgba(0,0,0,0.55)`, position:'relative' }}>
+              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)', pointerEvents:'none' }} />
+              <span style={{ fontFamily:jak, fontWeight:900, fontSize:34, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{member.initials}</span>
+            </div>
+            <div style={{ position:'absolute', bottom:5, right:5, width:17, height:17, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
+          </div>
+        </div>
+      </div>
+      {/* Content */}
+      <div style={{ padding:'22px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ textAlign:'center', marginBottom:16 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5, lineHeight:1.2 }}>{member.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', background:member.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:4 }}>{member.position}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.6)' }}>{member.specialty}</div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}22,transparent)`, margin:'2px 0 16px' }} />
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom:20 }}>
+          {member.tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, fontFamily:jak, letterSpacing:'0.06em', background:`${member.glowColor}0f`, border:`1px solid ${member.glowColor}28`, color:member.glowColor, padding:'4px 10px', borderRadius:100 }}>{t}</span>)}
+        </div>
+        <div style={{ marginTop:'auto' }}><SocialRow member={member} /></div>
+      </div>
+    </div>
+  )
+}
+
+/* V1 — "Neural Blueprint": angled header slash + technical grid lines + initials in square */
+function MemberV1({ member }) {
+  return (
+    <div style={{ height:'100%', minHeight:480, display:'flex', flexDirection:'column',
+      background:'rgba(4,4,16,0.99)',
+      border:`1px solid ${member.glowColor}18`, borderRadius:22, overflow:'hidden',
+      boxShadow:`0 24px 64px rgba(0,0,0,0.6)`,
+      transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}40`; e.currentTarget.style.transform='translateY(-7px)' }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}18`; e.currentTarget.style.transform='translateY(0)' }}>
+      {/* Visual banner — diagonal slash design */}
+      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {/* Left gradient slab */}
+        <div style={{ position:'absolute', inset:0, background:member.gradient }} />
+        {/* Dark overlay diagonal */}
+        <div style={{ position:'absolute', inset:0, background:'rgba(4,4,16,0.88)', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
+        {/* Blueprint grid on dark side */}
+        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)`, backgroundSize:'24px 24px', clipPath:'polygon(46% 0,100% 0,100% 100%,36% 100%)' }} />
+        {/* Bottom fade */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:70, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
+        {/* Scan lines on gradient */}
+        <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)', clipPath:'polygon(0 0,46% 0,36% 100%,0 100%)' }} />
+        {/* Initials in left slab */}
+        <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'42%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <span style={{ fontFamily:jak, fontWeight:900, fontSize:56, color:'rgba(0,0,0,0.42)', letterSpacing:'-0.04em' }}>{member.initials}</span>
+        </div>
+        {/* Role text on right */}
+        <div style={{ position:'absolute', right:18, top:'50%', transform:'translateY(-50%)', textAlign:'right' }}>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', color:member.glowColor, marginBottom:6 }}>{member.position}</div>
+          <div style={{ height:2, width:28, background:member.glowColor, borderRadius:1, marginLeft:'auto', opacity:0.6 }} />
+        </div>
+        {/* Top bar */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
+      </div>
+      {/* Content */}
+      <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ marginBottom:16 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:4 }}>{member.name}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.55)' }}>{member.specialty}</div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,${member.glowColor}20,transparent)`, marginBottom:14 }} />
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:20 }}>
+          {member.tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, fontFamily:jak, letterSpacing:'0.06em', background:`${member.glowColor}0f`, border:`1px solid ${member.glowColor}28`, color:member.glowColor, padding:'4px 10px', borderRadius:100 }}>{t}</span>)}
+        </div>
+        <div style={{ marginTop:'auto', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:11.5, color:'rgba(140,160,190,0.5)', fontFamily:jak }}>
+            <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 6px #4ade80' }} /> Online
+          </div>
+          <SocialRow member={member} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* V2 — "Iris Scan": concentric circle radar in banner, centered */
+function MemberV2({ member }) {
+  return (
+    <div style={{ height:'100%', minHeight:480, display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg,rgba(5,5,20,0.99),rgba(3,3,14,0.98))',
+      border:`1px solid ${member.glowColor}18`, borderRadius:22, overflow:'hidden',
+      boxShadow:`0 24px 64px rgba(0,0,0,0.6)`,
+      transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.7),0 0 60px ${member.glowColor}14` }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}18`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.6)` }}>
+      {/* Visual banner — radar rings */}
+      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0, background:`radial-gradient(ellipse at 50% 60%, ${member.glowColor}14 0%, transparent 65%)` }}>
+        {/* Concentric rings */}
+        {[90,72,54,36,18].map((r,idx) => (
+          <div key={idx} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${member.glowColor}${['22','1c','16','10','0a'][idx]}` }} />
+        ))}
+        {/* Crosshair lines */}
+        <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}18,transparent)`, transform:'translateY(-50%)' }} />
+        <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${member.glowColor}18,transparent)`, transform:'translateX(-50%)' }} />
+        {/* Bottom fade */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
+        {/* Top bar */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
+        {/* Center initials */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:86, height:86, borderRadius:'50%', background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:`2px solid rgba(255,255,255,0.14)`, boxShadow:`0 0 40px ${member.glowColor}50,0 8px 32px rgba(0,0,0,0.5)` }}>
+            <span style={{ fontFamily:jak, fontWeight:900, fontSize:28, color:'#fff', letterSpacing:'-0.02em' }}>{member.initials}</span>
+          </div>
+        </div>
+        {/* Status dot */}
+        <div style={{ position:'absolute', top:'50%', left:'50%', transform:`translate(${86/2-6}px, ${86/2-6}px)`, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
+      </div>
+      {/* Content */}
+      <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ textAlign:'center', marginBottom:16 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{member.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', background:member.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:4 }}>{member.position}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.6)' }}>{member.specialty}</div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}22,transparent)`, margin:'2px 0 16px' }} />
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom:20 }}>
+          {member.tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, fontFamily:jak, letterSpacing:'0.06em', background:`${member.glowColor}0f`, border:`1px solid ${member.glowColor}28`, color:member.glowColor, padding:'4px 10px', borderRadius:100 }}>{t}</span>)}
+        </div>
+        <div style={{ marginTop:'auto' }}><SocialRow member={member} /></div>
+      </div>
+    </div>
+  )
+}
+
+/* V3 — "Side-Rail Hologram": thick glowing left rail + horizontal bands */
+function MemberV3({ member }) {
+  return (
+    <div style={{ height:'100%', minHeight:480, display:'flex',
+      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
+      border:`1px solid ${member.glowColor}18`, borderRadius:22, overflow:'hidden',
+      boxShadow:`0 24px 64px rgba(0,0,0,0.6)`,
+      transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}40`; e.currentTarget.style.transform='translateY(-7px)' }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}18`; e.currentTarget.style.transform='translateY(0)' }}>
+      {/* Left color rail */}
+      <div style={{ width:6, flexShrink:0, background:member.gradient, boxShadow:`4px 0 20px ${member.glowColor}30` }} />
+      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+        {/* Visual banner in right section */}
+        <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          <div style={{ position:'absolute', inset:0, background:member.gradient, opacity:0.12 }} />
+          {/* Horizontal bands */}
+          {[0,1,2,3].map(idx => <div key={idx} style={{ position:'absolute', left:0, right:0, top:`${idx*26}%`, height:'12%', background:`linear-gradient(90deg,${member.glowColor}06,${member.glowColor}12,${member.glowColor}06)` }} />)}
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+          {/* Large initials */}
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ position:'relative' }}>
+              <div style={{ width:108, height:108, borderRadius:24, background:member.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 50px ${member.glowColor}45`, transform:'rotate(-4deg)' }}>
+                <div style={{ position:'absolute', inset:0, borderRadius:22, background:'linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 55%)' }} />
+                <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(4deg)' }}>{member.initials}</span>
+              </div>
+              <div style={{ position:'absolute', bottom:2, right:2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 10px #4ade80' }} />
+            </div>
+          </div>
+        </div>
+        {/* Content */}
+        <div style={{ padding:'18px 22px 24px', display:'flex', flexDirection:'column', flex:1 }}>
+          <div style={{ marginBottom:14 }}>
+            <div style={{ fontFamily:jak, fontWeight:800, fontSize:18, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:4 }}>{member.name}</div>
+            <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.12em', textTransform:'uppercase', background:member.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{member.position}</div>
+            <div style={{ fontFamily:jak, fontSize:12, color:'rgba(140,160,190,0.6)' }}>{member.specialty}</div>
+          </div>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:16 }}>
+            {member.tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, fontFamily:jak, letterSpacing:'0.06em', background:`${member.glowColor}0f`, border:`1px solid ${member.glowColor}28`, color:member.glowColor, padding:'4px 10px', borderRadius:100 }}>{t}</span>)}
+          </div>
+          <div style={{ marginTop:'auto' }}><SocialRow member={member} /></div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* V4 — "Neon Architecture": HUD corner brackets + watermark number + large initials badge */
+function MemberV4({ member, i }) {
+  const br = { position:'absolute', width:20, height:20 }
+  return (
+    <div style={{ height:'100%', minHeight:480, display:'flex', flexDirection:'column',
+      background:'rgba(3,3,14,0.99)',
+      border:`1px solid ${member.glowColor}1c`, borderRadius:18, overflow:'hidden', position:'relative',
+      boxShadow:`0 24px 64px rgba(0,0,0,0.65)`,
+      transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)' }}
+      onMouseEnter={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}42`; e.currentTarget.style.transform='translateY(-7px)'; e.currentTarget.style.boxShadow=`0 40px 90px rgba(0,0,0,0.75),0 0 60px ${member.glowColor}16` }}
+      onMouseLeave={e=>{ e.currentTarget.style.borderColor=`${member.glowColor}1c`; e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 24px 64px rgba(0,0,0,0.65)` }}>
+      {/* Visual banner */}
+      <div style={{ height:200, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${member.glowColor}14` }}>
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% 60%, ${member.glowColor}18 0%, transparent 65%)` }} />
+        {/* Watermark index number */}
+        <div style={{ position:'absolute', right:16, bottom:-10, fontFamily:jak, fontWeight:900, fontSize:100, color:`${member.glowColor}09`, lineHeight:1, pointerEvents:'none', userSelect:'none' }}>{String(i+1).padStart(2,'0')}</div>
+        {/* HUD corner brackets */}
+        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55` }} />
+        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55` }} />
+        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${member.glowColor}55`, borderLeft:`2px solid ${member.glowColor}55` }} />
+        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${member.glowColor}55`, borderRight:`2px solid ${member.glowColor}55` }} />
+        {/* Center content */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
+          <div style={{ width:96, height:96, background:member.gradient, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 50px ${member.glowColor}50`, border:'2px solid rgba(255,255,255,0.12)' }}>
+            <div style={{ position:'absolute', width:96, height:96, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
+            <span style={{ fontFamily:jak, fontWeight:900, fontSize:30, color:'#fff', letterSpacing:'-0.02em', position:'relative' }}>{member.initials}</span>
+          </div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.22em', textTransform:'uppercase', color:`${member.glowColor}80` }}>RESEARCHER</div>
+        </div>
+        {/* Top bar */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:member.gradient }} />
+        {/* Status */}
+        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5, fontSize:9.5, color:`${member.glowColor}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase' }}>
+          <div style={{ width:6, height:6, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px #4ade80' }} /> ONLINE
+        </div>
+      </div>
+      {/* Content */}
+      <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ textAlign:'center', marginBottom:14 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{member.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.14em', textTransform:'uppercase', background:member.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{member.position}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.6)' }}>{member.specialty}</div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${member.glowColor}22,transparent)`, margin:'2px 0 16px' }} />
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom:20 }}>
+          {member.tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, fontFamily:jak, letterSpacing:'0.06em', background:`${member.glowColor}0f`, border:`1px solid ${member.glowColor}28`, color:member.glowColor, padding:'4px 10px', borderRadius:100 }}>{t}</span>)}
+        </div>
+        <div style={{ marginTop:'auto' }}><SocialRow member={member} /></div>
+      </div>
+    </div>
+  )
+}
+
+const MEMBER_HOME_VARIANTS = [MemberV0, MemberV1, MemberV2, MemberV3, MemberV4]
+
 function CoreMemberCard({ member, i }) {
+  const V = MEMBER_HOME_VARIANTS[i % MEMBER_HOME_VARIANTS.length]
   return (
     <motion.div
       initial={{ opacity:0, y:40, scale:0.95 }}
       whileInView={{ opacity:1, y:0, scale:1 }}
       viewport={{ once:true }}
       transition={{ delay: i * 0.07, duration: 0.65, ease: 'easeOut' }}
-      whileHover={{ y: -6, transition:{ duration:0.3 } }}
       style={{ height:'100%' }}
     >
-      <div style={{
-        height: '100%',
-        background: 'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
-        border: `1px solid ${member.glowColor}22`,
-        borderRadius: 20,
-        overflow: 'hidden',
-        position: 'relative',
-        backdropFilter: 'blur(32px)',
-        boxShadow: `0 0 0 1px rgba(255,255,255,0.025) inset, 0 24px 64px rgba(0,0,0,0.6), 0 0 40px ${member.glowColor}08`,
-        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
-        cursor: 'default',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = `${member.glowColor}44`
-        e.currentTarget.style.boxShadow = `0 0 0 1px rgba(255,255,255,0.04) inset, 0 32px 80px rgba(0,0,0,0.7), 0 0 60px ${member.glowColor}18`
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = `${member.glowColor}22`
-        e.currentTarget.style.boxShadow = `0 0 0 1px rgba(255,255,255,0.025) inset, 0 24px 64px rgba(0,0,0,0.6), 0 0 40px ${member.glowColor}08`
-      }}
-      >
-        {/* Top accent bar */}
-        <div style={{ height: 3, background: member.gradient, flexShrink: 0 }} />
-
-        {/* Subtle corner glow */}
-        <div style={{
-          position: 'absolute', top: -40, right: -40, width: 140, height: 140,
-          borderRadius: '50%', background: `radial-gradient(circle, ${member.glowColor}12 0%, transparent 70%)`,
-          pointerEvents: 'none',
-        }} />
-
-        {/* Content */}
-        <div style={{ padding: '28px 24px 24px', display:'flex', flexDirection:'column', flex:1 }}>
-
-          {/* Avatar */}
-          <div style={{ display:'flex', justifyContent:'center', marginBottom: 22 }}>
-            <div style={{ position: 'relative' }}>
-              {/* Outer glow ring */}
-              <div style={{
-                position: 'absolute', inset: -3,
-                borderRadius: '50%',
-                background: member.gradient,
-                opacity: 0.35,
-                filter: 'blur(6px)',
-              }} />
-              {/* Avatar circle */}
-              <div style={{
-                width: 88,
-                height: 88,
-                borderRadius: '50%',
-                background: member.gradient,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
-                boxShadow: `0 0 0 2px rgba(255,255,255,0.08), 0 8px 32px ${member.glowColor}30`,
-                border: `2px solid rgba(255,255,255,0.12)`,
-              }}>
-                {/* Shimmer overlay */}
-                <div style={{
-                  position: 'absolute', inset: 0, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%)',
-                  pointerEvents: 'none',
-                }} />
-                <span style={{
-                  fontFamily: '"Plus Jakarta Sans", sans-serif',
-                  fontWeight: 800,
-                  fontSize: 26,
-                  color: '#fff',
-                  letterSpacing: '-0.02em',
-                  textShadow: '0 2px 12px rgba(0,0,0,0.5)',
-                  position: 'relative',
-                  zIndex: 1,
-                }}>{member.initials}</span>
-              </div>
-              {/* Status dot */}
-              <div style={{
-                position: 'absolute', bottom: 4, right: 4,
-                width: 14, height: 14, borderRadius: '50%',
-                background: '#4ade80',
-                border: '2px solid #02020e',
-                boxShadow: '0 0 8px #4ade80',
-              }} />
-            </div>
-          </div>
-
-          {/* Name & Position */}
-          <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <div style={{
-              fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontWeight: 800,
-              fontSize: 17,
-              color: '#f0f6ff',
-              letterSpacing: '-0.02em',
-              marginBottom: 5,
-              lineHeight: 1.2,
-            }}>{member.name}</div>
-            <div style={{
-              fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontWeight: 700,
-              fontSize: 11.5,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              background: member.gradient,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              marginBottom: 4,
-            }}>{member.position}</div>
-            <div style={{
-              fontFamily: '"Plus Jakarta Sans", sans-serif',
-              fontSize: 12,
-              color: 'rgba(140,160,190,0.65)',
-              fontWeight: 500,
-            }}>{member.specialty}</div>
-          </div>
-
-          {/* Divider */}
-          <div style={{
-            height: 1,
-            background: `linear-gradient(90deg, transparent, ${member.glowColor}20, transparent)`,
-            marginBottom: 14,
-          }} />
-
-          {/* Tags */}
-          <div style={{ display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center', marginBottom: 18 }}>
-            {member.tags.map(tag => (
-              <span key={tag} style={{
-                fontSize: 10,
-                fontWeight: 600,
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
-                letterSpacing: '0.06em',
-                background: `${member.glowColor}0f`,
-                border: `1px solid ${member.glowColor}25`,
-                color: member.glowColor,
-                padding: '3px 9px',
-                borderRadius: 100,
-              }}>{tag}</span>
-            ))}
-          </div>
-
-          {/* Social links */}
-          <div style={{ display:'flex', gap:8, justifyContent:'center', marginTop:'auto' }}>
-            <a href={member.github} aria-label={`${member.name} GitHub profile`} style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              display: 'flex', alignItems:'center', justifyContent:'center',
-              color: 'rgba(160,180,210,0.7)',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.08)'; e.currentTarget.style.color='#e8eef8' }}
-            onMouseLeave={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.04)'; e.currentTarget.style.color='rgba(160,180,210,0.7)' }}>
-              <Github style={{ width:14, height:14 }} />
-            </a>
-            <a href={member.linkedin} aria-label={`${member.name} LinkedIn profile`} style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              display: 'flex', alignItems:'center', justifyContent:'center',
-              color: 'rgba(160,180,210,0.7)',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.08)'; e.currentTarget.style.color='#e8eef8' }}
-            onMouseLeave={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.04)'; e.currentTarget.style.color='rgba(160,180,210,0.7)' }}>
-              <Linkedin style={{ width:14, height:14 }} />
-            </a>
-            <a href={member.website || member.github} aria-label={`${member.name} personal website`} style={{
-              width: 34, height: 34, borderRadius: 10,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              display: 'flex', alignItems:'center', justifyContent:'center',
-              color: 'rgba(160,180,210,0.7)',
-              transition: 'all 0.2s ease',
-            }}
-            onMouseEnter={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.08)'; e.currentTarget.style.color='#e8eef8' }}
-            onMouseLeave={e=>{ e.currentTarget.style.background='rgba(255,255,255,0.04)'; e.currentTarget.style.color='rgba(160,180,210,0.7)' }}>
-              <Globe style={{ width:14, height:14 }} />
-            </a>
-          </div>
-        </div>
-      </div>
+      <V member={member} i={i} />
     </motion.div>
   )
 }

@@ -61,204 +61,230 @@ const FACES = [
   },
 ]
 
-/* ─── Shared bits ─────────────────────────────────────────────────────────── */
+/* ─── Shared ──────────────────────────────────────────────────────────────── */
 const jak = '"Plus Jakarta Sans",sans-serif'
 
-function TagPills({ tags, glow, size='sm' }) {
+function Tags({ tags, glow }) {
   return (
-    <div style={{ display:'flex', flexWrap:'wrap', gap:5 }}>
-      {tags.map(t => (
-        <span key={t} style={{
-          fontSize: size==='sm' ? 9.5 : 10, fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase',
-          fontFamily:jak, padding:'3px 9px', borderRadius:100,
-          background:`${glow}0c`, border:`1px solid ${glow}22`, color:glow,
-        }}>{t}</span>
-      ))}
+    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+      {tags.map(t => <span key={t} style={{ fontSize:10, fontWeight:700, letterSpacing:'0.07em', textTransform:'uppercase', fontFamily:jak, padding:'4px 10px', borderRadius:100, background:`${glow}0d`, border:`1px solid ${glow}24`, color:glow }}>{t}</span>)}
     </div>
   )
 }
 
-/* ─── VARIANT 0 — "Aurora Glass": classic centered glass card ──────────────── */
-function CardAurora({ p, hov }) {
+/* ─── VARIANT 0 — "Grand Portrait": full-bleed gradient banner, giant circle ── */
+function CardAurora({ p }) {
   return (
-    <>
-      <div style={{ height:3, background:p.gradient, flexShrink:0 }} />
-      <div style={{ position:'absolute', top:-50, right:-50, width:160, height:160, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}0e 0%,transparent 70%)`, pointerEvents:'none' }} />
-      <div style={{ padding:'28px 26px 24px', flex:1, display:'flex', flexDirection:'column' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:22 }}>
-          <div style={{ position:'relative', flexShrink:0 }}>
-            <div style={{ position:'absolute', inset:-3, borderRadius:'50%', background:p.gradient, opacity:0.3, filter:'blur(6px)' }} />
-            <div style={{
-              width:72, height:72, borderRadius:'50%', background:p.gradient,
-              display:'flex', alignItems:'center', justifyContent:'center', position:'relative',
-              border:'2px solid rgba(255,255,255,0.1)', boxShadow:`0 4px 20px ${p.glow}30`,
-            }}>
-              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 55%)', pointerEvents:'none' }} />
-              <span style={{ fontFamily:jak, fontWeight:800, fontSize:22, color:'#fff', letterSpacing:'-0.02em' }}>{p.initials}</span>
+    <div style={{ height:'100%', display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))' }}>
+      {/* Full-bleed banner 220px */}
+      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        <div style={{ position:'absolute', inset:0, background:p.gradient, opacity:0.18 }} />
+        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${p.glow}09 1px,transparent 1px),linear-gradient(90deg,${p.glow}09 1px,transparent 1px)`, backgroundSize:'30px 30px' }} />
+        <div style={{ position:'absolute', top:-20, left:'50%', transform:'translateX(-50%)', width:360, height:260, background:`radial-gradient(circle,${p.glow}30 0%,transparent 65%)`, filter:'blur(40px)' }} />
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:100, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
+        {/* Large circle */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ position:'relative' }}>
+            <div style={{ position:'absolute', inset:-14, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}35 0%,transparent 70%)`, filter:'blur(16px)' }} />
+            <div style={{ width:112, height:112, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.15)', boxShadow:`0 0 60px ${p.glow}50,0 16px 48px rgba(0,0,0,0.6)`, position:'relative' }}>
+              <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.22) 0%,transparent 55%)' }} />
+              <span style={{ fontFamily:jak, fontWeight:900, fontSize:36, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
             </div>
-            <div style={{ position:'absolute', bottom:3, right:3, width:13, height:13, borderRadius:'50%', background:'#4ade80', border:'2px solid #02020e', boxShadow:'0 0 8px #4ade80' }} />
-          </div>
-          <div>
-            <div style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#f0f6ff', letterSpacing:'-0.02em', lineHeight:1.2 }}>{p.name}</div>
-            <div style={{ fontFamily:jak, fontWeight:700, fontSize:10.5, letterSpacing:'0.12em', textTransform:'uppercase', background:p.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginTop:3 }}>{p.position}</div>
-            <div style={{ fontFamily:jak, fontSize:11.5, color:'rgba(140,160,190,0.55)', marginTop:2 }}>{p.specialty}</div>
+            <div style={{ position:'absolute', bottom:5, right:5, width:18, height:18, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 14px #4ade80' }} />
           </div>
         </div>
-        <div style={{ height:1, background:`linear-gradient(90deg,${p.glow}18,transparent)`, marginBottom:18 }} />
-        <div style={{ position:'relative', flex:1 }}>
-          <Quote style={{ width:18, height:18, color:p.glow, opacity:0.4, position:'absolute', top:-4, left:-2 }} />
-          <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', paddingLeft:22, fontStyle:'italic', display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
-        </div>
-        <div style={{ marginTop:18 }}><TagPills tags={p.tags} glow={p.glow} /></div>
       </div>
-    </>
-  )
-}
-
-/* ─── VARIANT 1 — "Angular Cut": clipped corner, banded header ─────────────── */
-function CardAngular({ p, hov }) {
-  return (
-    <div style={{
-      clipPath:'polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%)',
-      background:'linear-gradient(160deg,rgba(8,8,26,0.99),rgba(4,4,18,0.97))',
-      height:'100%', display:'flex', flexDirection:'column', position:'relative',
-    }}>
-      <div style={{ position:'absolute', top:0, right:0, width:34, height:34, background:p.gradient, opacity:0.9, clipPath:'polygon(100% 0, 0 0, 100% 100%)' }} />
-      <div style={{ position:'absolute', top:-40, left:-40, width:140, height:140, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}12 0%,transparent 70%)`, pointerEvents:'none' }} />
-      <div style={{ padding:'24px 24px 0', display:'flex', flexDirection:'column', flex:1 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:18 }}>
-          <div style={{
-            width:58, height:58, flexShrink:0, borderRadius:14, background:p.gradient,
-            display:'flex', alignItems:'center', justifyContent:'center',
-            border:'1px solid rgba(255,255,255,0.12)', boxShadow: hov ? `0 8px 28px ${p.glow}45` : `0 4px 16px ${p.glow}25`,
-            transform: hov ? 'rotate(-4deg) scale(1.04)' : 'rotate(0deg)', transition:'all 0.35s ease',
-          }}>
-            <span style={{ fontFamily:jak, fontWeight:800, fontSize:18, color:'#fff' }}>{p.initials}</span>
-          </div>
-          <div style={{ borderLeft:`2px solid ${p.glow}30`, paddingLeft:14 }}>
-            <div style={{ fontFamily:jak, fontWeight:800, fontSize:15.5, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{p.name}</div>
-            <div style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:p.glow, marginTop:3 }}>{p.position}</div>
-          </div>
-        </div>
-        <div style={{ fontSize:11, fontFamily:jak, color:'rgba(140,160,190,0.6)', marginBottom:14, display:'flex', alignItems:'center', gap:6 }}>
-          <Zap style={{ width:12, height:12, color:p.glow }} /> {p.specialty}
-        </div>
-        <p style={{ fontFamily:jak, fontSize:12.5, lineHeight:1.7, color:'rgba(180,195,215,0.8)', fontStyle:'italic', flex:1, display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>&ldquo;{p.quote}&rdquo;</p>
-      </div>
-      <div style={{ padding:'16px 24px 26px', marginTop:14, background:`linear-gradient(180deg,transparent,${p.glow}08)` }}>
-        <TagPills tags={p.tags} glow={p.glow} />
-      </div>
-    </div>
-  )
-}
-
-/* ─── VARIANT 2 — "Hex Beacon": hexagon avatar, side spine ─────────────────── */
-function CardHex({ p, hov }) {
-  return (
-    <div style={{ display:'flex', height:'100%', background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(4,4,18,0.97))' }}>
-      <div style={{ width:6, flexShrink:0, background:p.gradient }} />
-      <div style={{ flex:1, padding:'28px 24px', display:'flex', flexDirection:'column', position:'relative', overflow:'hidden' }}>
-        <div style={{ position:'absolute', top:-60, right:-60, width:180, height:180, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}10 0%,transparent 70%)`, pointerEvents:'none' }} />
-        <div style={{ display:'flex', justifyContent:'center', marginBottom:18 }}>
-          <div style={{ position:'relative', width:80, height:88 }}>
-            <div style={{ position:'absolute', inset:-6, background:p.gradient, opacity:0.35, filter:'blur(10px)', clipPath:'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }} />
-            <div style={{
-              position:'absolute', inset:0, background:p.gradient, clipPath:'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-              display:'flex', alignItems:'center', justifyContent:'center', transform: hov?'scale(1.06)':'scale(1)', transition:'transform 0.35s ease',
-              border:'1px solid rgba(255,255,255,0.15)',
-            }}>
-              <span style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#fff' }}>{p.initials}</span>
-            </div>
-          </div>
-        </div>
+      {/* Content */}
+      <div style={{ padding:'22px 26px 28px', display:'flex', flexDirection:'column', flex:1 }}>
         <div style={{ textAlign:'center', marginBottom:16 }}>
-          <div style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{p.name}</div>
-          <div style={{ fontFamily:jak, fontWeight:700, fontSize:10.5, letterSpacing:'0.12em', textTransform:'uppercase', color:p.glow, marginTop:4 }}>{p.position}</div>
-          <div style={{ fontFamily:jak, fontSize:11, color:'rgba(140,160,190,0.55)', marginTop:3 }}>{p.specialty}</div>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{p.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', background:p.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:4 }}>{p.position}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.58)' }}>{p.specialty}</div>
         </div>
-        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${p.glow}30,transparent)`, marginBottom:16 }} />
-        <p style={{ fontFamily:jak, fontSize:12.5, lineHeight:1.7, color:'rgba(180,195,215,0.8)', textAlign:'center', fontStyle:'italic', flex:1, display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
-        <div style={{ display:'flex', justifyContent:'center', marginTop:16 }}><TagPills tags={p.tags} glow={p.glow} /></div>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${p.glow}22,transparent)`, margin:'4px 0 16px' }} />
+        <div style={{ position:'relative', flex:1, marginBottom:18 }}>
+          <Quote style={{ width:18, height:18, color:p.glow, opacity:0.38, position:'absolute', top:-2, left:-2 }} />
+          <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', paddingLeft:22, fontStyle:'italic', display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
+        </div>
+        <Tags tags={p.tags} glow={p.glow} />
       </div>
     </div>
   )
 }
 
-/* ─── VARIANT 3 — "Side Rail": vertical label rail + content ───────────────── */
-function CardRail({ p, hov }) {
+/* ─── VARIANT 1 — "Cinematic Slash": diagonal color cut, watermark name ──────── */
+function CardAngular({ p }) {
   return (
-    <div style={{ display:'flex', height:'100%', background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(4,4,18,0.97))', position:'relative', overflow:'hidden' }}>
-      <div style={{
-        width:44, flexShrink:0, background:`linear-gradient(180deg,${p.glow}20,${p.glow}05)`,
-        borderRight:`1px solid ${p.glow}22`, display:'flex', alignItems:'center', justifyContent:'center', padding:'20px 0',
-      }}>
-        <span style={{
-          fontFamily:jak, fontWeight:800, fontSize:10.5, letterSpacing:'0.25em', textTransform:'uppercase',
-          color:p.glow, writingMode:'vertical-rl', transform:'rotate(180deg)', whiteSpace:'nowrap',
-        }}>{p.position}</span>
+    <div style={{ height:'100%', display:'flex', flexDirection:'column', background:'rgba(4,4,16,0.99)', position:'relative' }}>
+      {/* Banner with diagonal slash */}
+      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {/* Full gradient fill */}
+        <div style={{ position:'absolute', inset:0, background:p.gradient }} />
+        {/* Dark overlay diagonal right */}
+        <div style={{ position:'absolute', inset:0, background:'linear-gradient(160deg,rgba(4,4,16,0) 0%,rgba(4,4,16,0.9) 100%)', clipPath:'polygon(42% 0,100% 0,100% 100%,30% 100%)' }} />
+        {/* Scan lines */}
+        <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(0,0,0,0.1) 5px,rgba(0,0,0,0.1) 6px)' }} />
+        {/* Bottom fade */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(4,4,16,0.99),transparent)' }} />
+        {/* Giant watermark initials */}
+        <div style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)' }}>
+          <span style={{ fontFamily:jak, fontWeight:900, fontSize:96, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em', display:'block' }}>{p.initials}</span>
+        </div>
+        {/* Role badge top-right */}
+        <div style={{ position:'absolute', top:18, right:18, zIndex:2 }}>
+          <span style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.75)', background:'rgba(0,0,0,0.35)', border:'1px solid rgba(255,255,255,0.15)', padding:'4px 10px', borderRadius:100 }}>{p.position}</span>
+        </div>
+        {/* Shimmer border on gradient side */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
       </div>
-      <div style={{ position:'absolute', bottom:-40, right:-40, width:140, height:140, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}0e 0%,transparent 70%)`, pointerEvents:'none' }} />
-      <div style={{ flex:1, padding:'24px 22px', display:'flex', flexDirection:'column' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:16 }}>
-          <div style={{
-            width:52, height:52, borderRadius:12, flexShrink:0, background:p.gradient,
-            display:'flex', alignItems:'center', justifyContent:'center', border:'1px solid rgba(255,255,255,0.1)',
-            boxShadow: hov ? `0 6px 22px ${p.glow}40` : `0 3px 12px ${p.glow}20`,
-          }}>
-            <span style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#fff' }}>{p.initials}</span>
-          </div>
-          <div>
-            <div style={{ fontFamily:jak, fontWeight:800, fontSize:15, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{p.name}</div>
-            <div style={{ fontFamily:jak, fontSize:11, color:'rgba(140,160,190,0.55)', marginTop:2 }}>{p.specialty}</div>
+      {/* Content */}
+      <div style={{ padding:'18px 24px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ marginBottom:14 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:3 }}>{p.name}</div>
+          <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.58)', fontFamily:jak }}>
+            <Zap style={{ width:11, height:11, color:p.glow }} />{p.specialty}
           </div>
         </div>
-        <p style={{ fontFamily:jak, fontSize:12.5, lineHeight:1.7, color:'rgba(180,195,215,0.8)', fontStyle:'italic', flex:1, marginBottom:14, display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
-        <TagPills tags={p.tags} glow={p.glow} />
+        <div style={{ height:1, background:`linear-gradient(90deg,${p.glow}20,transparent)`, marginBottom:14 }} />
+        <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', fontStyle:'italic', flex:1, marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>&ldquo;{p.quote}&rdquo;</p>
+        <Tags tags={p.tags} glow={p.glow} />
       </div>
     </div>
   )
 }
 
-/* ─── VARIANT 4 — "Prism Overlap": floating avatar, shimmer border ─────────── */
-function CardPrism({ p, hov, uid }) {
+/* ─── VARIANT 2 — "Radar Iris": concentric rings banner, centered portrait ───── */
+function CardHex({ p }) {
   return (
-    <div style={{
-      height:'100%', position:'relative', paddingTop:38,
-      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(4,4,18,0.97))',
-      border:'1px solid transparent', backgroundClip:'padding-box',
-    }}>
-      <style>{`
-        @keyframes shimmer_${uid} { 0%{ background-position:0% 50%; } 100%{ background-position:200% 50%; } }
-      `}</style>
-      <div style={{
-        position:'absolute', inset:0, borderRadius:'inherit', padding:1, zIndex:0,
-        background:`linear-gradient(120deg, ${p.glow}55, transparent 30%, transparent 70%, ${p.glow}55)`,
-        backgroundSize:'220% 220%', animation:`shimmer_${uid} 4s linear infinite`,
-        WebkitMask:'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-        WebkitMaskComposite:'xor', maskComposite:'exclude', pointerEvents:'none',
-      }} />
-      <div style={{ position:'absolute', top:-34, left:'50%', transform:'translateX(-50%)', zIndex:2 }}>
-        <div style={{ position:'relative' }}>
-          <div style={{ position:'absolute', inset:-6, borderRadius:'50%', background:p.gradient, opacity:0.4, filter:'blur(10px)' }} />
-          <div style={{
-            width:68, height:68, borderRadius:'50%', background:p.gradient, position:'relative',
-            display:'flex', alignItems:'center', justifyContent:'center', border:'3px solid #050514',
-            boxShadow: hov ? `0 8px 26px ${p.glow}50` : `0 4px 16px ${p.glow}30`,
-            transform: hov ? 'translateY(-3px)' : 'translateY(0)', transition:'transform 0.3s ease',
-          }}>
-            <span style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#fff' }}>{p.initials}</span>
+    <div style={{ height:'100%', display:'flex', flexDirection:'column',
+      background:'linear-gradient(160deg,rgba(5,5,20,0.99),rgba(3,3,14,0.98))' }}>
+      {/* Radar banner */}
+      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0, background:`radial-gradient(ellipse at 50% 60%,${p.glow}16 0%,transparent 65%)` }}>
+        {/* Concentric rings */}
+        {[100,80,60,40,20].map((r,i) => <div key={i} style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%,-50%)', width:r*2, height:r*2, borderRadius:'50%', border:`1px solid ${p.glow}${['24','1c','14','0e','08'][i]}` }} />)}
+        {/* Crosshair */}
+        <div style={{ position:'absolute', top:'50%', left:0, right:0, height:1, background:`linear-gradient(90deg,transparent,${p.glow}1c,transparent)`, transform:'translateY(-50%)' }} />
+        <div style={{ position:'absolute', top:0, bottom:0, left:'50%', width:1, background:`linear-gradient(180deg,transparent,${p.glow}1c,transparent)`, transform:'translateX(-50%)' }} />
+        {/* Bottom fade */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(5,5,20,0.99),transparent)' }} />
+        {/* Top bar */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
+        {/* Centered avatar */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:96, height:96, borderRadius:'50%', background:p.gradient, display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}55,0 12px 40px rgba(0,0,0,0.55)` }}>
+            <span style={{ fontFamily:jak, fontWeight:900, fontSize:30, color:'#fff', letterSpacing:'-0.02em' }}>{p.initials}</span>
           </div>
         </div>
+        <div style={{ position:'absolute', top:'50%', left:'50%', transform:`translate(${96/2-5}px,${96/2-5}px)`, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #050514', boxShadow:'0 0 10px #4ade80' }} />
       </div>
+      {/* Content */}
+      <div style={{ padding:'20px 26px 26px', display:'flex', flexDirection:'column', flex:1 }}>
+        <div style={{ textAlign:'center', marginBottom:14 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:5 }}>{p.name}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.15em', textTransform:'uppercase', background:p.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{p.position}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.55)' }}>{p.specialty}</div>
+        </div>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${p.glow}22,transparent)`, marginBottom:14 }} />
+        <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', fontStyle:'italic', flex:1, textAlign:'center', marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
+        <div style={{ display:'flex', justifyContent:'center' }}><Tags tags={p.tags} glow={p.glow} /></div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 3 — "Spectrum Rail": wide left gradient rail + editorial layout ── */
+function CardRail({ p }) {
+  return (
+    <div style={{ height:'100%', display:'flex',
+      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))' }}>
+      {/* Left rail */}
+      <div style={{ width:8, flexShrink:0, background:p.gradient, boxShadow:`4px 0 24px ${p.glow}30` }} />
+      <div style={{ flex:1, display:'flex', flexDirection:'column', overflow:'hidden' }}>
+        {/* Banner */}
+        <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0 }}>
+          <div style={{ position:'absolute', inset:0, background:p.gradient, opacity:0.13 }} />
+          {/* Horizontal scan bands */}
+          {[0,1,2,3].map(i => <div key={i} style={{ position:'absolute', left:0, right:0, top:`${i*26}%`, height:'10%', background:`linear-gradient(90deg,${p.glow}08,${p.glow}14,${p.glow}08)` }} />)}
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+          {/* Initials - rotated square */}
+          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ position:'relative' }}>
+              <div style={{ width:116, height:116, background:p.gradient, borderRadius:28, display:'flex', alignItems:'center', justifyContent:'center', transform:'rotate(-6deg)', border:'2px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}50,0 16px 50px rgba(0,0,0,0.6)` }}>
+                <div style={{ position:'absolute', inset:0, borderRadius:26, background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
+                <span style={{ fontFamily:jak, fontWeight:900, fontSize:38, color:'#fff', letterSpacing:'-0.02em', transform:'rotate(6deg)', position:'relative', zIndex:1 }}>{p.initials}</span>
+              </div>
+              <div style={{ position:'absolute', bottom:2, right:-2, width:16, height:16, borderRadius:'50%', background:'#4ade80', border:'2.5px solid #060618', boxShadow:'0 0 12px #4ade80' }} />
+            </div>
+          </div>
+        </div>
+        {/* Content */}
+        <div style={{ padding:'18px 22px 24px', display:'flex', flexDirection:'column', flex:1 }}>
+          <div style={{ marginBottom:12 }}>
+            <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:3 }}>{p.name}</div>
+            <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', background:p.gradient, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{p.position}</div>
+            <div style={{ fontFamily:jak, fontSize:12, color:'rgba(140,160,190,0.55)' }}>{p.specialty}</div>
+          </div>
+          <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.7, color:'rgba(180,195,215,0.8)', fontStyle:'italic', flex:1, marginBottom:16, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
+          <Tags tags={p.tags} glow={p.glow} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── VARIANT 4 — "HUD Portrait": bracket corners, number watermark, neon glow ─ */
+function CardPrism({ p, uid }) {
+  const br = { position:'absolute', width:20, height:20 }
+  return (
+    <div style={{ height:'100%', display:'flex', flexDirection:'column',
+      background:'rgba(3,3,14,0.99)', position:'relative' }}>
+      <style>{`@keyframes shimmer_m${uid}{0%{background-position:0% 50%}100%{background-position:200% 50%}}`}</style>
+      {/* Animated shimmer border */}
+      <div style={{ position:'absolute', inset:0, borderRadius:'inherit', padding:1, zIndex:0,
+        background:`linear-gradient(120deg,${p.glow}55,transparent 30%,transparent 70%,${p.glow}55)`,
+        backgroundSize:'220% 220%', animation:`shimmer_m${uid} 5s linear infinite`,
+        WebkitMask:'linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0)',
+        WebkitMaskComposite:'xor', maskComposite:'exclude', pointerEvents:'none' }} />
+      {/* Banner */}
+      <div style={{ height:220, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${p.glow}14` }}>
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(circle at 50% 60%,${p.glow}1c 0%,transparent 65%)` }} />
+        {/* Watermark number */}
+        <div style={{ position:'absolute', right:12, bottom:-8, fontFamily:jak, fontWeight:900, fontSize:110, color:`${p.glow}09`, lineHeight:1, userSelect:'none', pointerEvents:'none' }}>{String(uid+1).padStart(2,'0')}</div>
+        {/* HUD brackets */}
+        <div style={{ ...br, top:14, left:14, borderTop:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55` }} />
+        <div style={{ ...br, top:14, right:14, borderTop:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55` }} />
+        <div style={{ ...br, bottom:14, left:14, borderBottom:`2px solid ${p.glow}55`, borderLeft:`2px solid ${p.glow}55` }} />
+        <div style={{ ...br, bottom:14, right:14, borderBottom:`2px solid ${p.glow}55`, borderRight:`2px solid ${p.glow}55` }} />
+        {/* Bottom fade */}
+        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(3,3,14,0.99),transparent)' }} />
+        {/* Top bar */}
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:p.gradient }} />
+        {/* Center */}
+        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:10 }}>
+          <div style={{ width:100, height:100, background:p.gradient, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', border:'2.5px solid rgba(255,255,255,0.14)', boxShadow:`0 0 60px ${p.glow}55,0 12px 40px rgba(0,0,0,0.55)` }}>
+            <div style={{ position:'absolute', width:100, height:100, borderRadius:'50%', background:'linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 55%)' }} />
+            <span style={{ fontFamily:jak, fontWeight:900, fontSize:32, color:'#fff', letterSpacing:'-0.02em', position:'relative', zIndex:1 }}>{p.initials}</span>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:5, fontSize:10, color:`${p.glow}80`, fontFamily:jak, fontWeight:700, letterSpacing:'0.18em', textTransform:'uppercase' }}>
+            <Sparkles style={{ width:10, height:10 }} />{p.position}
+          </div>
+        </div>
+        {/* Online indicator */}
+        <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:5 }}>
+          <div style={{ width:7, height:7, borderRadius:'50%', background:'#4ade80', boxShadow:'0 0 8px #4ade80' }} />
+          <span style={{ fontFamily:jak, fontSize:9.5, color:'rgba(74,222,128,0.7)', fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase' }}>Online</span>
+        </div>
+      </div>
+      {/* Content */}
       <div style={{ padding:'20px 24px 26px', display:'flex', flexDirection:'column', flex:1, position:'relative', zIndex:1 }}>
         <div style={{ textAlign:'center', marginBottom:14 }}>
-          <div style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{p.name}</div>
-          <div style={{ display:'inline-flex', alignItems:'center', gap:5, fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.12em', textTransform:'uppercase', color:p.glow, marginTop:4 }}>
-            <Sparkles style={{ width:11, height:11 }} /> {p.position}
-          </div>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:20, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:4 }}>{p.name}</div>
+          <div style={{ fontFamily:jak, fontSize:12.5, color:'rgba(140,160,190,0.55)' }}>{p.specialty}</div>
         </div>
-        <p style={{ fontFamily:jak, fontSize:12.5, lineHeight:1.7, color:'rgba(180,195,215,0.8)', textAlign:'center', fontStyle:'italic', flex:1, marginBottom:16, display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
-        <div style={{ display:'flex', justifyContent:'center' }}><TagPills tags={p.tags} glow={p.glow} /></div>
+        <p style={{ fontFamily:jak, fontSize:13, lineHeight:1.72, color:'rgba(180,195,215,0.82)', textAlign:'center', fontStyle:'italic', flex:1, marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{p.quote}</p>
+        <div style={{ display:'flex', justifyContent:'center' }}><Tags tags={p.tags} glow={p.glow} /></div>
       </div>
     </div>
   )
@@ -266,10 +292,9 @@ function CardPrism({ p, hov, uid }) {
 
 const VARIANTS = [CardAurora, CardAngular, CardHex, CardRail, CardPrism]
 
-/* ─── Individual face card ───────────────────────────────────────────────── */
 function FaceCard({ p, i }) {
   const [hov, setHov] = useState(false)
-  const Variant = VARIANTS[i % VARIANTS.length]
+  const V = VARIANTS[i % VARIANTS.length]
   return (
     <motion.div
       initial={{ opacity:0, y:32 }}
@@ -279,19 +304,15 @@ function FaceCard({ p, i }) {
       onMouseEnter={()=>setHov(true)}
       onMouseLeave={()=>setHov(false)}
       style={{
-        flexShrink:0, width:320, minHeight:400,
         borderRadius:22, overflow:'hidden',
-        border:`1px solid ${hov ? p.glow+'32' : p.glow+'12'}`,
-        boxShadow: hov
-          ? `0 28px 72px rgba(0,0,0,0.65), 0 0 60px ${p.glow}10`
-          : `0 12px 40px rgba(0,0,0,0.45)`,
-        transform: hov ? 'translateY(-6px)' : 'translateY(0)',
+        border:`1px solid ${hov ? p.glow+'38' : p.glow+'12'}`,
+        boxShadow: hov ? `0 36px 88px rgba(0,0,0,0.7),0 0 70px ${p.glow}14` : `0 16px 48px rgba(0,0,0,0.5)`,
+        transform: hov ? 'translateY(-8px)' : 'translateY(0)',
         transition:'all 0.35s cubic-bezier(0.22,1,0.36,1)',
-        display:'flex', flexDirection:'column',
-        position:'relative',
+        display:'flex', flexDirection:'column', position:'relative', minHeight:520,
       }}
     >
-      <Variant p={p} hov={hov} uid={i} />
+      <V p={p} hov={hov} uid={i} />
     </motion.div>
   )
 }
