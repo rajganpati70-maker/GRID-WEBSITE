@@ -8,7 +8,74 @@ import {
 import axios from 'axios'
 import FloatingLogos from '../components/FloatingLogos'
 
-/* ─── ML Event data ──────────────────────────────────────────────────────── */
+/* ─── Real GRID events ───────────────────────────────────────────────────── */
+const GRID_EVENTS = [
+  /* ── UPCOMING ── */
+  {
+    id: 100,
+    title: 'GRID × AlgoRand — Blockchain Meets AI',
+    type: 'Session',
+    date: '2026-07-12',
+    time: '8:00 PM IST',
+    location: 'Online · Google Meet',
+    attendees: 0,
+    upcoming: true,
+    desc: 'GRID Community partners with AlgoRand for an exclusive session on the intersection of Blockchain and Artificial Intelligence. Limited seats — register early.',
+    tags: ['Blockchain', 'AlgoRand', 'AI', 'Web3'],
+    icon: Zap,
+    accentColor: '#00d4ff',
+    accentGrad: 'linear-gradient(135deg, #0052cc, #00d4ff)',
+    poster: null,
+  },
+  /* ── PAST (newest first) ── */
+  {
+    id: 103,
+    title: 'From Neurons to Intelligence — 2-Day ML Session',
+    type: 'Session',
+    date: '2026-06-26',
+    time: '8:00 PM – 9:00 PM IST',
+    location: 'Online · Google Meet',
+    attendees: 0,
+    desc: '#NeuralNexus2026 — 2 days of ML from fundamentals to real-world project deployment. Day 1: LLMs & Generative AI (Sarmistha Ghosh, AI/ML Expert). Day 2: Build & Deploy AI Project (Rahul Pal, ML Engineer). Free registration, limited seats.',
+    tags: ['Machine Learning', 'LLMs', 'Gen AI', 'Free'],
+    icon: Brain,
+    accentColor: '#7b2fff',
+    accentGrad: 'linear-gradient(135deg, #7b2fff, #ec4899)',
+    poster: '/events/event-ml.png',
+  },
+  {
+    id: 102,
+    title: 'Full Stack Web Development — Frontend to Production',
+    type: 'Session',
+    date: '2026-06-07',
+    time: '8:00 PM – 9:30 PM IST',
+    location: 'Online Session (Live)',
+    attendees: 0,
+    desc: 'Speaker: Sulagna Ghosh — Solutions Engineer & PM @ Creowis, Lead Organizer @ React Kolkata. Learn the complete dev workflow: modern full-stack architecture, React & Node.js best practices, production deployment, and open source career insights.',
+    tags: ['Full Stack', 'React', 'Node.js', 'Production'],
+    icon: GitBranch,
+    accentColor: '#00d4ff',
+    accentGrad: 'linear-gradient(135deg, #0066ff, #00d4ff)',
+    poster: '/events/event-fullstack.png',
+  },
+  {
+    id: 101,
+    title: 'Building Smart Web Apps — Firebase & Gemini AI',
+    type: 'Session',
+    date: '2026-05-25',
+    time: '8:00 PM – 9:30 PM IST',
+    location: 'Online Session',
+    attendees: 0,
+    desc: "GRID's very first event! Speaker: Debajit Mallick — Software Engineer @Ergeon, Organizer @GDG Siliguri & React Siliguri. Build real AI-powered apps using Firebase Auth, Firestore, Gemini AI, hosting & deployment. From Beginner to Builder.",
+    tags: ['Firebase', 'Gemini AI', 'Web Dev', 'Beginner Friendly'],
+    icon: Zap,
+    accentColor: '#ec4899',
+    accentGrad: 'linear-gradient(135deg, #ec4899, #7b2fff)',
+    poster: '/events/event-firebase.png',
+  },
+]
+
+/* ─── Other ML Event data ────────────────────────────────────────────────── */
 const MOCK_EVENTS = [
   {
     id: 1,
@@ -23,6 +90,7 @@ const MOCK_EVENTS = [
     icon: Trophy,
     accentColor: '#00d4ff',
     accentGrad: 'linear-gradient(135deg, #0052cc, #00d4ff)',
+    poster: null,
   },
   {
     id: 2,
@@ -37,6 +105,7 @@ const MOCK_EVENTS = [
     icon: Brain,
     accentColor: '#7b2fff',
     accentGrad: 'linear-gradient(135deg, #7b2fff, #00d4ff)',
+    poster: null,
   },
   {
     id: 3,
@@ -51,54 +120,14 @@ const MOCK_EVENTS = [
     icon: Star,
     accentColor: '#0066ff',
     accentGrad: 'linear-gradient(135deg, #0066ff, #7b2fff)',
-  },
-  {
-    id: 4,
-    title: 'MLOps Production Bootcamp',
-    type: 'Workshop',
-    date: '2025-08-10',
-    time: '11:00 AM UTC',
-    location: 'Online · Interactive',
-    attendees: 480,
-    desc: 'Model serving, experiment tracking with MLflow, distributed training on multi-GPU clusters, and CI/CD pipelines for ML. Real battle-tested patterns from production.',
-    tags: ['MLOps', 'Kubernetes', 'MLflow', 'Production'],
-    icon: Cpu,
-    accentColor: '#ec4899',
-    accentGrad: 'linear-gradient(135deg, #ec4899, #7b2fff)',
-  },
-  {
-    id: 5,
-    title: 'NLP Research Paper Club — Season 4',
-    type: 'Study Group',
-    date: '2025-07-28',
-    time: '07:00 PM UTC',
-    location: 'Online · Weekly',
-    attendees: 310,
-    desc: 'Weekly deep dives into the latest NLP and LLM research papers — summaries, reproductions, and discussions led by practitioners who have read and tried the work.',
-    tags: ['NLP', 'LLMs', 'Research Papers', 'Weekly'],
-    icon: BookOpen,
-    accentColor: '#4ade80',
-    accentGrad: 'linear-gradient(135deg, #4ade80, #00d4ff)',
-  },
-  {
-    id: 6,
-    title: 'Reinforcement Learning from Scratch',
-    type: 'Course',
-    date: '2025-09-01',
-    time: '06:00 PM UTC',
-    location: 'Online · 6-Week Program',
-    attendees: 760,
-    desc: 'From MDP fundamentals to PPO and RLHF — a 6-week live cohort building real RL agents from scratch in PyTorch with weekly assignments and peer review.',
-    tags: ['RL', 'RLHF', 'PPO', 'PyTorch'],
-    icon: FlaskConical,
-    accentColor: '#f59e0b',
-    accentGrad: 'linear-gradient(135deg, #f59e0b, #ec4899)',
+    poster: null,
   },
 ]
 
-const TYPES = ['All', 'Hackathon', 'Workshop', 'Conference', 'Study Group', 'Course']
+const TYPES = ['All', 'Session', 'Hackathon', 'Workshop', 'Conference', 'Study Group', 'Course']
 
 const TYPE_META = {
+  'Session':     { color:'#00d4ff', bg:'rgba(0,212,255,0.08)',   border:'rgba(0,212,255,0.25)'   },
   'Hackathon':   { color:'#00d4ff', bg:'rgba(0,212,255,0.08)',   border:'rgba(0,212,255,0.25)'   },
   'Workshop':    { color:'#7b2fff', bg:'rgba(123,47,255,0.08)',  border:'rgba(123,47,255,0.25)'  },
   'Conference':  { color:'#0066ff', bg:'rgba(0,102,255,0.08)',   border:'rgba(0,102,255,0.25)'   },
@@ -153,12 +182,10 @@ function FeaturedEvent({ event }) {
                 padding:'4px 12px', borderRadius:100,
                 fontFamily:'"Plus Jakarta Sans",sans-serif',
               }}>{event.type}</span>
-              <span style={{
-                background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.25)', color:'#4ade80',
-                fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase',
-                padding:'4px 12px', borderRadius:100, animation:'pulse 2s infinite',
-                fontFamily:'"Plus Jakarta Sans",sans-serif',
-              }}>● Featured</span>
+              {event.upcoming
+                ? <span style={{ background:'rgba(0,212,255,0.08)', border:'1px solid rgba(0,212,255,0.35)', color:'#00d4ff', fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, animation:'pulse 2s infinite', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>● Upcoming</span>
+                : <span style={{ background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.25)', color:'#4ade80', fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>Featured</span>
+              }
             </div>
 
             <h2 style={{
@@ -180,8 +207,7 @@ function FeaturedEvent({ event }) {
                 { Icon:Calendar, text:dateStr },
                 { Icon:Clock,    text:event.time },
                 { Icon:MapPin,   text:event.location },
-                { Icon:Users,    text:`${(event.attendees||0).toLocaleString()} attending` },
-              ].map(({ Icon:Ic, text }) => (
+              ].filter(x => x.text && x.text !== '—').map(({ Icon:Ic, text }) => (
                 <div key={text} style={{ display:'flex', alignItems:'center', gap:7, fontSize:13, color:'rgba(140,160,190,0.7)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
                   <Ic style={{ width:14, height:14, color:meta.color, opacity:0.8, flexShrink:0 }} />
                   {text}
@@ -211,37 +237,39 @@ function FeaturedEvent({ event }) {
             }}
             onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow=`0 8px 32px ${meta.color}40` }}
             onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 4px 24px ${meta.color}30` }}>
-              Register Now <ArrowRight style={{ width:16,height:16 }} />
+              {event.upcoming ? 'Register Now' : 'View Event'} <ArrowRight style={{ width:16,height:16 }} />
             </button>
           </div>
 
-          {/* Right: date card */}
-          <div style={{
-            flexShrink: 0,
-            width: 160,
-            background: 'rgba(255,255,255,0.025)',
-            border: `1px solid ${meta.color}20`,
-            borderRadius: 20,
-            padding: '28px 20px',
-            display: 'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-            textAlign: 'center',
-            backdropFilter: 'blur(20px)',
-          }}>
-            <Icon style={{ width:32, height:32, color:meta.color, marginBottom:14, opacity:0.9 }} />
-            <div style={{
-              fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900,
-              fontSize:52, color:'#f0f6ff', lineHeight:1, letterSpacing:'-0.05em',
-              marginBottom:4,
-            }}>{day}</div>
-            <div style={{
-              fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700,
-              fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase',
-              background: event.accentGrad, WebkitBackgroundClip:'text',
-              WebkitTextFillColor:'transparent', backgroundClip:'text',
-              marginBottom:4,
-            }}>{month}</div>
-            <div style={{ fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:'Inter,sans-serif' }}>{year}</div>
-          </div>
+          {/* Right: poster image OR date card */}
+          {event.poster
+            ? (
+              <div style={{
+                flexShrink: 0, width: 220,
+                borderRadius: 16, overflow: 'hidden',
+                border: `1px solid ${meta.color}22`,
+                boxShadow: `0 0 40px ${meta.color}18, 0 16px 48px rgba(0,0,0,0.6)`,
+                aspectRatio: '3/4',
+              }}>
+                <img src={event.poster} alt={event.title}
+                  style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center', display:'block' }} />
+              </div>
+            ) : (
+              <div style={{
+                flexShrink: 0, width: 160,
+                background: 'rgba(255,255,255,0.025)',
+                border: `1px solid ${meta.color}20`,
+                borderRadius: 20, padding: '28px 20px',
+                display: 'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+                textAlign: 'center', backdropFilter: 'blur(20px)',
+              }}>
+                <Icon style={{ width:32, height:32, color:meta.color, marginBottom:14, opacity:0.9 }} />
+                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900, fontSize:52, color:'#f0f6ff', lineHeight:1, letterSpacing:'-0.05em', marginBottom:4 }}>{day}</div>
+                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', background: event.accentGrad, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:4 }}>{month}</div>
+                <div style={{ fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:'Inter,sans-serif' }}>{year}</div>
+              </div>
+            )
+          }
         </div>
       </div>
     </motion.div>
@@ -282,7 +310,7 @@ function RegisterBtn({ color, label='Register' }) {
   )
 }
 
-/* ─── VARIANT 0 — "Panorama": giant gradient banner with big date + icon ─── */
+/* ─── VARIANT 0 — "Panorama": full-bleed poster or gradient banner ──────── */
 function EventClassic({ event, meta, Icon, dateStr }) {
   const d = event.date ? new Date(event.date) : null
   const day = d ? d.getDate() : '—'
@@ -292,36 +320,43 @@ function EventClassic({ event, meta, Icon, dateStr }) {
       background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
       border:`1px solid ${meta.color}1a`, borderRadius:22, overflow:'hidden', position:'relative' }}>
       {/* Visual banner */}
-      <div style={{ height:210, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)`, opacity:0.18 }} />
-        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${meta.color}0a 1px,transparent 1px),linear-gradient(90deg,${meta.color}0a 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
-        <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:230, background:`radial-gradient(circle,${meta.color}2c 0%,transparent 65%)`, filter:'blur(36px)' }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)` }} />
-        {/* Content in banner */}
-        <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', gap:20 }}>
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-            <div style={{ width:64, height:64, borderRadius:20, background:`linear-gradient(135deg,${meta.color}28,${meta.color}10)`, border:`1px solid ${meta.color}35`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 32px ${meta.color}30` }}>
-              <Icon style={{ width:28, height:28, color:meta.color }} />
-            </div>
-          </div>
-          <div style={{ width:1, height:80, background:`linear-gradient(180deg,transparent,${meta.color}40,transparent)` }} />
-          <div style={{ textAlign:'left' }}>
-            <div style={{ fontFamily:jak, fontWeight:900, fontSize:72, color:'#fff', lineHeight:1, letterSpacing:'-0.05em', textShadow:`0 0 50px ${meta.color}60` }}>{day}</div>
-            <div style={{ fontFamily:jak, fontWeight:800, fontSize:14, letterSpacing:'0.3em', color:meta.color, textTransform:'uppercase' }}>{mon}</div>
-          </div>
-        </div>
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {event.poster
+          ? <>
+              <img src={event.poster} alt={event.title}
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:130,
+                background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.6) 50%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)`, opacity:0.18 }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${meta.color}0a 1px,transparent 1px),linear-gradient(90deg,${meta.color}0a 1px,transparent 1px)`, backgroundSize:'28px 28px' }} />
+              <div style={{ position:'absolute', top:-30, left:'50%', transform:'translateX(-50%)', width:340, height:230, background:`radial-gradient(circle,${meta.color}2c 0%,transparent 65%)`, filter:'blur(36px)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:90, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', gap:20 }}>
+                <div style={{ width:64, height:64, borderRadius:20, background:`linear-gradient(135deg,${meta.color}28,${meta.color}10)`, border:`1px solid ${meta.color}35`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 32px ${meta.color}30` }}>
+                  <Icon style={{ width:28, height:28, color:meta.color }} />
+                </div>
+                <div style={{ width:1, height:80, background:`linear-gradient(180deg,transparent,${meta.color}40,transparent)` }} />
+                <div style={{ textAlign:'left' }}>
+                  <div style={{ fontFamily:jak, fontWeight:900, fontSize:72, color:'#fff', lineHeight:1, letterSpacing:'-0.05em', textShadow:`0 0 50px ${meta.color}60` }}>{day}</div>
+                  <div style={{ fontFamily:jak, fontWeight:800, fontSize:14, letterSpacing:'0.3em', color:meta.color, textTransform:'uppercase' }}>{mon}</div>
+                </div>
+              </div>
+            </>
+        }
         {/* Type badge */}
-        <div style={{ position:'absolute', top:16, right:16 }}>
+        <div style={{ position:'absolute', top:16, right:16, zIndex:2 }}>
           <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'4px 11px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
         </div>
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)`, zIndex:2 }} />
       </div>
       {/* Content */}
       <div style={{ padding:'20px 22px', display:'flex', flexDirection:'column', flex:1 }}>
         <h3 style={{ fontFamily:jak, fontWeight:800, fontSize:16, color:'#f0f6ff', lineHeight:1.3, letterSpacing:'-0.015em', marginBottom:10 }}>{event.title}</h3>
         <p style={{ fontFamily:jak, fontSize:13, color:'rgba(140,160,190,0.7)', lineHeight:1.65, marginBottom:14, flex:1, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{event.description??event.desc}</p>
         <div style={{ display:'flex', flexDirection:'column', gap:7, marginBottom:14 }}>
-          {[{I:Clock,t:event.time},{I:MapPin,t:event.location},{I:Users,t:`${(event.attendees||0).toLocaleString()} attending`}].map(({I:Ic,t})=>t&&(
+          {[{I:Clock,t:event.time},{I:MapPin,t:event.location}].map(({I:Ic,t})=>t&&(
             <div key={t} style={{ display:'flex', alignItems:'center', gap:7, fontSize:12, color:'rgba(140,160,190,0.55)', fontFamily:jak }}>
               <Ic style={{ width:12,height:12,color:meta.color,flexShrink:0 }} />{t}
             </div>
@@ -334,7 +369,7 @@ function EventClassic({ event, meta, Icon, dateStr }) {
   )
 }
 
-/* ─── VARIANT 1 — "Diagonal Split": gradient slab left, dark right, full banner ─ */
+/* ─── VARIANT 1 — "Diagonal Split" / full-bleed poster ──────────────────── */
 function EventRail({ event, meta, Icon, dateStr }) {
   const d = event.date ? new Date(event.date) : null
   const day = d ? d.getDate() : '—'
@@ -343,32 +378,39 @@ function EventRail({ event, meta, Icon, dateStr }) {
     <div style={{ height:'100%', minHeight:500, display:'flex', flexDirection:'column',
       background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
       border:`1px solid ${meta.color}18`, borderRadius:22, overflow:'hidden' }}>
-      {/* Diagonal banner */}
-      <div style={{ height:210, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        {/* Left gradient fill */}
-        <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)` }} />
-        {/* Dark right overlay - diagonal polygon */}
-        <div style={{ position:'absolute', inset:0, background:'rgba(6,6,24,0.92)', clipPath:'polygon(52% 0,100% 0,100% 100%,40% 100%)' }} />
-        {/* Blueprint grid on dark side */}
-        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px)`, backgroundSize:'22px 22px', clipPath:'polygon(52% 0,100% 0,100% 100%,40% 100%)' }} />
-        {/* Scan lines on gradient */}
-        <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,0,0,0.1) 4px,rgba(0,0,0,0.1) 5px)', clipPath:'polygon(0 0,52% 0,40% 100%,0 100%)' }} />
-        {/* Bottom fade */}
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        {/* Left — date */}
-        <div style={{ position:'absolute', left:24, top:'50%', transform:'translateY(-55%)' }}>
-          <div style={{ fontFamily:jak, fontWeight:900, fontSize:80, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em' }}>{day}</div>
-          <div style={{ fontFamily:jak, fontWeight:800, fontSize:13, letterSpacing:'0.22em', color:'rgba(0,0,0,0.35)', textTransform:'uppercase' }}>{mon}</div>
-        </div>
-        {/* Right — icon + type */}
-        <div style={{ position:'absolute', right:22, top:'50%', transform:'translateY(-50%)', display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
-          <div style={{ width:52, height:52, borderRadius:16, background:`${meta.color}18`, border:`1px solid ${meta.color}35`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 24px ${meta.color}28` }}>
-            <Icon style={{ width:22, height:22, color:meta.color }} />
+      {/* Banner */}
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {event.poster
+          ? <>
+              <img src={event.poster} alt={event.title}
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:130,
+                background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.6) 50%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)` }} />
+              <div style={{ position:'absolute', inset:0, background:'rgba(6,6,24,0.92)', clipPath:'polygon(52% 0,100% 0,100% 100%,40% 100%)' }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(rgba(255,255,255,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.035) 1px,transparent 1px)`, backgroundSize:'22px 22px', clipPath:'polygon(52% 0,100% 0,100% 100%,40% 100%)' }} />
+              <div style={{ position:'absolute', inset:0, backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,0,0,0.1) 4px,rgba(0,0,0,0.1) 5px)', clipPath:'polygon(0 0,52% 0,40% 100%,0 100%)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+              <div style={{ position:'absolute', left:24, top:'50%', transform:'translateY(-55%)' }}>
+                <div style={{ fontFamily:jak, fontWeight:900, fontSize:80, color:'rgba(0,0,0,0.38)', lineHeight:1, letterSpacing:'-0.05em' }}>{day}</div>
+                <div style={{ fontFamily:jak, fontWeight:800, fontSize:13, letterSpacing:'0.22em', color:'rgba(0,0,0,0.35)', textTransform:'uppercase' }}>{mon}</div>
+              </div>
+              <div style={{ position:'absolute', right:22, top:'50%', transform:'translateY(-50%)', display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
+                <div style={{ width:52, height:52, borderRadius:16, background:`${meta.color}18`, border:`1px solid ${meta.color}35`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 24px ${meta.color}28` }}>
+                  <Icon style={{ width:22, height:22, color:meta.color }} />
+                </div>
+                <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'3px 10px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
+              </div>
+            </>
+        }
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)`, zIndex:2 }} />
+        {event.poster && (
+          <div style={{ position:'absolute', top:16, right:16, zIndex:2 }}>
+            <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'4px 11px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
           </div>
-          <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'3px 10px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
-        </div>
-        {/* Top bar */}
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)` }} />
+        )}
       </div>
       {/* Content */}
       <div style={{ padding:'20px 22px', display:'flex', flexDirection:'column', flex:1 }}>
@@ -385,33 +427,41 @@ function EventRail({ event, meta, Icon, dateStr }) {
   )
 }
 
-/* ─── VARIANT 2 — "Ticket Stub": full visual header + perforated divide ──────── */
+/* ─── VARIANT 2 — "Ticket Stub" / full-bleed poster ─────────────────────── */
 function EventTicket({ event, meta, Icon, dateStr }) {
   return (
     <div style={{ height:'100%', minHeight:500, display:'flex', flexDirection:'column',
       background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))',
       border:`1px solid ${meta.color}18`, borderRadius:22, overflow:'hidden', position:'relative' }}>
       {/* Full banner */}
-      <div style={{ height:210, position:'relative', overflow:'hidden', flexShrink:0 }}>
-        <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)`, opacity:0.16 }} />
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)` }} />
-        {/* Radial glow */}
-        <div style={{ position:'absolute', top:'40%', left:'50%', transform:'translate(-50%,-50%)', width:320, height:220, background:`radial-gradient(circle,${meta.color}28 0%,transparent 65%)`, filter:'blur(34px)' }} />
-        <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
-        {/* Centered icon + date */}
-        <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12 }}>
-          <div style={{ width:72, height:72, borderRadius:24, background:`linear-gradient(135deg,${meta.color}2c,${meta.color}0e)`, border:`1px solid ${meta.color}40`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 40px ${meta.color}38,0 8px 28px rgba(0,0,0,0.5)` }}>
-            <Icon style={{ width:32, height:32, color:meta.color }} />
-          </div>
-          <div style={{ textAlign:'center' }}>
-            <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.2em', color:`${meta.color}90`, textTransform:'uppercase', marginBottom:2 }}>Date</div>
-            <div style={{ fontFamily:jak, fontWeight:800, fontSize:18, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{dateStr}</div>
-          </div>
-        </div>
+      <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
+        {event.poster
+          ? <>
+              <img src={event.poster} alt={event.title}
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:130,
+                background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.6) 50%, transparent 100%)' }} />
+            </>
+          : <>
+              <div style={{ position:'absolute', inset:0, background:event.accentGrad||`linear-gradient(135deg,${meta.color},#0066ff)`, opacity:0.16 }} />
+              <div style={{ position:'absolute', top:'40%', left:'50%', transform:'translate(-50%,-50%)', width:320, height:220, background:`radial-gradient(circle,${meta.color}28 0%,transparent 65%)`, filter:'blur(34px)' }} />
+              <div style={{ position:'absolute', bottom:0, left:0, right:0, height:80, background:'linear-gradient(to top,rgba(6,6,24,0.99),transparent)' }} />
+              <div style={{ position:'absolute', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:12 }}>
+                <div style={{ width:72, height:72, borderRadius:24, background:`linear-gradient(135deg,${meta.color}2c,${meta.color}0e)`, border:`1px solid ${meta.color}40`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:`0 0 40px ${meta.color}38,0 8px 28px rgba(0,0,0,0.5)` }}>
+                  <Icon style={{ width:32, height:32, color:meta.color }} />
+                </div>
+                <div style={{ textAlign:'center' }}>
+                  <div style={{ fontFamily:jak, fontWeight:700, fontSize:11, letterSpacing:'0.2em', color:`${meta.color}90`, textTransform:'uppercase', marginBottom:2 }}>Date</div>
+                  <div style={{ fontFamily:jak, fontWeight:800, fontSize:18, color:'#f0f6ff', letterSpacing:'-0.02em' }}>{dateStr}</div>
+                </div>
+              </div>
+            </>
+        }
         {/* Type badge */}
-        <div style={{ position:'absolute', top:16, right:16 }}>
+        <div style={{ position:'absolute', top:16, right:16, zIndex:2 }}>
           <span style={{ background:meta.bg, border:`1px solid ${meta.border}`, color:meta.color, fontSize:9.5, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', padding:'4px 11px', borderRadius:100, fontFamily:jak }}>{event.type}</span>
         </div>
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:3, background:event.accentGrad||`linear-gradient(90deg,${meta.color},#0066ff)`, zIndex:2 }} />
       </div>
       {/* Perforated stub */}
       <div style={{ position:'relative', height:0, zIndex:2 }}>
@@ -571,9 +621,11 @@ export default function Events() {
   const [filter, setFilter] = useState('All')
 
   useEffect(() => {
+    // Always lead with real GRID events; append any DB events behind them
     axios.get('/api/events').then(r => {
-      setEvents(r.data && r.data.length > 0 ? r.data : MOCK_EVENTS)
-    }).catch(() => setEvents(MOCK_EVENTS))
+      const api = r.data && r.data.length > 0 ? r.data : []
+      setEvents([...GRID_EVENTS, ...api])
+    }).catch(() => setEvents([...GRID_EVENTS, ...MOCK_EVENTS]))
   }, [])
 
   const filtered = filter === 'All' ? events : events.filter(e => e.type === filter)
