@@ -176,8 +176,8 @@ export default function About() {
           <p style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontSize:16, color:'rgba(160,180,210,0.72)', marginBottom:32, maxWidth:440, margin:'0 auto 32px' }}>
             Your next collaborator, paper co-author, or research breakthrough is already here.
           </p>
-          <Link to="/register" className="btn-primary inline-flex items-center gap-2">
-            Join the ML community <ArrowRight style={{ width:16, height:16 }} />
+          <Link to="/members" className="btn-primary inline-flex items-center gap-2">
+            Meet the community <ArrowRight style={{ width:16, height:16 }} />
           </Link>
         </motion.div>
       </section>

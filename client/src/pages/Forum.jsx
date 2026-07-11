@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageSquare, ThumbsUp, Eye, Clock, Pin, Flame, Search, Plus, Brain } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import NewThreadModal from '../components/NewThreadModal'
 import FloatingLogos from '../components/FloatingLogos'
 
 const MOCK_THREADS = [
@@ -55,28 +53,11 @@ export default function Forum() {
   const [threads, setThreads]       = useState([])
   const [cat, setCat]               = useState('All')
   const [search, setSearch]         = useState('')
-  const [showNewThread, setShowNewThread] = useState(false)
-  const [newThreadIds, setNewThreadIds]   = useState(new Set())
-  const { user } = useAuth()
-  const navigate = useNavigate()
-
   useEffect(() => {
     import('../data/store').then(({ getThreads }) => {
       setThreads(getThreads())
     }).catch(() => setThreads([]))
   }, [])
-
-  const handleNewThread = () => {
-    if (!user) { navigate('/login'); return }
-    setShowNewThread(true)
-  }
-
-  const handleThreadCreated = thread => {
-    setThreads(prev => {
-      if (prev.find(t => t.id === thread.id)) return prev
-      return [thread, ...prev]
-    })
-  }
 
   const filtered = threads.filter(t => {
     const matchSearch = t.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -122,9 +103,6 @@ export default function Forum() {
                 <Search style={{ position:'absolute', left:16, top:'50%', transform:'translateY(-50%)', width:16, height:16, color:'rgba(140,160,190,0.5)' }} />
                 <input type="text" placeholder="Search discussions..." value={search} onChange={e => setSearch(e.target.value)} className="input-field" style={{ paddingLeft:44 }} />
               </div>
-              <button onClick={handleNewThread} className="btn-primary" style={{ display:'flex', alignItems:'center', gap:7, fontSize:12.5, whiteSpace:'nowrap', padding:'10px 20px' }}>
-                <Plus style={{ width:15, height:15 }} /> Start a discussion
-              </button>
             </div>
 
             {/* Category filter */}
@@ -162,14 +140,14 @@ export default function Forum() {
             <div style={{ marginBottom:20 }}>
               <div style={{ fontSize:10, color:'rgba(140,160,190,0.35)', fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, letterSpacing:'0.28em', textTransform:'uppercase', marginBottom:10 }}>Pinned</div>
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                {pinned.map((thread, i) => <ThreadRow key={thread.id} thread={thread} index={i} isNew={newThreadIds.has(thread.id)} />)}
+                {pinned.map((thread, i) => <ThreadRow key={thread.id} thread={thread} index={i} />)}
               </div>
             </div>
           )}
 
           {/* Regular */}
           <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {rest.map((thread, i) => <ThreadRow key={thread.id} thread={thread} index={i} isNew={newThreadIds.has(thread.id)} />)}
+            {rest.map((thread, i) => <ThreadRow key={thread.id} thread={thread} index={i} />)}
           </div>
 
           {/* Search no-results */}
@@ -235,14 +213,6 @@ export default function Forum() {
                 {/* CTA */}
                 <div style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center', marginBottom:40 }}>
                   <motion.button
-                    onClick={handleNewThread}
-                    whileHover={{ scale:1.04, boxShadow:'0 8px 36px rgba(0,102,255,0.45)' }}
-                    whileTap={{ scale:0.97 }}
-                    style={{ display:'inline-flex', alignItems:'center', gap:9, padding:'14px 32px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14.5, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.38)', letterSpacing:'-0.01em' }}
-                  >
-                    <Plus style={{ width:16, height:16 }} /> Start the first discussion →
-                  </motion.button>
-                  <motion.button
                     onClick={() => navigate('/blog')}
                     whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
                     style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 26px', borderRadius:13, border:'1px solid rgba(255,255,255,0.09)', background:'rgba(255,255,255,0.04)', cursor:'pointer', color:'rgba(190,205,225,0.75)', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}
@@ -281,11 +251,6 @@ export default function Forum() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {showNewThread && (
-          <NewThreadModal onClose={() => setShowNewThread(false)} onCreated={handleThreadCreated} />
-        )}
-      </AnimatePresence>
     </div>
   )
 }

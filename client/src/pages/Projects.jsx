@@ -345,12 +345,12 @@ export default function Projects() {
             style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center' }}
           >
             <motion.button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/forum')}
               whileHover={{ scale:1.04 }}
               whileTap={{ scale:0.97 }}
               style={{ display:'flex', alignItems:'center', gap:9, padding:'15px 32px', borderRadius:14, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:15, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, boxShadow:'0 6px 32px rgba(0,102,255,0.4)' }}
             >
-              Submit a Project <ArrowRight style={{ width:16, height:16 }} />
+              Discuss Projects <ArrowRight style={{ width:16, height:16 }} />
             </motion.button>
             <motion.button
               onClick={() => navigate('/forum')}
@@ -465,12 +465,12 @@ export default function Projects() {
 
           <div style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center' }}>
             <motion.button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/members')}
               whileHover={{ scale:1.04, boxShadow:'0 8px 40px rgba(0,102,255,0.5)' }}
               whileTap={{ scale:0.97 }}
               style={{ display:'flex', alignItems:'center', gap:9, padding:'16px 36px', borderRadius:14, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:15, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 6px 32px rgba(0,102,255,0.38)', letterSpacing:'-0.01em' }}
             >
-              <Rocket style={{ width:16, height:16 }} /> Publish Your Work
+              <Rocket style={{ width:16, height:16 }} /> Explore Members
             </motion.button>
             <motion.button
               onClick={() => navigate('/about')}

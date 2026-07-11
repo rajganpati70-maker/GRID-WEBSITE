@@ -5,7 +5,6 @@ import {
   MapPin, Globe, Github, Twitter, Linkedin, Calendar, Star,
   MessageSquare, Code2, Award, ArrowLeft, ExternalLink, Users, Edit3
 } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
 
 const GRAD_COLORS = [
   'from-blue-600 to-cyan-400', 'from-purple-600 to-blue-400',
@@ -43,7 +42,6 @@ const SKILL_COLORS = [
 
 export default function Profile() {
   const { username } = useParams()
-  const { user: currentUser } = useAuth()
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState(null)
@@ -61,7 +59,6 @@ export default function Profile() {
       .finally(() => setLoading(false))
   }, [username])
 
-  const isOwn = currentUser?.username?.toLowerCase() === username?.toLowerCase()
 
   if (loading) return (
     <div className="min-h-screen pt-24 flex items-center justify-center">
@@ -167,11 +164,6 @@ export default function Profile() {
                   )}
                 </div>
 
-                {isOwn && (
-                  <Link to="/dashboard" className="w-full btn-outline text-xs flex items-center justify-center gap-2 py-2">
-                    <Edit3 className="w-3.5 h-3.5" /> Edit Profile
-                  </Link>
-                )}
               </div>
             </div>
 
@@ -295,13 +287,8 @@ export default function Profile() {
               <div className="glass-card p-10 rounded-2xl text-center">
                 <Users className="w-12 h-12 text-grid-cyan/20 mx-auto mb-3" />
                 <p className="text-gray-500 font-rajdhani tracking-widest text-sm uppercase">
-                  {isOwn ? 'Your profile is looking a little empty — add a bio and start contributing!' : `${profile.username} hasn't posted yet`}
+                  {`${profile.username} hasn't posted yet`}
                 </p>
-                {isOwn && (
-                  <Link to="/dashboard" className="btn-primary text-xs mt-4 inline-flex items-center gap-2">
-                    <Edit3 className="w-3.5 h-3.5" /> Edit Profile
-                  </Link>
-                )}
               </div>
             )}
           </motion.div>

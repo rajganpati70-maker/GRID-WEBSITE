@@ -5,8 +5,6 @@ import {
   Search, Clock, User, ArrowRight, BookOpen, TrendingUp,
   PenLine, Eye, Heart, Calendar, Plus
 } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
-import BlogEditor from '../components/BlogEditor'
 import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Mock fallback ──────────────────────────────────────────────────────── */
@@ -55,12 +53,10 @@ function formatDate(d) {
 
 export default function Blog() {
   const navigate = useNavigate()
-  const { user } = useAuth()
-  const [posts, setPosts]           = useState([])
-  const [search, setSearch]         = useState('')
-  const [cat, setCat]               = useState('All')
-  const [showEditor, setShowEditor] = useState(false)
-  const [loading, setLoading]       = useState(true)
+  const [posts, setPosts]     = useState([])
+  const [search, setSearch]   = useState('')
+  const [cat, setCat]         = useState('All')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     import('../data/store').then(({ getBlogPosts }) => {
@@ -76,11 +72,6 @@ export default function Blog() {
 
   const featured = filtered[0]
   const rest     = filtered.slice(1)
-
-  const handlePublished = (post) => {
-    setPosts(prev => [post, ...prev])
-    if (post?.id) navigate(`/blog/${post.id}`)
-  }
 
   return (
     <div style={{ background:'#02020e' }}>
@@ -102,20 +93,6 @@ export default function Blog() {
               In-depth ML articles written by practitioners — paper breakdowns, training war stories,
               MLOps patterns, and honest post-mortems from the people actually doing the work.
             </p>
-            {user && (
-              <motion.button
-                initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.3 }}
-                onClick={() => setShowEditor(true)}
-                style={{
-                  display:'inline-flex', alignItems:'center', gap:8, padding:'13px 28px', borderRadius:14,
-                  border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)',
-                  color:'#fff', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700,
-                  boxShadow:'0 4px 28px rgba(0,102,255,0.35)',
-                }}
-              >
-                <PenLine style={{ width:15, height:15 }} /> Write a Post
-              </motion.button>
-            )}
           </motion.div>
         </div>
       </section>
@@ -133,11 +110,6 @@ export default function Blog() {
                   onFocus={e=>e.target.style.borderColor='rgba(0,212,255,0.28)'} onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.07)'}
                 />
               </div>
-              {!user && (
-                <button onClick={() => navigate('/register')} style={{ display:'flex', alignItems:'center', gap:7, padding:'10px 20px', borderRadius:12, border:'1px solid rgba(0,212,255,0.25)', background:'transparent', cursor:'pointer', color:'#00d4ff', fontSize:13, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, whiteSpace:'nowrap' }}>
-                  <PenLine style={{ width:13, height:13 }} /> Write a Post
-                </button>
-              )}
             </div>
             <div style={{ display:'flex', gap:7, flexWrap:'wrap' }}>
               {CATS.map(c => {
@@ -335,35 +307,15 @@ export default function Blog() {
                   That someone could be you.
                 </p>
 
-                {/* CTAs */}
+                {/* CTA */}
                 <div style={{ display:'flex', flexWrap:'wrap', gap:12, justifyContent:'center', marginBottom:36 }}>
-                  {user ? (
-                    <motion.button
-                      onClick={() => setShowEditor(true)}
-                      whileHover={{ scale:1.04, boxShadow:'0 8px 36px rgba(0,102,255,0.45)' }}
-                      whileTap={{ scale:0.97 }}
-                      style={{ display:'inline-flex', alignItems:'center', gap:9, padding:'14px 32px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14.5, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.38)', letterSpacing:'-0.01em' }}
-                    >
-                      <PenLine style={{ width:16, height:16 }} /> Write the first post →
-                    </motion.button>
-                  ) : (
-                    <>
-                      <motion.button
-                        onClick={() => navigate('/register')}
-                        whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                        style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 30px', borderRadius:13, border:'none', cursor:'pointer', background:'linear-gradient(135deg,#0052cc,#00d4ff)', color:'#fff', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:800, boxShadow:'0 4px 28px rgba(0,102,255,0.35)' }}
-                      >
-                        Join to write →
-                      </motion.button>
-                      <motion.button
-                        onClick={() => navigate('/forum')}
-                        whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
-                        style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 26px', borderRadius:13, border:'1px solid rgba(255,255,255,0.09)', background:'rgba(255,255,255,0.04)', cursor:'pointer', color:'rgba(190,205,225,0.75)', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}
-                      >
-                        Browse the forum
-                      </motion.button>
-                    </>
-                  )}
+                  <motion.button
+                    onClick={() => navigate('/forum')}
+                    whileHover={{ scale:1.04 }} whileTap={{ scale:0.97 }}
+                    style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'14px 26px', borderRadius:13, border:'1px solid rgba(255,255,255,0.09)', background:'rgba(255,255,255,0.04)', cursor:'pointer', color:'rgba(190,205,225,0.75)', fontSize:14, fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700 }}
+                  >
+                    Browse the forum
+                  </motion.button>
                 </div>
 
                 {/* Feature pills */}
@@ -380,12 +332,6 @@ export default function Blog() {
         </div>
       </section>
 
-      {/* Blog editor */}
-      <AnimatePresence>
-        {showEditor && (
-          <BlogEditor onClose={() => setShowEditor(false)} onPublished={handlePublished} />
-        )}
-      </AnimatePresence>
     </div>
   )
 }

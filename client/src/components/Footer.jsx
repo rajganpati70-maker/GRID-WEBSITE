@@ -13,11 +13,6 @@ const footerLinks = {
   Resources: [
     { label: 'Blog', href: '/blog' },
     { label: 'Projects', href: '/projects' },
-    { label: 'Dashboard', href: '/dashboard' },
-  ],
-  Platform: [
-    { label: 'Join GRID', href: '/register' },
-    { label: 'Login', href: '/login' },
   ],
 }
 

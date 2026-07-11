@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, ThumbsUp, ThumbsDown, MessageSquare, Eye, Clock, Pin, Flame,
-  Send, CornerDownRight, Loader2, AlertCircle, ChevronDown, ChevronUp, Zap
+  ChevronDown, ChevronUp
 } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
 
 const GRAD_COLORS = [
   'from-blue-600 to-cyan-400', 'from-purple-600 to-blue-400',
@@ -45,97 +44,15 @@ function Avatar({ username, avatarColor, size = 10 }) {
   )
 }
 
-function ReplyBox({ threadId, parentId, parentAuthor, onCancel, onPosted, depth = 0 }) {
-  const { user, token } = useAuth()
-  const [content, setContent] = useState('')
-  const [posting, setPosting] = useState(false)
-  const [error, setError] = useState('')
-  const ref = useRef(null)
 
-  useEffect(() => { ref.current?.focus() }, [])
-
-  const submit = async (e) => {
-    e.preventDefault()
-    if (!content.trim()) return
-    setPosting(true)
-    setError('')
-    try {
-      const { createReply } = await import('../data/store')
-      const reply = createReply(threadId, content.trim(), user.username, parentId || null)
-      setContent('')
-      onPosted?.(reply)
-      onCancel?.()
-    } catch (err) {
-      setError(err.message || 'Failed to post reply')
-    } finally {
-      setPosting(false)
-    }
-  }
-
-  if (!user) return (
-    <div className="mt-4 p-4 rounded-xl border border-grid-cyan/15 bg-grid-cyan/3 text-center">
-      <Link to="/login" className="text-grid-cyan text-xs font-rajdhani tracking-widest uppercase hover:underline">Log in to reply</Link>
-    </div>
-  )
-
-  return (
-    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className={`mt-3 ${depth > 0 ? 'ml-10' : ''}`}>
-      {parentAuthor && (
-        <div className="flex items-center gap-1.5 mb-2 text-xs text-gray-500 font-rajdhani tracking-wide">
-          <CornerDownRight className="w-3 h-3" /> replying to <span className="text-grid-cyan">@{parentAuthor}</span>
-        </div>
-      )}
-      <form onSubmit={submit}>
-        <div className={`glass-card rounded-xl border-grid-cyan/20 focus-within:border-grid-cyan/50 transition-all duration-300 overflow-hidden`}>
-          <textarea
-            ref={ref}
-            value={content}
-            onChange={e => setContent(e.target.value.slice(0, 5000))}
-            placeholder={parentAuthor ? `Reply to @${parentAuthor}...` : 'Write a thoughtful reply...'}
-            rows={3}
-            className="w-full bg-transparent px-4 pt-3 pb-2 text-sm text-white placeholder-gray-600 font-inter resize-none outline-none"
-          />
-          <div className="flex items-center justify-between px-4 pb-3">
-            <span className="text-[10px] text-gray-700 font-rajdhani">{content.length}/5000</span>
-            <div className="flex gap-2">
-              {onCancel && (
-                <button type="button" onClick={onCancel} className="px-3 py-1.5 text-xs text-gray-500 hover:text-gray-300 font-rajdhani tracking-widest uppercase transition-colors">Cancel</button>
-              )}
-              <button
-                type="submit"
-                disabled={!content.trim() || posting}
-                className="flex items-center gap-1.5 px-4 py-1.5 btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {posting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                {posting ? 'Posting...' : 'Post Reply'}
-              </button>
-            </div>
-          </div>
-        </div>
-        {error && (
-          <div className="mt-2 flex items-center gap-2 text-red-400 text-xs font-inter">
-            <AlertCircle className="w-3.5 h-3.5" /> {error}
-          </div>
-        )}
-      </form>
-    </motion.div>
-  )
-}
-
-function ReplyCard({ reply, threadId, onVote, onReplyPosted, depth = 0 }) {
-  const { user, token } = useAuth()
+function ReplyCard({ reply, threadId, onReplyPosted, depth = 0 }) {
   const [replying, setReplying] = useState(false)
   const [showChildren, setShowChildren] = useState(true)
-  const [userVote, setUserVote] = useState(null) // null | 'up' | 'down'
+  const [userVote, setUserVote] = useState(null)
   const [likes, setLikes] = useState(reply.likes || 0)
   const [dislikes, setDislikes] = useState(reply.dislikes || 0)
-  const [voting, setVoting] = useState(false)
 
-  const handleVote = async (type) => {
-    if (!user || voting) return
-    setVoting(true)
-    const prev = { userVote, likes, dislikes }
-    // Optimistic update
+  const handleVote = (type) => {
     if (userVote === type) {
       setUserVote(null)
       type === 'up' ? setLikes(l => Math.max(0, l - 1)) : setDislikes(d => Math.max(0, d - 1))
@@ -145,20 +62,6 @@ function ReplyCard({ reply, threadId, onVote, onReplyPosted, depth = 0 }) {
       }
       setUserVote(type)
       type === 'up' ? setLikes(l => l + 1) : setDislikes(d => d + 1)
-    }
-    try {
-      // vote is optimistic — persist in localStorage
-      const all = JSON.parse(localStorage.getItem('grid_forum_replies') || '[]')
-      const idx = all.findIndex(r => r.id === reply.id)
-      if (idx !== -1) {
-        all[idx].likes    = likes
-        all[idx].dislikes = dislikes
-        localStorage.setItem('grid_forum_replies', JSON.stringify(all))
-      }
-    } catch {
-      setUserVote(prev.userVote); setLikes(prev.likes); setDislikes(prev.dislikes)
-    } finally {
-      setVoting(false)
     }
   }
 
@@ -206,55 +109,29 @@ function ReplyCard({ reply, threadId, onVote, onReplyPosted, depth = 0 }) {
             </span>
             <button
               onClick={() => handleVote('up')}
-              disabled={!user || voting}
-              title={user ? 'Mark as helpful' : 'Log in to vote'}
               className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
                 userVote === 'up'
                   ? 'bg-grid-cyan/15 border-grid-cyan/40 text-grid-cyan'
                   : 'border-transparent text-gray-600 hover:border-grid-cyan/25 hover:text-grid-cyan'
-              } disabled:cursor-default`}
+              }`}
             >
               <ThumbsUp className={`w-3.5 h-3.5 ${userVote === 'up' ? 'fill-grid-cyan' : ''}`} />
               {likes > 0 && <span className="font-orbitron font-bold text-[10px]">{likes}</span>}
             </button>
             <button
               onClick={() => handleVote('down')}
-              disabled={!user || voting}
-              title={user ? 'Mark as not helpful' : 'Log in to vote'}
               className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
                 userVote === 'down'
                   ? 'bg-red-500/15 border-red-500/40 text-red-400'
                   : 'border-transparent text-gray-600 hover:border-red-500/25 hover:text-red-400'
-              } disabled:cursor-default`}
+              }`}
             >
               <ThumbsDown className={`w-3.5 h-3.5 ${userVote === 'down' ? 'fill-red-400' : ''}`} />
               {dislikes > 0 && <span className="font-orbitron font-bold text-[10px]">{dislikes}</span>}
             </button>
           </div>
 
-          {depth < maxDepth && (
-            <button
-              onClick={() => setReplying(!replying)}
-              className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-grid-cyan transition-colors font-rajdhani tracking-widest uppercase"
-            >
-              <CornerDownRight className="w-3.5 h-3.5" /> Reply
-            </button>
-          )}
-        </div>
-
-        {/* Inline reply box */}
-        <AnimatePresence>
-          {replying && (
-            <ReplyBox
-              threadId={threadId}
-              parentId={reply.id}
-              parentAuthor={reply.author}
-              depth={depth}
-              onCancel={() => setReplying(false)}
-              onPosted={(r) => { onReplyPosted?.(r); setReplying(false) }}
-            />
-          )}
-        </AnimatePresence>
+          </div>
       </div>
 
       {/* Children */}
@@ -300,7 +177,6 @@ function buildTree(replies) {
 
 export default function ForumThread() {
   const { threadId } = useParams()
-  const { user, token } = useAuth()
   const navigate = useNavigate()
 
   const [thread, setThread] = useState(null)
@@ -332,24 +208,14 @@ export default function ForumThread() {
     }
   }
 
-  const handleReplyPosted = useCallback((newReply) => {
-    setReplies(prev => {
-      if (prev.find(r => r.id === newReply.id)) return prev
-      return [...prev, newReply]
-    })
-    setThread(t => t ? { ...t, replies: (t.replies || 0) + 1 } : t)
-  }, [])
 
   // kept for legacy compatibility but voting is now handled inside ReplyCard directly
 
   const handleUpvoteThread = () => {
-    if (!user || threadLiked) return
+    if (threadLiked) return
     setThreadLiked(true)
     setThreadLikes(l => l + 1)
-    import('../data/store').then(({ upvoteThread }) => upvoteThread(threadId)).catch(() => {
-      setThreadLiked(false)
-      setThreadLikes(l => l - 1)
-    })
+    import('../data/store').then(({ upvoteThread }) => upvoteThread(threadId)).catch(() => {})
   }
 
   const replyTree = buildTree(replies)
@@ -435,7 +301,7 @@ export default function ForumThread() {
           <div className="flex items-center gap-5 pt-4 border-t border-grid-cyan/10">
             <button
               onClick={handleUpvoteThread}
-              disabled={!user || threadLiked}
+              disabled={threadLiked}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm ${
                 threadLiked
                   ? 'bg-grid-cyan/15 border border-grid-cyan/40 text-grid-cyan'
@@ -491,23 +357,12 @@ export default function ForumThread() {
                 key={reply.id}
                 reply={reply}
                 threadId={threadId}
-                onReplyPosted={handleReplyPosted}
                 depth={0}
               />
             ))}
           </div>
         )}
 
-        {/* Main reply box */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="glass-card rounded-2xl p-6">
-          <h3 className="font-orbitron text-xs font-bold text-white tracking-widest uppercase mb-4 flex items-center gap-2">
-            <Zap className="w-4 h-4 text-grid-cyan" /> Post a Reply
-          </h3>
-          <ReplyBox
-            threadId={threadId}
-            onPosted={handleReplyPosted}
-          />
-        </motion.div>
 
       </div>
     </div>

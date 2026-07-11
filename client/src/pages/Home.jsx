@@ -825,8 +825,8 @@ export default function Home() {
             {/* CTAs */}
             <motion.div initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.68, duration:0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
-              <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/register'}>
-                Join GRID free <ArrowRight style={{ width:16,height:16 }} />
+              <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/members'}>
+                Meet the researchers <ArrowRight style={{ width:16,height:16 }} />
               </MagneticButton>
               <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-sm btn-outline" onClick={() => window.location.href='/members'}>
                 Meet the researchers
@@ -1072,8 +1072,8 @@ export default function Home() {
               reviewers, and breakthrough ideas inside GRID.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-base" onClick={() => window.location.href='/register'}>
-                Join the ML community <ArrowRight style={{ width:18,height:18 }} />
+              <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-base" onClick={() => window.location.href='/members'}>
+                Explore the community <ArrowRight style={{ width:18,height:18 }} />
               </MagneticButton>
               <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-base btn-outline" onClick={() => window.location.href='/about'}>
                 Learn about GRID

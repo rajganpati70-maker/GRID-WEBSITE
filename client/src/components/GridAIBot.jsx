@@ -46,8 +46,6 @@ const SUGGESTION_POOL = [
   { text: 'Find open source projects', keywords: ['project', 'open source', 'github', 'repo'] },
   { text: 'Show me the blog', keywords: ['blog', 'article', 'read', 'post'] },
   { text: 'Who are the GRID members?', keywords: ['member', 'people', 'researcher', 'team'] },
-  { text: 'How do I log in?', keywords: ['login', 'log in', 'sign in'] },
-  { text: 'Open my dashboard', keywords: ['dashboard', 'profile', 'my account', 'my stats'], to: '/dashboard' },
   { text: 'Take me to Events', keywords: ['event'], to: '/events' },
   { text: 'Take me to the Forum', keywords: ['forum'], to: '/forum' },
   { text: 'Take me to Projects', keywords: ['project'], to: '/projects' },
@@ -70,16 +68,6 @@ const KB = [
     link: { to: '/about', label: 'About GRID' },
   },
   {
-    match: /(join|register|sign ?up|become a member)/i,
-    reply: "Joining is quick — just create a free account and pick your role. You'll get access to the forum, events, and member directory right away.",
-    link: { to: '/register', label: 'Create your account' },
-  },
-  {
-    match: /(login|log in|sign in)/i,
-    reply: "You can sign in anytime from the login page — your dashboard, saved posts, and profile will be right there.",
-    link: { to: '/login', label: 'Go to Login' },
-  },
-  {
     match: /(project|open source|github|repo)/i,
     reply: "Our Projects page showcases open-source work built by the community — a great place to find collaborators or contribute.",
     link: { to: '/projects', label: 'Explore Projects' },
@@ -93,11 +81,6 @@ const KB = [
     match: /(member|people|researcher|team|who.*built)/i,
     reply: "GRID has 12,000+ ML researchers, engineers, and practitioners. You can browse the member directory to see who's active.",
     link: { to: '/members', label: 'See Members' },
-  },
-  {
-    match: /(dashboard|profile|my account|my stats)/i,
-    reply: "Your Dashboard has your stats, badges, activity feed, and quick links — all in one place once you're signed in.",
-    link: { to: '/dashboard', label: 'Open Dashboard' },
   },
   {
     match: /(thank|thanks|thx)/i,

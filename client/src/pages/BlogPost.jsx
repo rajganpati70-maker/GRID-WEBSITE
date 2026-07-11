@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Clock, Eye, Heart, Share2, BookOpen, Calendar, User, Tag, Copy, Check } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
 
 const CAT_COLORS = {
   'LLMs':            { color:'#00d4ff', bg:'rgba(0,212,255,0.10)', border:'rgba(0,212,255,0.28)' },
@@ -42,7 +41,6 @@ function timeAgo(iso) {
 export default function BlogPost() {
   const { postId } = useParams()
   const navigate = useNavigate()
-  const { token, user } = useAuth()
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
   const [liked, setLiked] = useState(false)
@@ -59,13 +57,12 @@ export default function BlogPost() {
     }).catch(() => setNotFound(true)).finally(() => setLoading(false))
   }, [postId])
 
-  const handleLike = async () => {
-    if (liked || !user) return
+  const handleLike = () => {
+    if (liked) return
     setLiked(true)
     setLikes(l => l + 1)
     import('../data/store').then(({ likeBlogPost }) => {
-      const newLikes = likeBlogPost(postId)
-      setLikes(newLikes)
+      setLikes(likeBlogPost(postId))
     }).catch(() => {})
   }
 
@@ -184,13 +181,12 @@ export default function BlogPost() {
             {/* Like */}
             <button
               onClick={handleLike}
-              disabled={!token}
               style={{
                 display:'flex', alignItems:'center', gap:9, padding:'12px 24px', borderRadius:14,
                 border: liked ? '1px solid rgba(239,68,68,0.4)' : '1px solid rgba(255,255,255,0.1)',
                 background: liked ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.03)',
                 color: liked ? '#f87171' : 'rgba(160,180,210,0.7)',
-                cursor: token ? 'pointer' : 'not-allowed',
+                cursor: 'pointer',
                 fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:14,
                 transition:'all 0.2s ease',
               }}
