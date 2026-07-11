@@ -53,13 +53,12 @@ export default function Profile() {
   useEffect(() => {
     setLoading(true)
     setError('')
-    fetch(`/api/profile/${encodeURIComponent(username)}`)
-      .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(data => { setProfile(data); setLoading(false) })
-      .catch(code => {
-        setError(code === 404 ? 'User not found' : 'Failed to load profile')
-        setLoading(false)
-      })
+    import('../data/store').then(({ getUserByUsername }) => {
+      const u = getUserByUsername(username)
+      if (u) setProfile(u)
+      else setError('User not found')
+    }).catch(() => setError('Failed to load profile'))
+      .finally(() => setLoading(false))
   }, [username])
 
   const isOwn = currentUser?.username?.toLowerCase() === username?.toLowerCase()

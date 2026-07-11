@@ -5,7 +5,6 @@ import {
   List, ListOrdered, Minus, Link2, Image, Eye, EyeOff,
   Loader2, CheckCircle, Tag, ChevronDown, AlertCircle
 } from 'lucide-react'
-import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
 const CATS = ['LLMs', 'Research Papers', 'MLOps', 'Training', 'Fine-tuning', 'Computer Vision', 'RL', 'General']
@@ -186,15 +185,18 @@ export default function BlogEditor({ onClose, onPublished }) {
     if (!title.trim()) { setError('Title is required'); return }
     const body = editorRef.current?.innerHTML || ''
     if (!body.trim() || body === '<br>') { setError('Write something first'); return }
+    if (!user) { setError('You must be logged in to publish'); return }
     setPublishing(true); setError('')
     try {
-      const res = await axios.post('/api/blog', {
+      const { createBlogPost } = await import('../data/store')
+      const post = createBlogPost({
         title: title.trim(), content: body, category, tags, cover_image: coverUrl,
-      }, { headers: { Authorization: `Bearer ${token}` } })
+        author: user.username, read_time: `${Math.max(1, Math.ceil(body.replace(/<[^>]*>/g,' ').split(' ').filter(Boolean).length / 200))} min`,
+      })
       setSuccess(true)
-      setTimeout(() => { onPublished?.(res.data.post); onClose?.() }, 1200)
+      setTimeout(() => { onPublished?.(post); onClose?.() }, 1200)
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to publish. Try again.')
+      setError(err.message || 'Failed to publish. Try again.')
     } finally { setPublishing(false) }
   }
 

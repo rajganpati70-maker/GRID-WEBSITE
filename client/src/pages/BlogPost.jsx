@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Clock, Eye, Heart, Share2, BookOpen, Calendar, User, Tag, Copy, Check } from 'lucide-react'
-import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
 const CAT_COLORS = {
@@ -53,26 +52,21 @@ export default function BlogPost() {
 
   useEffect(() => {
     setLoading(true)
-    axios.get(`/api/blog/${postId}`)
-      .then(r => {
-        setPost(r.data.post)
-        setLikes(r.data.post.likes || 0)
-        setLoading(false)
-      })
-      .catch(err => {
-        if (err.response?.status === 404) setNotFound(true)
-        setLoading(false)
-      })
+    import('../data/store').then(({ getBlogPost }) => {
+      const p = getBlogPost(postId)
+      if (p) { setPost(p); setLikes(p.likes || 0) }
+      else setNotFound(true)
+    }).catch(() => setNotFound(true)).finally(() => setLoading(false))
   }, [postId])
 
   const handleLike = async () => {
-    if (liked || !token) return
+    if (liked || !user) return
     setLiked(true)
     setLikes(l => l + 1)
-    try {
-      const r = await axios.post(`/api/blog/${postId}/like`, {}, { headers: { Authorization: `Bearer ${token}` } })
-      setLikes(r.data.likes)
-    } catch {}
+    import('../data/store').then(({ likeBlogPost }) => {
+      const newLikes = likeBlogPost(postId)
+      setLikes(newLikes)
+    }).catch(() => {})
   }
 
   const handleCopy = () => {

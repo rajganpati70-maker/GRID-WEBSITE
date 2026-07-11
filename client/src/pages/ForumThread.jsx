@@ -6,7 +6,6 @@ import {
   Send, CornerDownRight, Loader2, AlertCircle, ChevronDown, ChevronUp, Zap
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import axios from 'axios'
 
 const GRAD_COLORS = [
   'from-blue-600 to-cyan-400', 'from-purple-600 to-blue-400',
@@ -61,14 +60,13 @@ function ReplyBox({ threadId, parentId, parentAuthor, onCancel, onPosted, depth 
     setPosting(true)
     setError('')
     try {
-      const res = await axios.post(`/api/forum/${threadId}/replies`, { content: content.trim(), parent_id: parentId || null }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const { createReply } = await import('../data/store')
+      const reply = createReply(threadId, content.trim(), user.username, parentId || null)
       setContent('')
-      onPosted?.(res.data)
+      onPosted?.(reply)
       onCancel?.()
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to post reply')
+      setError(err.message || 'Failed to post reply')
     } finally {
       setPosting(false)
     }
@@ -149,12 +147,14 @@ function ReplyCard({ reply, threadId, onVote, onReplyPosted, depth = 0 }) {
       type === 'up' ? setLikes(l => l + 1) : setDislikes(d => d + 1)
     }
     try {
-      const res = await axios.post(`/api/forum/replies/${reply.id}/vote`, { type }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      setLikes(res.data.likes)
-      setDislikes(res.data.dislikes)
-      setUserVote(res.data.userVote)
+      // vote is optimistic — persist in localStorage
+      const all = JSON.parse(localStorage.getItem('grid_forum_replies') || '[]')
+      const idx = all.findIndex(r => r.id === reply.id)
+      if (idx !== -1) {
+        all[idx].likes    = likes
+        all[idx].dislikes = dislikes
+        localStorage.setItem('grid_forum_replies', JSON.stringify(all))
+      }
     } catch {
       setUserVote(prev.userVote); setLikes(prev.likes); setDislikes(prev.dislikes)
     } finally {
@@ -310,60 +310,26 @@ export default function ForumThread() {
   const [threadLiked, setThreadLiked] = useState(false)
   const [threadLikes, setThreadLikes] = useState(0)
   const [newReplyCount, setNewReplyCount] = useState(0)
-  const wsRef = useRef(null)
 
   useEffect(() => {
     fetchThread()
-    setupWs()
-    return () => { wsRef.current?.close(); wsRef.current = null }
   }, [threadId])
 
   const fetchThread = async () => {
     setLoading(true)
     setError('')
     try {
-      const res = await axios.get(`/api/forum/${threadId}`)
-      setThread(res.data.thread)
-      setThreadLikes(res.data.thread.likes || 0)
-      setReplies(res.data.replies || [])
-    } catch (err) {
-      setError(err.response?.status === 404 ? 'Thread not found' : 'Failed to load thread')
+      const { getThread, getReplies } = await import('../data/store')
+      const t = getThread(threadId)
+      if (!t) { setError('Thread not found'); return }
+      setThread(t)
+      setThreadLikes(t.likes || 0)
+      setReplies(getReplies(threadId))
+    } catch {
+      setError('Failed to load thread')
     } finally {
       setLoading(false)
     }
-  }
-
-  const setupWs = () => {
-    const token = localStorage.getItem('grid_token')
-    if (!token) return
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`)
-    wsRef.current = ws
-
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type: 'auth', token }))
-    }
-
-    ws.onmessage = (e) => {
-      try {
-        const msg = JSON.parse(e.data)
-        if (msg.type === 'auth_ok') {
-          ws.send(JSON.stringify({ type: 'watch_thread', threadId: parseInt(threadId) }))
-        }
-        if (msg.type === 'forum_reply_new' && msg.threadId === parseInt(threadId)) {
-          setReplies(prev => {
-            if (prev.find(r => r.id === msg.reply.id)) return prev
-            return [...prev, msg.reply]
-          })
-          setNewReplyCount(c => c + 1)
-        }
-        if (msg.type === 'forum_thread_upvote' && msg.threadId === parseInt(threadId)) {
-          setThreadLikes(msg.likes)
-        }
-      } catch {}
-    }
-
-    ws.onclose = () => {}
   }
 
   const handleReplyPosted = useCallback((newReply) => {
@@ -376,18 +342,14 @@ export default function ForumThread() {
 
   // kept for legacy compatibility but voting is now handled inside ReplyCard directly
 
-  const handleUpvoteThread = async () => {
+  const handleUpvoteThread = () => {
     if (!user || threadLiked) return
     setThreadLiked(true)
     setThreadLikes(l => l + 1)
-    try {
-      await axios.post(`/api/forum/${threadId}/upvote`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-    } catch {
+    import('../data/store').then(({ upvoteThread }) => upvoteThread(threadId)).catch(() => {
       setThreadLiked(false)
       setThreadLikes(l => l - 1)
-    }
+    })
   }
 
   const replyTree = buildTree(replies)

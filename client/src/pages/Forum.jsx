@@ -4,7 +4,6 @@ import { MessageSquare, ThumbsUp, Eye, Clock, Pin, Flame, Search, Plus, Brain } 
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NewThreadModal from '../components/NewThreadModal'
-import axios from 'axios'
 import FloatingLogos from '../components/FloatingLogos'
 
 const MOCK_THREADS = [
@@ -60,38 +59,11 @@ export default function Forum() {
   const [newThreadIds, setNewThreadIds]   = useState(new Set())
   const { user } = useAuth()
   const navigate = useNavigate()
-  const wsRef = useRef(null)
 
   useEffect(() => {
-    axios.get('/api/forum').then(r => {
-      setThreads(r.data || [])
+    import('../data/store').then(({ getThreads }) => {
+      setThreads(getThreads())
     }).catch(() => setThreads([]))
-
-    const token = localStorage.getItem('grid_token')
-    if (token) {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      const ws = new WebSocket(`${protocol}//${window.location.host}/ws`)
-      wsRef.current = ws
-      ws.onopen = () => ws.send(JSON.stringify({ type:'auth', token }))
-      ws.onmessage = e => {
-        try {
-          const msg = JSON.parse(e.data)
-          if (msg.type === 'forum_thread_new') {
-            setThreads(prev => {
-              if (prev.find(t => t.id === msg.thread.id)) return prev
-              return [msg.thread, ...prev]
-            })
-            setNewThreadIds(prev => new Set([...prev, msg.thread.id]))
-          }
-          if (msg.type === 'forum_reply_new') {
-            setThreads(prev => prev.map(t =>
-              t.id === msg.threadId ? { ...t, replies:(t.replies||0)+1 } : t
-            ))
-          }
-        } catch {}
-      }
-    }
-    return () => { wsRef.current?.close(); wsRef.current = null }
   }, [])
 
   const handleNewThread = () => {

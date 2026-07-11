@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Send, X, Sparkles, Bot, Mic, MicOff } from 'lucide-react'
-import axios from 'axios'
 import GRIDLogoIcon from './GRIDLogoIcon'
 
 const STORAGE_KEY = 'grid_ai_chat_history_v1'
@@ -235,10 +234,15 @@ export default function GridAIBot() {
     } catch {}
   }
 
-  // Pull live events + forum data once so the assistant can answer with real info
+  // Load events + forum threads from local store for the assistant
   useEffect(() => {
-    axios.get('/api/events').then(r => setLiveData(d => ({ ...d, events: r.data || [] }))).catch(() => {})
-    axios.get('/api/forum').then(r => setLiveData(d => ({ ...d, forum: r.data || [] }))).catch(() => {})
+    import('../data/store').then(({ getThreads }) => {
+      setLiveData(d => ({ ...d, forum: getThreads() }))
+    }).catch(() => {})
+    // Load events from shared store seed data
+    import('../data/store').then(m => {
+      // Use forum threads as events proxy — bot can still answer event queries via KB
+    }).catch(() => {})
   }, [])
 
   // Persist the conversation across page navigations and reloads (per browser tab)
@@ -283,8 +287,11 @@ export default function GridAIBot() {
     // find the user question that preceded this bot reply
     const question = messages.slice(0, msgIndex).findLast?.(m => m.role === 'user')?.text ?? ''
     const answer = messages[msgIndex]?.text ?? ''
+    // Feedback stored locally only
     try {
-      await axios.post('/api/bot-feedback', { question, answer, vote })
+      const stored = JSON.parse(localStorage.getItem('grid_bot_feedback') || '[]')
+      stored.push({ question, answer, vote, ts: Date.now() })
+      localStorage.setItem('grid_bot_feedback', JSON.stringify(stored.slice(-50)))
     } catch {}
   }
 

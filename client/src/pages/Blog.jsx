@@ -5,7 +5,6 @@ import {
   Search, Clock, User, ArrowRight, BookOpen, TrendingUp,
   PenLine, Eye, Heart, Calendar, Plus
 } from 'lucide-react'
-import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import BlogEditor from '../components/BlogEditor'
 import FloatingLogos from '../components/FloatingLogos'
@@ -63,15 +62,11 @@ export default function Blog() {
   const [showEditor, setShowEditor] = useState(false)
   const [loading, setLoading]       = useState(true)
 
-  const load = () => {
-    setLoading(true)
-    axios.get('/api/blog').then(r => {
-      setPosts(r.data.posts || [])
-    }).catch(() => setPosts([]))
-      .finally(() => setLoading(false))
-  }
-
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    import('../data/store').then(({ getBlogPosts }) => {
+      setPosts(getBlogPosts())
+    }).catch(() => setPosts([])).finally(() => setLoading(false))
+  }, [])
 
   const filtered = posts.filter(p => {
     const q = search.toLowerCase()

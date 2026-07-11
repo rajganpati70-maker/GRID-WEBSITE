@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { LayoutDashboard, Star, Code2, MessageSquare, Calendar, TrendingUp, Zap, Shield, Award, ArrowRight, Activity, Edit3, ExternalLink, MapPin, Github } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import EditProfileModal from '../components/EditProfileModal'
-import axios from 'axios'
 import FloatingLogos from '../components/FloatingLogos'
 
 const QUICK_LINKS = [
@@ -44,11 +43,14 @@ export default function Dashboard() {
   const [showEditProfile, setShowEditProfile] = useState(false)
 
   useEffect(() => {
-    axios.get('/api/dashboard').then(r => {
-      if (r.data) setStats(s => ({ ...s, ...r.data }))
+    import('../data/store').then(({ getUserStats, getCommunityStats }) => {
+      if (user?.username) {
+        const s = getUserStats(user.username)
+        setStats({ posts: s.posts, projects: s.projects, events: s.events, reputation: s.reputation || 0 })
+      }
+      setCommunityStats(getCommunityStats())
     }).catch(() => {})
-    axios.get('/api/stats').then(r => setCommunityStats(r.data)).catch(() => {})
-  }, [])
+  }, [user?.username])
 
   const avatarStyle = user?.avatar_color
     ? { background: user.avatar_color }

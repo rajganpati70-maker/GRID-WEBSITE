@@ -7,7 +7,6 @@ import {
   BookOpen, FlaskConical, Network, Github, Linkedin, Globe,
   Microscope, Share2, Rocket,
 } from 'lucide-react'
-import axios from 'axios'
 import GRIDLogoHero      from '../components/GRIDLogoHero'
 import FloatingLogos     from '../components/FloatingLogos'
 import ParticleNetwork   from '../components/ParticleNetwork'
@@ -741,9 +740,7 @@ export default function Home() {
     return () => window.removeEventListener('mousemove', onMove)
   }, [rawX, rawY])
 
-  useEffect(() => {
-    axios.get('/api/events').then(r => setEvents((r.data||[]).slice(0,3))).catch(() => setEvents(FALLBACK_EVENTS))
-  }, [])
+  useEffect(() => { setEvents(FALLBACK_EVENTS) }, [])
 
   const displayEvents = events.length ? events : FALLBACK_EVENTS
 

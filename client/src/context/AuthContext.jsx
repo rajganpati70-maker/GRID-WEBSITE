@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import { registerUser, loginUser, getUserByUsername, updateUser } from '../data/store'
 
 const AuthContext = createContext(null)
 
@@ -10,59 +10,59 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser]     = useState(null)
   const [loading, setLoading] = useState(true)
-  const [token, setToken] = useState(localStorage.getItem('grid_token'))
 
+  // Restore session from localStorage on mount
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      fetchMe()
-    } else {
-      setLoading(false)
-    }
-  }, [token])
-
-  const fetchMe = async () => {
     try {
-      const res = await axios.get('/api/auth/me')
-      setUser(res.data.user)
-    } catch {
-      logout()
-    } finally {
-      setLoading(false)
-    }
-  }
+      const stored = localStorage.getItem('grid_session')
+      if (stored) {
+        const { username } = JSON.parse(stored)
+        const u = getUserByUsername(username)
+        if (u) setUser(u)
+      }
+    } catch {}
+    setLoading(false)
+  }, [])
 
   const login = async (email, password) => {
-    const res = await axios.post('/api/auth/login', { email, password })
-    const { token: t, user: u } = res.data
-    localStorage.setItem('grid_token', t)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${t}`
-    setToken(t)
+    const u = loginUser(email, password)
+    localStorage.setItem('grid_session', JSON.stringify({ username: u.username }))
     setUser(u)
     return u
   }
 
   const register = async (username, email, password, role) => {
-    const res = await axios.post('/api/auth/register', { username, email, password, role })
-    const { token: t, user: u } = res.data
-    localStorage.setItem('grid_token', t)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${t}`
-    setToken(t)
+    const u = registerUser(username, email, password, role)
+    localStorage.setItem('grid_session', JSON.stringify({ username: u.username }))
     setUser(u)
     return u
   }
 
   const logout = () => {
-    localStorage.removeItem('grid_token')
-    delete axios.defaults.headers.common['Authorization']
-    setToken(null)
+    localStorage.removeItem('grid_session')
     setUser(null)
   }
 
+  const refreshUser = () => {
+    if (!user) return
+    const fresh = getUserByUsername(user.username)
+    if (fresh) setUser(fresh)
+  }
+
+  const updateProfile = (updates) => {
+    if (!user) return null
+    const updated = updateUser(user.id, updates)
+    if (updated) {
+      setUser(updated)
+      localStorage.setItem('grid_session', JSON.stringify({ username: updated.username }))
+    }
+    return updated
+  }
+
   return (
-    <AuthContext.Provider value={{ user, setUser, token, loading, login, register, logout, fetchMe }}>
+    <AuthContext.Provider value={{ user, setUser, loading, login, register, logout, refreshUser, updateProfile, token: user ? 'local' : null }}>
       {children}
     </AuthContext.Provider>
   )

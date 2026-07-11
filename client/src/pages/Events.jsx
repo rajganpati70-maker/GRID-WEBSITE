@@ -5,7 +5,6 @@ import {
   Brain, Cpu, BarChart2, GitBranch, FlaskConical, BookOpen,
   Zap, Trophy, Globe, ChevronRight, Star,
 } from 'lucide-react'
-import axios from 'axios'
 import FloatingLogos from '../components/FloatingLogos'
 
 /* ─── Real GRID events ───────────────────────────────────────────────────── */
@@ -621,11 +620,7 @@ export default function Events() {
   const [filter, setFilter] = useState('All')
 
   useEffect(() => {
-    // Always lead with real GRID events; append any DB events behind them
-    axios.get('/api/events').then(r => {
-      const api = r.data && r.data.length > 0 ? r.data : []
-      setEvents([...GRID_EVENTS, ...api])
-    }).catch(() => setEvents([...GRID_EVENTS, ...MOCK_EVENTS]))
+    setEvents([...GRID_EVENTS, ...MOCK_EVENTS])
   }, [])
 
   const filtered = filter === 'All' ? events : events.filter(e => e.type === filter)
