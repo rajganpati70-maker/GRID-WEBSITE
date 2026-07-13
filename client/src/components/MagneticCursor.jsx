@@ -52,7 +52,6 @@ function GRIDCursorIcon({ hovered, clicking }) {
       xmlns="http://www.w3.org/2000/svg"
       style={{
         filter: `drop-shadow(0 0 ${glow}px rgba(0,212,255,${clicking ? 0.95 : hovered ? 0.75 : 0.45}))`,
-        transition: 'filter 0.18s ease',
         opacity,
         transform: `scale(${scale})`,
         transition: 'transform 0.18s cubic-bezier(0.22,1,0.36,1), filter 0.18s ease, opacity 0.18s ease',

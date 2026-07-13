@@ -2,6 +2,8 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import MagneticCursor from './components/MagneticCursor'
+import SmoothScroll from './components/SmoothScroll'
+import ScrollProgress from './components/ScrollProgress'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import GridAIBot from './components/GridAIBot'
@@ -69,6 +71,8 @@ const Layout = () => {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollProgress />
+      <SmoothScroll />
       <MagneticCursor />
       <Layout />
     </BrowserRouter>
