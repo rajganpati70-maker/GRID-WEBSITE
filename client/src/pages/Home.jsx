@@ -828,8 +828,8 @@ export default function Home() {
               <MagneticButton variant="primary" className="gap-2 px-8 py-4 text-sm" onClick={() => window.location.href='/members'}>
                 Meet the researchers <ArrowRight style={{ width:16,height:16 }} />
               </MagneticButton>
-              <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-sm btn-outline" onClick={() => window.location.href='/members'}>
-                Meet the researchers
+              <MagneticButton variant="secondary" className="gap-2 px-8 py-4 text-sm btn-outline" onClick={() => window.location.href='/projects'}>
+                Explore projects
               </MagneticButton>
             </motion.div>
 

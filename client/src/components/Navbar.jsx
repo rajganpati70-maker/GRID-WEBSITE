@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ArrowRight } from 'lucide-react'
 import GRIDLogoIcon from './GRIDLogoIcon'
 
 const navLinks = [
@@ -36,19 +36,20 @@ export default function Navbar() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
             ? 'bg-grid-black/95 backdrop-blur-xl border-b border-grid-cyan/10 shadow-[0_4px_30px_rgba(0,212,255,0.08)]'
-            : 'bg-transparent'
+            : 'bg-gradient-to-b from-grid-black/70 via-grid-black/25 to-transparent backdrop-blur-[2px] border-b border-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
 
             {/* Logo */}
-            <Link to="/" aria-label="GRID — Home" className="flex items-center group">
+            <Link to="/" aria-label="GRID — Home" className="flex items-center gap-2.5 group">
               <GRIDLogoIcon
-                size={42}
+                size={40}
                 style={{ transition: 'filter 0.3s ease' }}
                 className="group-hover:[filter:drop-shadow(0_0_10px_rgba(0,212,255,0.7))]"
               />
+              <span style={{ fontFamily: '"Plus Jakarta Sans",sans-serif', fontWeight: 800, fontSize: 17, letterSpacing: '0.08em', color: '#f0f6ff' }}>GRID</span>
             </Link>
 
             {/* Desktop Links */}
@@ -63,6 +64,11 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
+
+            {/* Desktop CTA */}
+            <Link to="/members" className="hidden lg:inline-flex btn-primary" style={{ padding: '0.6rem 1.4rem', fontSize: 13, gap: 6 }}>
+              Join GRID <ArrowRight style={{ width: 13, height: 13 }} />
+            </Link>
 
             {/* Mobile hamburger */}
             <div className="lg:hidden">
@@ -95,6 +101,9 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                <Link to="/members" className="btn-primary w-full mt-2" style={{ gap: 6 }}>
+                  Join GRID <ArrowRight style={{ width: 14, height: 14 }} />
+                </Link>
               </div>
             </motion.div>
           )}
