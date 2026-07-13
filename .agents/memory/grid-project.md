@@ -33,3 +33,8 @@ Pure React + Vite frontend — no backend server, no database, no API calls.
 - Events, Home, Members, Projects → fully static (no store needed)
 
 **Why:** User wanted to remove Express/PostgreSQL backend entirely to simplify deployment and eliminate server dependencies.
+
+## Design system note
+Primary theme: dark navy/black bg, cyan/blue/purple accents, Plus Jakarta Sans typography, `.glass-card`/`.premium-card`/`.tag`/`.input-field` utility classes (see `index.css`), `grid-cyan`/`grid-blue`/`grid-purple` Tailwind colors.
+Forum/ForumThread pages were built earlier with a leftover "HUD" style (`font-orbitron`/`font-rajdhani` Tailwind fonts + default gray/orange/yellow Tailwind colors) that clashed with the primary theme — fixed by switching to the default Plus Jakarta Sans and theme rgba tones.
+**Why:** worth checking other untouched pages/components for the same legacy-font/default-Tailwind-color drift before assuming they're already on-theme.

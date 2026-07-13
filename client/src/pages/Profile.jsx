@@ -64,7 +64,7 @@ export default function Profile() {
     <div className="min-h-screen pt-24 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-2 border-grid-cyan/30 border-t-grid-cyan rounded-full animate-spin" />
-        <div className="text-grid-cyan font-orbitron text-xs tracking-widest animate-pulse">LOADING PROFILE...</div>
+        <div className="text-grid-cyan text-xs tracking-widest animate-pulse">LOADING PROFILE...</div>
       </div>
     </div>
   )
@@ -72,8 +72,8 @@ export default function Profile() {
   if (error) return (
     <div className="min-h-screen pt-24 flex items-center justify-center">
       <div className="text-center">
-        <div className="font-orbitron text-6xl font-black text-grid-cyan/20 mb-4">404</div>
-        <p className="text-gray-400 font-rajdhani tracking-wider mb-6">{error}</p>
+        <div className="text-6xl font-black text-grid-cyan/20 mb-4">404</div>
+        <p className="text-[rgba(160,180,210,0.78)] tracking-wider mb-6">{error}</p>
         <Link to="/members" className="btn-outline text-xs">Browse Members</Link>
       </div>
     </div>
@@ -87,7 +87,7 @@ export default function Profile() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-500 hover:text-grid-cyan transition-colors mb-8 font-rajdhani tracking-widest uppercase text-xs"
+          className="flex items-center gap-2 text-[rgba(140,160,190,0.65)] hover:text-grid-cyan transition-colors mb-8 tracking-widest uppercase text-xs"
         >
           <ArrowLeft className="w-4 h-4" /> Back
         </motion.button>
@@ -109,30 +109,30 @@ export default function Profile() {
                 <Avatar username={profile.username} avatarColor={profile.avatar_color} size={20} />
 
                 <div>
-                  <h1 className="font-orbitron text-xl font-black text-white tracking-wider mb-1">
+                  <h1 className="text-xl font-black text-white tracking-wider mb-1">
                     {profile.username}
                   </h1>
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-grid-cyan/25 bg-grid-cyan/8 text-xs text-grid-cyan font-rajdhani tracking-widest uppercase">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-grid-cyan/25 bg-grid-cyan/8 text-xs text-grid-cyan tracking-widest uppercase">
                     <Code2 className="w-3 h-3" />
                     {profile.role || 'Developer'}
                   </div>
                 </div>
 
                 {profile.bio && (
-                  <p className="text-sm text-gray-400 font-inter leading-relaxed">{profile.bio}</p>
+                  <p className="text-sm text-[rgba(160,180,210,0.78)] font-inter leading-relaxed">{profile.bio}</p>
                 )}
 
                 {/* Meta */}
                 <div className="w-full space-y-2 text-xs">
                   {profile.location && (
-                    <div className="flex items-center gap-2 text-gray-500">
+                    <div className="flex items-center gap-2 text-[rgba(140,160,190,0.65)]">
                       <MapPin className="w-3.5 h-3.5 text-grid-cyan/60 flex-shrink-0" />
-                      <span className="font-rajdhani tracking-wide">{profile.location}</span>
+                      <span className="tracking-wide">{profile.location}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-gray-500">
+                  <div className="flex items-center gap-2 text-[rgba(140,160,190,0.65)]">
                     <Calendar className="w-3.5 h-3.5 text-grid-cyan/60 flex-shrink-0" />
-                    <span className="font-rajdhani tracking-wide">Joined {profile.joined}</span>
+                    <span className="tracking-wide">Joined {profile.joined}</span>
                   </div>
                 </div>
 
@@ -140,25 +140,25 @@ export default function Profile() {
                 <div className="flex items-center gap-2 flex-wrap justify-center">
                   {profile.github_url && (
                     <a href={profile.github_url} target="_blank" rel="noopener noreferrer"
-                       className="p-2 rounded-lg border border-gray-700 hover:border-grid-cyan/50 hover:text-grid-cyan text-gray-500 transition-all duration-200">
+                       className="p-2 rounded-lg border border-[rgba(140,160,190,0.25)] hover:border-grid-cyan/50 hover:text-grid-cyan text-[rgba(140,160,190,0.65)] transition-all duration-200">
                       <Github className="w-4 h-4" />
                     </a>
                   )}
                   {profile.twitter_url && (
                     <a href={profile.twitter_url} target="_blank" rel="noopener noreferrer"
-                       className="p-2 rounded-lg border border-gray-700 hover:border-blue-400/50 hover:text-blue-400 text-gray-500 transition-all duration-200">
+                       className="p-2 rounded-lg border border-[rgba(140,160,190,0.25)] hover:border-blue-400/50 hover:text-blue-400 text-[rgba(140,160,190,0.65)] transition-all duration-200">
                       <Twitter className="w-4 h-4" />
                     </a>
                   )}
                   {profile.linkedin_url && (
                     <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer"
-                       className="p-2 rounded-lg border border-gray-700 hover:border-blue-500/50 hover:text-blue-500 text-gray-500 transition-all duration-200">
+                       className="p-2 rounded-lg border border-[rgba(140,160,190,0.25)] hover:border-blue-500/50 hover:text-blue-500 text-[rgba(140,160,190,0.65)] transition-all duration-200">
                       <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {profile.website_url && (
                     <a href={profile.website_url} target="_blank" rel="noopener noreferrer"
-                       className="p-2 rounded-lg border border-gray-700 hover:border-purple-400/50 hover:text-purple-400 text-gray-500 transition-all duration-200">
+                       className="p-2 rounded-lg border border-[rgba(140,160,190,0.25)] hover:border-purple-400/50 hover:text-purple-400 text-[rgba(140,160,190,0.65)] transition-all duration-200">
                       <Globe className="w-4 h-4" />
                     </a>
                   )}
@@ -169,7 +169,7 @@ export default function Profile() {
 
             {/* Stats */}
             <div className="glass-card p-5 rounded-2xl">
-              <h3 className="font-orbitron text-xs font-bold text-white tracking-widest uppercase mb-4">Stats</h3>
+              <h3 className="text-xs font-bold text-white tracking-widest uppercase mb-4">Stats</h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { label: 'Rep', value: profile.reputation || 0, icon: Award, color: 'text-yellow-400' },
@@ -178,8 +178,8 @@ export default function Profile() {
                 ].map(({ label, value, icon: Icon, color }) => (
                   <div key={label} className="text-center">
                     <Icon className={`w-4 h-4 ${color} mx-auto mb-1`} />
-                    <div className={`font-orbitron font-black text-lg ${color}`}>{value}</div>
-                    <div className="text-[10px] text-gray-600 font-rajdhani tracking-widest uppercase">{label}</div>
+                    <div className={`font-black text-lg ${color}`}>{value}</div>
+                    <div className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-widest uppercase">{label}</div>
                   </div>
                 ))}
               </div>
@@ -188,10 +188,10 @@ export default function Profile() {
             {/* Skills */}
             {profile.skills?.length > 0 && (
               <div className="glass-card p-5 rounded-2xl">
-                <h3 className="font-orbitron text-xs font-bold text-white tracking-widest uppercase mb-4">Skills</h3>
+                <h3 className="text-xs font-bold text-white tracking-widest uppercase mb-4">Skills</h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.skills.map((skill, i) => (
-                    <span key={skill} className={`px-2.5 py-1 rounded-lg border text-xs font-rajdhani tracking-wide ${SKILL_COLORS[i % SKILL_COLORS.length]}`}>
+                    <span key={skill} className={`px-2.5 py-1 rounded-lg border text-xs tracking-wide ${SKILL_COLORS[i % SKILL_COLORS.length]}`}>
                       {skill}
                     </span>
                   ))}
@@ -210,10 +210,10 @@ export default function Profile() {
             {/* Recent Forum Posts */}
             <div className="glass-card p-6 rounded-2xl">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="font-orbitron text-sm font-bold text-white tracking-widest uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold text-white tracking-widest uppercase flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-grid-cyan" /> Recent Discussions
                 </h3>
-                <Link to="/forum" className="text-[10px] text-grid-cyan/60 hover:text-grid-cyan font-rajdhani tracking-widest uppercase transition-colors flex items-center gap-1">
+                <Link to="/forum" className="text-[10px] text-grid-cyan/60 hover:text-grid-cyan tracking-widest uppercase transition-colors flex items-center gap-1">
                   View Forum <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
@@ -223,10 +223,10 @@ export default function Profile() {
                     <div key={post.id} className="flex items-start gap-3 p-3 rounded-xl bg-white/2 hover:bg-grid-cyan/5 transition-colors border border-transparent hover:border-grid-cyan/10">
                       <div className="w-2 h-2 rounded-full bg-grid-cyan mt-2 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-200 font-inter line-clamp-1 mb-1">{post.title}</p>
+                        <p className="text-sm text-[rgba(200,212,230,0.9)] font-inter line-clamp-1 mb-1">{post.title}</p>
                         <div className="flex items-center gap-3">
-                          <span className="text-[10px] text-gray-600 font-rajdhani tracking-wide">{post.category}</span>
-                          <span className="text-[10px] text-gray-700">{new Date(post.created_at).toLocaleDateString()}</span>
+                          <span className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-wide">{post.category}</span>
+                          <span className="text-[10px] text-[rgba(140,160,190,0.45)]">{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
@@ -234,8 +234,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <MessageSquare className="w-8 h-8 text-gray-700 mx-auto mb-2" />
-                  <p className="text-xs text-gray-600 font-rajdhani tracking-widest uppercase">No discussions yet</p>
+                  <MessageSquare className="w-8 h-8 text-[rgba(140,160,190,0.45)] mx-auto mb-2" />
+                  <p className="text-xs text-[rgba(140,160,190,0.6)] tracking-widest uppercase">No discussions yet</p>
                 </div>
               )}
             </div>
@@ -243,10 +243,10 @@ export default function Profile() {
             {/* Recent Projects */}
             <div className="glass-card p-6 rounded-2xl">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="font-orbitron text-sm font-bold text-white tracking-widest uppercase flex items-center gap-2">
+                <h3 className="text-sm font-bold text-white tracking-widest uppercase flex items-center gap-2">
                   <Code2 className="w-4 h-4 text-purple-400" /> Projects
                 </h3>
-                <Link to="/projects" className="text-[10px] text-grid-cyan/60 hover:text-grid-cyan font-rajdhani tracking-widest uppercase transition-colors flex items-center gap-1">
+                <Link to="/projects" className="text-[10px] text-grid-cyan/60 hover:text-grid-cyan tracking-widest uppercase transition-colors flex items-center gap-1">
                   View All <ExternalLink className="w-3 h-3" />
                 </Link>
               </div>
@@ -258,16 +258,16 @@ export default function Profile() {
                         <Code2 className="w-4 h-4 text-purple-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-200 font-inter font-medium line-clamp-1">{proj.title}</p>
+                        <p className="text-sm text-[rgba(200,212,230,0.9)] font-inter font-medium line-clamp-1">{proj.title}</p>
                         <div className="flex items-center gap-3 mt-0.5">
-                          <span className="text-[10px] text-gray-600 font-rajdhani tracking-wide">{proj.category}</span>
-                          <span className={`text-[10px] font-rajdhani tracking-wide px-1.5 py-0.5 rounded ${
-                            proj.status === 'Active' ? 'text-green-400 bg-green-500/10' : 'text-gray-500 bg-white/5'
+                          <span className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-wide">{proj.category}</span>
+                          <span className={`text-[10px] tracking-wide px-1.5 py-0.5 rounded ${
+                            proj.status === 'Active' ? 'text-green-400 bg-green-500/10' : 'text-[rgba(140,160,190,0.65)] bg-white/5'
                           }`}>{proj.status}</span>
                         </div>
                       </div>
                       {proj.stars > 0 && (
-                        <div className="flex items-center gap-1 text-yellow-400 text-xs font-orbitron flex-shrink-0">
+                        <div className="flex items-center gap-1 text-yellow-400 text-xs flex-shrink-0">
                           <Star className="w-3 h-3" /> {proj.stars}
                         </div>
                       )}
@@ -276,8 +276,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <Code2 className="w-8 h-8 text-gray-700 mx-auto mb-2" />
-                  <p className="text-xs text-gray-600 font-rajdhani tracking-widest uppercase">No projects yet</p>
+                  <Code2 className="w-8 h-8 text-[rgba(140,160,190,0.45)] mx-auto mb-2" />
+                  <p className="text-xs text-[rgba(140,160,190,0.6)] tracking-widest uppercase">No projects yet</p>
                 </div>
               )}
             </div>
@@ -286,7 +286,7 @@ export default function Profile() {
             {profile.recent_posts?.length === 0 && profile.recent_projects?.length === 0 && !profile.bio && (
               <div className="glass-card p-10 rounded-2xl text-center">
                 <Users className="w-12 h-12 text-grid-cyan/20 mx-auto mb-3" />
-                <p className="text-gray-500 font-rajdhani tracking-widest text-sm uppercase">
+                <p className="text-[rgba(140,160,190,0.65)] tracking-widest text-sm uppercase">
                   {`${profile.username} hasn't posted yet`}
                 </p>
               </div>

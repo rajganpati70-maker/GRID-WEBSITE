@@ -14,13 +14,13 @@ const GRAD_COLORS = [
 ]
 
 const CAT_COLORS = {
-  'DevOps': 'text-orange-400 bg-orange-400/10 border-orange-400/25',
-  'Languages': 'text-yellow-400 bg-yellow-400/10 border-yellow-400/25',
-  'Blockchain': 'text-blue-400 bg-blue-400/10 border-blue-400/25',
-  'General': 'text-gray-400 bg-gray-400/10 border-gray-400/25',
-  'AI/ML': 'text-purple-400 bg-purple-400/10 border-purple-400/25',
-  'Frontend': 'text-cyan-400 bg-cyan-400/10 border-cyan-400/25',
-  'Security': 'text-red-400 bg-red-400/10 border-red-400/25',
+  'DevOps': 'text-[#f59e0b] bg-[#f59e0b]/10 border-[#f59e0b]/25',
+  'Languages': 'text-[#fbbf24] bg-[#fbbf24]/10 border-[#fbbf24]/25',
+  'Blockchain': 'text-[#0066ff] bg-[#0066ff]/10 border-[#0066ff]/25',
+  'General': 'text-[rgba(140,160,190,0.75)] bg-[rgba(140,160,190,0.08)] border-[rgba(140,160,190,0.22)]',
+  'AI/ML': 'text-[#7b2fff] bg-[#7b2fff]/10 border-[#7b2fff]/25',
+  'Frontend': 'text-grid-cyan bg-grid-cyan/10 border-grid-cyan/25',
+  'Security': 'text-[#ef4444] bg-[#ef4444]/10 border-[#ef4444]/25',
 }
 
 function timeAgo(iso) {
@@ -81,22 +81,22 @@ function ReplyCard({ reply, threadId, onReplyPosted, depth = 0 }) {
               <Avatar username={reply.author} avatarColor={reply.author_avatar_color} size={8} />
             </Link>
             <div>
-              <Link to={`/profile/${reply.author}`} className="font-orbitron text-xs font-bold text-white hover:text-grid-cyan transition-colors">
+              <Link to={`/profile/${reply.author}`} className="text-xs font-bold text-white hover:text-grid-cyan transition-colors">
                 @{reply.author}
               </Link>
               {reply.author_role && (
-                <div className="text-[10px] text-gray-600 font-rajdhani tracking-wide">{reply.author_role}</div>
+                <div className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-wide">{reply.author_role}</div>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-1 text-[10px] text-gray-600 font-rajdhani tracking-wide">
+          <div className="flex items-center gap-1 text-[10px] text-[rgba(140,160,190,0.6)] tracking-wide">
             <Clock className="w-3 h-3" />
             {timeAgo(reply.created_at)}
           </div>
         </div>
 
         {/* Content */}
-        <div className="text-sm text-gray-300 font-inter leading-relaxed whitespace-pre-wrap mb-3 pl-10">
+        <div className="text-sm text-[rgba(180,195,215,0.85)] font-inter leading-relaxed whitespace-pre-wrap mb-3 pl-10">
           {reply.content}
         </div>
 
@@ -104,7 +104,7 @@ function ReplyCard({ reply, threadId, onReplyPosted, depth = 0 }) {
         <div className="flex items-center gap-4 pl-10 flex-wrap">
           {/* Was this helpful? */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-gray-600 font-rajdhani tracking-widest uppercase select-none">
+            <span className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-widest uppercase select-none">
               Helpful?
             </span>
             <button
@@ -112,22 +112,22 @@ function ReplyCard({ reply, threadId, onReplyPosted, depth = 0 }) {
               className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
                 userVote === 'up'
                   ? 'bg-grid-cyan/15 border-grid-cyan/40 text-grid-cyan'
-                  : 'border-transparent text-gray-600 hover:border-grid-cyan/25 hover:text-grid-cyan'
+                  : 'border-transparent text-[rgba(140,160,190,0.6)] hover:border-grid-cyan/25 hover:text-grid-cyan'
               }`}
             >
               <ThumbsUp className={`w-3.5 h-3.5 ${userVote === 'up' ? 'fill-grid-cyan' : ''}`} />
-              {likes > 0 && <span className="font-orbitron font-bold text-[10px]">{likes}</span>}
+              {likes > 0 && <span className="font-bold text-[10px]">{likes}</span>}
             </button>
             <button
               onClick={() => handleVote('down')}
               className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-all duration-200 border ${
                 userVote === 'down'
                   ? 'bg-red-500/15 border-red-500/40 text-red-400'
-                  : 'border-transparent text-gray-600 hover:border-red-500/25 hover:text-red-400'
+                  : 'border-transparent text-[rgba(140,160,190,0.6)] hover:border-red-500/25 hover:text-red-400'
               }`}
             >
               <ThumbsDown className={`w-3.5 h-3.5 ${userVote === 'down' ? 'fill-red-400' : ''}`} />
-              {dislikes > 0 && <span className="font-orbitron font-bold text-[10px]">{dislikes}</span>}
+              {dislikes > 0 && <span className="font-bold text-[10px]">{dislikes}</span>}
             </button>
           </div>
 
@@ -139,7 +139,7 @@ function ReplyCard({ reply, threadId, onReplyPosted, depth = 0 }) {
         <div>
           <button
             onClick={() => setShowChildren(!showChildren)}
-            className="flex items-center gap-1 text-[10px] text-gray-600 hover:text-grid-cyan transition-colors mt-2 ml-4 font-rajdhani tracking-widest uppercase"
+            className="flex items-center gap-1 text-[10px] text-[rgba(140,160,190,0.6)] hover:text-grid-cyan transition-colors mt-2 ml-4 tracking-widest uppercase"
           >
             {showChildren ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             {reply.children.length} {reply.children.length === 1 ? 'reply' : 'replies'}
@@ -224,7 +224,7 @@ export default function ForumThread() {
     <div className="min-h-screen pt-24 flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-2 border-grid-cyan/30 border-t-grid-cyan rounded-full animate-spin" />
-        <div className="text-grid-cyan font-orbitron text-xs tracking-widest animate-pulse">LOADING THREAD...</div>
+        <div className="text-grid-cyan text-xs tracking-widest animate-pulse">LOADING THREAD...</div>
       </div>
     </div>
   )
@@ -233,7 +233,7 @@ export default function ForumThread() {
     <div className="min-h-screen pt-24 flex items-center justify-center">
       <div className="text-center">
         <MessageSquare className="w-16 h-16 text-grid-cyan/20 mx-auto mb-4" />
-        <p className="text-gray-400 font-rajdhani tracking-wide mb-6">{error}</p>
+        <p className="text-[rgba(160,180,210,0.78)] tracking-wide mb-6">{error}</p>
         <Link to="/forum" className="btn-outline text-xs">Back to Forum</Link>
       </div>
     </div>
@@ -248,7 +248,7 @@ export default function ForumThread() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('/forum')}
-          className="flex items-center gap-2 text-gray-500 hover:text-grid-cyan transition-colors mb-6 font-rajdhani tracking-widest uppercase text-xs"
+          className="flex items-center gap-2 text-[rgba(140,160,190,0.65)] hover:text-grid-cyan transition-colors mb-6 tracking-widest uppercase text-xs"
         >
           <ArrowLeft className="w-4 h-4" /> Forum
         </motion.button>
@@ -258,22 +258,22 @@ export default function ForumThread() {
           {/* Badges */}
           <div className="flex items-center gap-2 flex-wrap mb-4">
             {thread?.pinned && (
-              <span className="flex items-center gap-1 text-[10px] text-yellow-400 bg-yellow-400/10 border border-yellow-400/25 px-2 py-0.5 rounded font-rajdhani tracking-widest uppercase">
+              <span className="flex items-center gap-1 text-[10px] text-yellow-400 bg-yellow-400/10 border border-yellow-400/25 px-2 py-0.5 rounded tracking-widest uppercase">
                 <Pin className="w-2.5 h-2.5" /> Pinned
               </span>
             )}
             {thread?.hot && (
-              <span className="flex items-center gap-1 text-[10px] text-orange-400 bg-orange-400/10 border border-orange-400/25 px-2 py-0.5 rounded font-rajdhani tracking-widest uppercase">
+              <span className="flex items-center gap-1 text-[10px] text-orange-400 bg-orange-400/10 border border-orange-400/25 px-2 py-0.5 rounded tracking-widest uppercase">
                 <Flame className="w-2.5 h-2.5" /> Hot
               </span>
             )}
-            <span className={`text-[10px] px-2 py-0.5 rounded border font-rajdhani tracking-widest uppercase ${CAT_COLORS[thread?.category] || 'text-gray-400 bg-gray-400/10 border-gray-400/25'}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded border tracking-widest uppercase ${CAT_COLORS[thread?.category] || 'text-[rgba(140,160,190,0.75)] bg-[rgba(140,160,190,0.08)] border-[rgba(140,160,190,0.22)]'}`}>
               {thread?.category}
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="font-orbitron text-lg font-black text-white leading-snug mb-5">{thread?.title}</h1>
+          <h1 className="text-lg font-black text-white leading-snug mb-5">{thread?.title}</h1>
 
           {/* Author row */}
           <div className="flex items-center gap-3 mb-5">
@@ -281,19 +281,19 @@ export default function ForumThread() {
               <Avatar username={thread?.author} avatarColor={thread?.author_avatar_color} size={10} />
             </Link>
             <div>
-              <Link to={`/profile/${thread?.author}`} className="font-orbitron text-sm font-bold text-white hover:text-grid-cyan transition-colors">
+              <Link to={`/profile/${thread?.author}`} className="text-sm font-bold text-white hover:text-grid-cyan transition-colors">
                 @{thread?.author}
               </Link>
-              {thread?.author_role && <div className="text-[10px] text-gray-600 font-rajdhani tracking-wide">{thread?.author_role}</div>}
+              {thread?.author_role && <div className="text-[10px] text-[rgba(140,160,190,0.6)] tracking-wide">{thread?.author_role}</div>}
             </div>
-            <div className="flex items-center gap-1 text-xs text-gray-600 font-rajdhani tracking-wide ml-auto">
+            <div className="flex items-center gap-1 text-xs text-[rgba(140,160,190,0.6)] tracking-wide ml-auto">
               <Clock className="w-3 h-3" />
               {thread?.created_at ? timeAgo(thread.created_at) : thread?.created}
             </div>
           </div>
 
           {/* Body */}
-          <div className="text-gray-300 font-inter leading-relaxed text-sm whitespace-pre-wrap mb-6 pl-1 border-l-2 border-grid-cyan/10 pl-4">
+          <div className="text-[rgba(180,195,215,0.85)] font-inter leading-relaxed text-sm whitespace-pre-wrap mb-6 pl-1 border-l-2 border-grid-cyan/10 pl-4">
             {thread?.content || thread?.excerpt || 'No content.'}
           </div>
 
@@ -305,17 +305,17 @@ export default function ForumThread() {
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 text-sm ${
                 threadLiked
                   ? 'bg-grid-cyan/15 border border-grid-cyan/40 text-grid-cyan'
-                  : 'glass-card hover:border-grid-cyan/40 hover:text-grid-cyan text-gray-500 disabled:cursor-default'
+                  : 'glass-card hover:border-grid-cyan/40 hover:text-grid-cyan text-[rgba(140,160,190,0.65)] disabled:cursor-default'
               }`}
             >
               <ThumbsUp className={`w-4 h-4 ${threadLiked ? 'fill-grid-cyan' : ''}`} />
-              <span className="font-orbitron font-bold text-xs">{threadLikes}</span>
+              <span className="font-bold text-xs">{threadLikes}</span>
             </button>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 font-rajdhani tracking-wide">
+            <div className="flex items-center gap-1.5 text-xs text-[rgba(140,160,190,0.65)] tracking-wide">
               <MessageSquare className="w-4 h-4 text-grid-cyan/50" />
               {(thread?.replies || 0) + newReplyCount} replies
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 font-rajdhani tracking-wide">
+            <div className="flex items-center gap-1.5 text-xs text-[rgba(140,160,190,0.65)] tracking-wide">
               <Eye className="w-4 h-4" />
               {(thread?.views || 0).toLocaleString()} views
             </div>
@@ -323,7 +323,7 @@ export default function ForumThread() {
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="flex items-center gap-1 text-[10px] text-green-400 bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-full font-rajdhani tracking-widest uppercase ml-auto"
+                className="flex items-center gap-1 text-[10px] text-green-400 bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-full tracking-widest uppercase ml-auto"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                 {newReplyCount} new {newReplyCount === 1 ? 'reply' : 'replies'}
@@ -334,11 +334,11 @@ export default function ForumThread() {
 
         {/* Replies header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-orbitron text-xs font-bold text-white tracking-widest uppercase flex items-center gap-2">
+          <h2 className="text-xs font-bold text-white tracking-widest uppercase flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-grid-cyan" />
             {replies.length} {replies.length === 1 ? 'Reply' : 'Replies'}
           </h2>
-          <div className="flex items-center gap-1.5 text-[10px] text-green-400 font-rajdhani tracking-widest">
+          <div className="flex items-center gap-1.5 text-[10px] text-green-400 tracking-widest">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             Live
           </div>
@@ -348,7 +348,7 @@ export default function ForumThread() {
         {replyTree.length === 0 ? (
           <div className="glass-card rounded-2xl p-12 text-center mb-6">
             <MessageSquare className="w-10 h-10 text-grid-cyan/20 mx-auto mb-3" />
-            <p className="text-gray-600 font-rajdhani tracking-widest text-xs uppercase">No replies yet. Be the first to respond!</p>
+            <p className="text-[rgba(140,160,190,0.6)] tracking-widest text-xs uppercase">No replies yet. Be the first to respond!</p>
           </div>
         ) : (
           <div className="space-y-0 mb-6">
