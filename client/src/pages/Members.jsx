@@ -28,11 +28,11 @@ const FACES = [
     tags:['CV','Systems','ML'],
   },
   {
-    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
-    photo: null, crop:'50% 20%',
+    name:'Open Seat',        initials:'?',  position:'Research Role',         specialty:'Open Position',
+    photo: null, crop:'50% 20%', open:true, seatTitle:'ML Research',
     gradient:'linear-gradient(135deg,#0052cc,#00d4ff)',    glow:'#0052cc',
-    quote:'Something exciting is on its way. Stay tuned.',
-    tags:['GRID'],
+    quote:'This seat is reserved for the next researcher who wants to help push GRID forward.',
+    tags:['Apply'],
   },
   {
     name:'Aditya Gaurav',    initials:'AG', position:'ML Researcher',         specialty:'Machine Learning & AI',
@@ -56,18 +56,18 @@ const FACES = [
     tags:['Research','ML'],
   },
   {
-    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
-    photo: null, crop:'50% 20%',
+    name:'Open Seat',        initials:'?',  position:'Engineering Role',      specialty:'Open Position',
+    photo: null, crop:'50% 20%', open:true, seatTitle:'ML Engineering',
     gradient:'linear-gradient(135deg,#7b2fff,#ec4899)',    glow:'#7b2fff',
-    quote:'Something exciting is on its way. Stay tuned.',
-    tags:['GRID'],
+    quote:'This seat is reserved for the next engineer who wants to help push GRID forward.',
+    tags:['Apply'],
   },
   {
-    name:'Coming Soon',      initials:'?',  position:'GRID Member',           specialty:'Details coming soon…',
-    photo: null, crop:'50% 20%',
+    name:'Open Seat',        initials:'?',  position:'Community Role',        specialty:'Open Position',
+    photo: null, crop:'50% 20%', open:true, seatTitle:'Community Ops',
     gradient:'linear-gradient(135deg,#4ade80,#0066ff)',    glow:'#4ade80',
-    quote:'Something exciting is on its way. Stay tuned.',
-    tags:['GRID'],
+    quote:'This seat is reserved for the next organizer who wants to help push GRID forward.',
+    tags:['Apply'],
   },
 ]
 
@@ -301,11 +301,57 @@ function CardPrism({ p, uid }) {
   )
 }
 
+/* ─── Open Seat — an unfilled team slot, styled as a deliberate invitation   ─
+   rather than a broken/placeholder profile. Dashed accent ring, no fake
+   "online" status, no fake quote-from-a-person — just a clear, honest CTA. */
+function OpenSeatCard({ p }) {
+  return (
+    <div style={{ height:'100%', display:'flex', flexDirection:'column', position:'relative',
+      background:'linear-gradient(160deg,rgba(6,6,24,0.99),rgba(3,3,14,0.98))' }}>
+      <div style={{ aspectRatio:'4 / 5', width:'100%', position:'relative', overflow:'hidden', flexShrink:0,
+        display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <div style={{ position:'absolute', inset:0, backgroundImage:`linear-gradient(${p.glow}0c 1px,transparent 1px),linear-gradient(90deg,${p.glow}0c 1px,transparent 1px)`, backgroundSize:'26px 26px' }} />
+        <div style={{ position:'absolute', top:'-6%', left:'50%', transform:'translateX(-50%)', width:'110%', height:'60%', background:`radial-gradient(circle,${p.glow}22 0%,transparent 65%)`, filter:'blur(44px)' }} />
+        <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top,rgba(6,6,24,0.99) 0%,transparent 55%)' }} />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:4, background:p.gradient, opacity:0.55 }} />
+
+        {/* Dashed "empty seat" ring — visually distinct from a filled portrait */}
+        <div style={{ position:'relative', width:112, height:112, borderRadius:'50%',
+          border:`2px dashed ${p.glow}55`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ position:'absolute', inset:-16, borderRadius:'50%', background:`radial-gradient(circle,${p.glow}22 0%,transparent 70%)`, filter:'blur(14px)' }} />
+          <Sparkles style={{ width:30, height:30, color:p.glow, opacity:0.85, position:'relative', zIndex:1 }} />
+        </div>
+
+        <div style={{ position:'absolute', left:24, right:24, bottom:20, textAlign:'center', zIndex:2 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:19, color:'#f6f9ff', letterSpacing:'-0.02em' }}>{p.seatTitle}</div>
+          <div style={{ fontFamily:jak, fontWeight:700, fontSize:10, letterSpacing:'0.15em', textTransform:'uppercase', color:`${p.glow}c8`, marginTop:4 }}>Open Position</div>
+        </div>
+      </div>
+      <div style={{ padding:'20px 26px 26px', display:'flex', flexDirection:'column', flex:1, textAlign:'center' }}>
+        <div style={{ height:1, background:`linear-gradient(90deg,transparent,${p.glow}22,transparent)`, marginBottom:14 }} />
+        <p style={{ fontFamily:jak, fontSize:13.5, lineHeight:1.72, color:'rgba(180,195,215,0.75)', flex:1, marginBottom:18 }}>{p.quote}</p>
+        <a href="mailto:hello@grid.dev?subject=I%27d%20like%20to%20join%20GRID" style={{
+          display:'inline-flex', alignItems:'center', justifyContent:'center', gap:7,
+          fontFamily:jak, fontWeight:700, fontSize:12, letterSpacing:'0.02em',
+          padding:'10px 18px', borderRadius:11, textDecoration:'none',
+          color:p.glow, background:`${p.glow}0d`, border:`1px solid ${p.glow}30`,
+          transition:'all 0.2s ease',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = `${p.glow}1a`; e.currentTarget.style.borderColor = `${p.glow}55` }}
+        onMouseLeave={e => { e.currentTarget.style.background = `${p.glow}0d`; e.currentTarget.style.borderColor = `${p.glow}30` }}
+        >
+          Claim this seat <Zap style={{ width:12, height:12 }} />
+        </a>
+      </div>
+    </div>
+  )
+}
+
 const VARIANTS = [CardAurora, CardAngular, CardHex, CardRail, CardPrism]
 
 function FaceCard({ p, i }) {
   const [hov, setHov] = useState(false)
-  const V = VARIANTS[i % VARIANTS.length]
+  const V = p.open ? OpenSeatCard : VARIANTS[i % VARIANTS.length]
   return (
     <motion.div
       initial={{ opacity:0, y:32 }}
@@ -316,11 +362,12 @@ function FaceCard({ p, i }) {
       onMouseLeave={()=>setHov(false)}
       style={{
         borderRadius:24, overflow:'hidden',
-        border:`1px solid ${hov ? p.glow+'40' : p.glow+'14'}`,
+        border: p.open ? `1px dashed ${hov ? p.glow+'50' : p.glow+'22'}` : `1px solid ${hov ? p.glow+'40' : p.glow+'14'}`,
         boxShadow: hov ? `0 40px 96px rgba(0,0,0,0.72),0 0 80px ${p.glow}18` : `0 18px 52px rgba(0,0,0,0.5)`,
         transform: hov ? 'translateY(-9px) scale(1.008)' : 'translateY(0) scale(1)',
         transition:'all 0.4s cubic-bezier(0.22,1,0.36,1)',
         display:'flex', flexDirection:'column', position:'relative', height:'100%',
+        opacity: p.open ? 0.92 : 1,
       }}
     >
       <V p={p} hov={hov} uid={i} />
