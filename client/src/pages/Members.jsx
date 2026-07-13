@@ -170,27 +170,27 @@ function CardAurora({ p }) {
   )
 }
 
-/* ─── VARIANT 1 — "Side Dossier" — photo left rail, info stacked right ─────── */
+/* ─── VARIANT 1 — "Field Dossier" — full-bleed photo on top, badge overlay, stacked info below ─── */
 function CardAngular({ p }) {
   return (
-    <div className="flex flex-col sm:flex-row" style={{ height:'100%', background:'rgba(4,4,16,0.99)', position:'relative' }}>
-      <div className="w-full sm:w-[46%]" style={{ position:'relative', overflow:'hidden', flexShrink:0, aspectRatio:'4 / 5' }}>
+    <div style={{ height:'100%', display:'flex', flexDirection:'column', background:'rgba(4,4,16,0.99)', position:'relative' }}>
+      <div style={{ width:'100%', position:'relative', overflow:'hidden', flexShrink:0, aspectRatio:'4 / 5' }}>
         <BannerPhoto p={p} />
-        <div style={{ position:'absolute', top:0, left:0, bottom:0, width:4, background:p.gradient, zIndex:2 }} className="hidden sm:block" />
-        <div style={{ position:'absolute', top:0, left:0, right:0, height:4, background:p.gradient, zIndex:2 }} className="sm:hidden" />
+        <div style={{ position:'absolute', top:0, left:0, right:0, height:4, background:p.gradient, zIndex:2 }} />
         <div style={{ position:'absolute', top:16, left:16, zIndex:2 }}>
           <span style={{ fontFamily:jak, fontWeight:700, fontSize:9.5, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.85)', background:'rgba(0,0,0,0.4)', border:'1px solid rgba(255,255,255,0.15)', padding:'4px 10px', borderRadius:100 }}>{p.position}</span>
         </div>
+        <div style={{ position:'absolute', top:16, right:16, width:14, height:14, borderRadius:'50%', background:'#4ade80', border:'2px solid #060618', boxShadow:'0 0 10px #4ade80', zIndex:2 }} />
+        <div style={{ position:'absolute', left:24, right:24, bottom:20, zIndex:2 }}>
+          <div style={{ fontFamily:jak, fontWeight:800, fontSize:23, color:'#f6f9ff', letterSpacing:'-0.025em', textShadow:'0 2px 18px rgba(0,0,0,0.7)' }}>{p.name}</div>
+        </div>
       </div>
-      <div style={{ flex:1, padding:'22px 24px 26px', display:'flex', flexDirection:'column' }}>
-        <div style={{ marginBottom:14 }}>
-          <div style={{ fontFamily:jak, fontWeight:800, fontSize:21, color:'#f0f6ff', letterSpacing:'-0.025em', marginBottom:4 }}>{p.name}</div>
-          <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.58)', fontFamily:jak }}>
-            <Zap style={{ width:11, height:11, color:p.glow }} />{p.specialty}
-          </div>
+      <div style={{ flex:1, padding:'20px 24px 26px', display:'flex', flexDirection:'column' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'rgba(140,160,190,0.58)', fontFamily:jak, marginBottom:14 }}>
+          <Zap style={{ width:11, height:11, color:p.glow }} />{p.specialty}
         </div>
         <div style={{ height:1, background:`linear-gradient(90deg,${p.glow}20,transparent)`, marginBottom:14 }} />
-        <p style={{ fontFamily:jak, fontSize:13.5, lineHeight:1.72, color:'rgba(180,195,215,0.82)', fontStyle:'italic', flex:1, marginBottom:18, display:'-webkit-box', WebkitLineClamp:4, WebkitBoxOrient:'vertical', overflow:'hidden' }}>&ldquo;{p.quote}&rdquo;</p>
+        <p style={{ fontFamily:jak, fontSize:13.5, lineHeight:1.72, color:'rgba(180,195,215,0.82)', fontStyle:'italic', flex:1, marginBottom:18, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>&ldquo;{p.quote}&rdquo;</p>
         <Tags tags={p.tags} glow={p.glow} />
       </div>
     </div>
