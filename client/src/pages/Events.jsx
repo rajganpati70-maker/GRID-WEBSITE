@@ -157,86 +157,87 @@ function FeaturedEvent({ event }) {
         background: 'linear-gradient(160deg, rgba(6,6,24,0.98) 0%, rgba(4,4,18,0.96) 100%)',
         border: `1px solid ${meta.color}22`,
         backdropFilter: 'blur(32px)',
-        boxShadow: `0 0 0 1px rgba(255,255,255,0.025) inset, 0 32px 80px rgba(0,0,0,0.65), 0 0 80px ${meta.color}08`,
-        marginBottom: 28,
+        boxShadow: `0 0 0 1px rgba(255,255,255,0.025) inset, 0 24px 60px rgba(0,0,0,0.6), 0 0 60px ${meta.color}08`,
+        marginBottom: 20,
       }}
     >
       {/* Top gradient line */}
-      <div style={{ height: 3, background: event.accentGrad || `linear-gradient(90deg, ${meta.color}, #0066ff)` }} />
+      <div style={{ height: 2, background: event.accentGrad || `linear-gradient(90deg, ${meta.color}, #0066ff)` }} />
 
       {/* Ambient glow */}
-      <div style={{ position:'absolute', top:-60, right:-60, width:280, height:280, borderRadius:'50%', background:`radial-gradient(circle, ${meta.color}10 0%, transparent 70%)`, filter:'blur(40px)', pointerEvents:'none' }} />
-      <div style={{ position:'absolute', bottom:-40, left:'30%', width:240, height:180, borderRadius:'50%', background:`radial-gradient(circle, rgba(0,102,255,0.08) 0%, transparent 70%)`, filter:'blur(50px)', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', top:-50, right:-50, width:200, height:200, borderRadius:'50%', background:`radial-gradient(circle, ${meta.color}10 0%, transparent 70%)`, filter:'blur(36px)', pointerEvents:'none' }} />
+      <div style={{ position:'absolute', bottom:-30, left:'30%', width:180, height:130, borderRadius:'50%', background:`radial-gradient(circle, rgba(0,102,255,0.08) 0%, transparent 70%)`, filter:'blur(40px)', pointerEvents:'none' }} />
 
-      <div className="relative p-8 md:p-10">
-        <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+      <div className="relative p-4 md:p-5">
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
 
           {/* Left: content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {/* Badges */}
-            <div className="flex items-center gap-3 mb-5 flex-wrap">
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
               <span style={{
                 background: meta.bg, border:`1px solid ${meta.border}`, color:meta.color,
-                fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase',
-                padding:'4px 12px', borderRadius:100,
+                fontSize:9, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase',
+                padding:'3px 9px', borderRadius:100,
                 fontFamily:'"Plus Jakarta Sans",sans-serif',
               }}>{event.type}</span>
               {event.upcoming
-                ? <span style={{ background:'rgba(0,212,255,0.08)', border:'1px solid rgba(0,212,255,0.35)', color:'#00d4ff', fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, animation:'pulse 2s infinite', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>● Upcoming</span>
-                : <span style={{ background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.25)', color:'#4ade80', fontSize:10.5, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', padding:'4px 12px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>Featured</span>
+                ? <span style={{ background:'rgba(0,212,255,0.08)', border:'1px solid rgba(0,212,255,0.35)', color:'#00d4ff', fontSize:9, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100, animation:'pulse 2s infinite', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>● Upcoming</span>
+                : <span style={{ background:'rgba(74,222,128,0.08)', border:'1px solid rgba(74,222,128,0.25)', color:'#4ade80', fontSize:9, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', padding:'3px 9px', borderRadius:100, fontFamily:'"Plus Jakarta Sans",sans-serif' }}>Featured</span>
               }
             </div>
 
             <h2 style={{
               fontFamily:'"Plus Jakarta Sans",sans-serif',
-              fontWeight:800, fontSize:'clamp(1.4rem, 3vw, 2rem)',
-              color:'#f0f6ff', letterSpacing:'-0.03em', lineHeight:1.2,
-              marginBottom:14,
+              fontWeight:800, fontSize:'clamp(1.05rem, 1.8vw, 1.35rem)',
+              color:'#f0f6ff', letterSpacing:'-0.02em', lineHeight:1.22,
+              marginBottom:8,
             }}>{event.title}</h2>
 
             <p style={{
               fontFamily:'"Plus Jakarta Sans",sans-serif',
-              fontSize:15, color:'rgba(160,180,210,0.8)', lineHeight:1.7,
-              marginBottom:24, maxWidth:580,
+              fontSize:12.5, color:'rgba(160,180,210,0.78)', lineHeight:1.6,
+              marginBottom:14, maxWidth:520,
+              display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden',
             }}>{event.description ?? event.desc}</p>
 
             {/* Meta row */}
-            <div style={{ display:'flex', flexWrap:'wrap', gap:20, marginBottom:22 }}>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:12, marginBottom:12 }}>
               {[
                 { Icon:Calendar, text:dateStr },
                 { Icon:Clock,    text:event.time },
                 { Icon:MapPin,   text:event.location },
               ].filter(x => x.text && x.text !== '—').map(({ Icon:Ic, text }) => (
-                <div key={text} style={{ display:'flex', alignItems:'center', gap:7, fontSize:13, color:'rgba(140,160,190,0.7)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
-                  <Ic style={{ width:14, height:14, color:meta.color, opacity:0.8, flexShrink:0 }} />
+                <div key={text} style={{ display:'flex', alignItems:'center', gap:5, fontSize:11.5, color:'rgba(140,160,190,0.7)', fontFamily:'"Plus Jakarta Sans",sans-serif' }}>
+                  <Ic style={{ width:12, height:12, color:meta.color, opacity:0.8, flexShrink:0 }} />
                   {text}
                 </div>
               ))}
             </div>
 
             {/* Tags */}
-            <div style={{ display:'flex', flexWrap:'wrap', gap:7, marginBottom:28 }}>
-              {(event.tags||[]).map(t => (
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:16 }}>
+              {(event.tags||[]).slice(0,4).map(t => (
                 <span key={t} style={{
-                  fontSize:11, fontWeight:600, fontFamily:'"Plus Jakarta Sans",sans-serif',
+                  fontSize:10, fontWeight:600, fontFamily:'"Plus Jakarta Sans",sans-serif',
                   background:`${meta.color}0d`, border:`1px solid ${meta.color}20`, color:meta.color,
-                  padding:'4px 11px', borderRadius:100, letterSpacing:'0.04em',
+                  padding:'3px 9px', borderRadius:100, letterSpacing:'0.04em',
                 }}>{t}</span>
               ))}
             </div>
 
             <button style={{
-              display:'inline-flex', alignItems:'center', gap:8,
+              display:'inline-flex', alignItems:'center', gap:6,
               background:`linear-gradient(135deg, ${meta.color}, #0066ff)`,
               color:'#fff', fontFamily:'"Plus Jakarta Sans",sans-serif',
-              fontWeight:700, fontSize:13, letterSpacing:'-0.01em',
-              padding:'12px 24px', borderRadius:12, border:'none', cursor:'pointer',
-              boxShadow:`0 4px 24px ${meta.color}30`,
+              fontWeight:700, fontSize:12, letterSpacing:'-0.01em',
+              padding:'9px 18px', borderRadius:10, border:'none', cursor:'pointer',
+              boxShadow:`0 4px 20px ${meta.color}30`,
               transition:'transform 0.2s ease, box-shadow 0.2s ease',
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow=`0 8px 32px ${meta.color}40` }}
-            onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 4px 24px ${meta.color}30` }}>
-              {event.upcoming ? 'Register Now' : 'View Event'} <ArrowRight style={{ width:16,height:16 }} />
+            onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow=`0 8px 28px ${meta.color}40` }}
+            onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow=`0 4px 20px ${meta.color}30` }}>
+              {event.upcoming ? 'Register Now' : 'View Event'} <ArrowRight style={{ width:14,height:14 }} />
             </button>
           </div>
 
@@ -244,10 +245,10 @@ function FeaturedEvent({ event }) {
           {event.poster
             ? (
               <div style={{
-                flexShrink: 0, width: 220,
-                borderRadius: 16, overflow: 'hidden',
+                flexShrink: 0, width: 108,
+                borderRadius: 12, overflow: 'hidden',
                 border: `1px solid ${meta.color}22`,
-                boxShadow: `0 0 40px ${meta.color}18, 0 16px 48px rgba(0,0,0,0.6)`,
+                boxShadow: `0 0 24px ${meta.color}18, 0 10px 30px rgba(0,0,0,0.55)`,
                 aspectRatio: '3/4',
               }}>
                 <img src={event.poster} alt={event.title}
@@ -255,17 +256,17 @@ function FeaturedEvent({ event }) {
               </div>
             ) : (
               <div style={{
-                flexShrink: 0, width: 160,
+                flexShrink: 0, width: 96,
                 background: 'rgba(255,255,255,0.025)',
                 border: `1px solid ${meta.color}20`,
-                borderRadius: 20, padding: '28px 20px',
+                borderRadius: 14, padding: '14px 10px',
                 display: 'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
                 textAlign: 'center', backdropFilter: 'blur(20px)',
               }}>
-                <Icon style={{ width:32, height:32, color:meta.color, marginBottom:14, opacity:0.9 }} />
-                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900, fontSize:52, color:'#f0f6ff', lineHeight:1, letterSpacing:'-0.05em', marginBottom:4 }}>{day}</div>
-                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', background: event.accentGrad, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:4 }}>{month}</div>
-                <div style={{ fontSize:12, color:'rgba(140,160,190,0.5)', fontFamily:'Inter,sans-serif' }}>{year}</div>
+                <Icon style={{ width:20, height:20, color:meta.color, marginBottom:8, opacity:0.9 }} />
+                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:900, fontSize:30, color:'#f0f6ff', lineHeight:1, letterSpacing:'-0.04em', marginBottom:3 }}>{day}</div>
+                <div style={{ fontFamily:'"Plus Jakarta Sans",sans-serif', fontWeight:700, fontSize:10, letterSpacing:'0.16em', textTransform:'uppercase', background: event.accentGrad, WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text', marginBottom:3 }}>{month}</div>
+                <div style={{ fontSize:10, color:'rgba(140,160,190,0.5)', fontFamily:'Inter,sans-serif' }}>{year}</div>
               </div>
             )
           }
