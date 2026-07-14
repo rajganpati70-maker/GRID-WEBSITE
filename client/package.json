@@ -16,6 +16,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.2"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
