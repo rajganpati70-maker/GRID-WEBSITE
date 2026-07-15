@@ -379,7 +379,7 @@ function MemberPhoto({ m, size, borderRadius='50%' }) {
   }
   if (m.photo) return (
     <div style={wrap}>
-      <img src={m.photo} alt={m.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+      <img src={m.photo} alt={m.name} loading="lazy" decoding="async" style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
     </div>
   )
   return (
@@ -418,7 +418,7 @@ function MemberV0({ member }) {
       <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
         {member.photo
           ? <>
-              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <img src={member.photo} alt={member.name} loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
               <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.55) 55%, transparent 100%)' }} />
             </>
           : <>
@@ -471,7 +471,7 @@ function MemberV1({ member }) {
       <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
         {member.photo
           ? <>
-              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <img src={member.photo} alt={member.name} loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
               <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(4,4,16,0.98) 0%, rgba(4,4,16,0.55) 55%, transparent 100%)' }} />
             </>
           : <>
@@ -527,7 +527,7 @@ function MemberV2({ member }) {
         background: member.photo ? 'transparent' : `radial-gradient(ellipse at 50% 60%, ${member.glowColor}14 0%, transparent 65%)` }}>
         {member.photo
           ? <>
-              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <img src={member.photo} alt={member.name} loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
               <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(5,5,20,0.98) 0%, rgba(5,5,20,0.55) 55%, transparent 100%)' }} />
             </>
           : <>
@@ -582,7 +582,7 @@ function MemberV3({ member }) {
         <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0 }}>
           {member.photo
             ? <>
-                <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+                <img src={member.photo} alt={member.name} loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
                 <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(6,6,24,0.98) 0%, rgba(6,6,24,0.55) 55%, transparent 100%)' }} />
               </>
             : <>
@@ -631,7 +631,7 @@ function MemberV4({ member, i }) {
       <div style={{ height:260, position:'relative', overflow:'hidden', flexShrink:0, borderBottom:`1px solid ${member.glowColor}14` }}>
         {member.photo
           ? <>
-              <img src={member.photo} alt={member.name} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
+              <img src={member.photo} alt={member.name} loading="lazy" decoding="async" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', objectPosition:'top center' }} />
               <div style={{ position:'absolute', bottom:0, left:0, right:0, height:120, background:'linear-gradient(to top, rgba(3,3,14,0.98) 0%, rgba(3,3,14,0.55) 55%, transparent 100%)' }} />
             </>
           : <>

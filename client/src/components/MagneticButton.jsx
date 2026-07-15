@@ -1,30 +1,40 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 export default function MagneticButton({
   children, onClick, className = '', style = {},
   strength = 0.42, variant = 'primary',
 }) {
-  const ref = useRef(null)
+  const ref     = useRef(null)
+  const rafRef  = useRef(null)
   const [over, setOver] = useState(false)
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  const x  = useMotionValue(0)
+  const y  = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 190, damping: 16 })
   const sy = useSpring(y, { stiffness: 190, damping: 16 })
 
-  const onMove = (e) => {
-    const el = ref.current
-    if (!el) return
-    const rect = el.getBoundingClientRect()
-    x.set((e.clientX - (rect.left + rect.width  / 2)) * strength)
-    y.set((e.clientY - (rect.top  + rect.height / 2)) * strength)
-  }
+  // getBoundingClientRect is expensive — throttle to one call per animation frame
+  const onMove = useCallback((e) => {
+    if (rafRef.current) return
+    const clientX = e.clientX
+    const clientY = e.clientY
+    rafRef.current = requestAnimationFrame(() => {
+      const el = ref.current
+      if (el) {
+        const rect = el.getBoundingClientRect()
+        x.set((clientX - (rect.left + rect.width  / 2)) * strength)
+        y.set((clientY - (rect.top  + rect.height / 2)) * strength)
+      }
+      rafRef.current = null
+    })
+  }, [strength, x, y])
 
-  const onLeave = () => { x.set(0); y.set(0); setOver(false) }
+  const onLeave = useCallback(() => {
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null }
+    x.set(0); y.set(0); setOver(false)
+  }, [x, y])
 
-  const base = variant === 'primary'
-    ? 'btn-primary'
-    : 'btn-secondary'
+  const base = variant === 'primary' ? 'btn-primary' : 'btn-secondary'
 
   return (
     <motion.button

@@ -6,6 +6,7 @@ export default function GlowCounter({ value, suffix = '', prefix = '', duration 
   const ran = useRef(false)
 
   useEffect(() => {
+    let rafId = null
     const obs = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !ran.current) {
@@ -15,16 +16,16 @@ export default function GlowCounter({ value, suffix = '', prefix = '', duration 
             const t = Math.min((now - start) / duration, 1)
             const ease = 1 - Math.pow(1 - t, 4)
             setDisplayed(Math.floor(ease * value))
-            if (t < 1) requestAnimationFrame(tick)
+            if (t < 1) { rafId = requestAnimationFrame(tick) }
             else setDisplayed(value)
           }
-          requestAnimationFrame(tick)
+          rafId = requestAnimationFrame(tick)
         }
       },
       { threshold: 0.4 }
     )
     if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
+    return () => { obs.disconnect(); if (rafId) cancelAnimationFrame(rafId) }
   }, [value, duration])
 
   return (
