@@ -330,6 +330,9 @@ function OrbSVG({ orb }) {
   )
 }
 
+/* ── Pre-computed CSS string — built once at module load, never on render ── */
+const ORBS_CSS = buildCSS()
+
 /* ── Main component ──────────────────────────────────────────────────────── */
 export default function FloatingGridOrbs() {
   const parallaxEls = useRef([])
@@ -378,7 +381,7 @@ export default function FloatingGridOrbs() {
         overflow: 'hidden',
       }}
     >
-      <style>{buildCSS()}</style>
+      <style>{ORBS_CSS}</style>
 
       {ORBS.map((orb, i) => (
         <motion.div

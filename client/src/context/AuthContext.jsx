@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { registerUser, loginUser, getUserByUsername, updateUser } from '../data/store'
 
 const AuthContext = createContext(null)
@@ -26,32 +26,32 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     const u = loginUser(email, password)
     localStorage.setItem('grid_session', JSON.stringify({ username: u.username }))
     setUser(u)
     return u
-  }
+  }, [])
 
-  const register = async (username, email, password, role) => {
+  const register = useCallback(async (username, email, password, role) => {
     const u = registerUser(username, email, password, role)
     localStorage.setItem('grid_session', JSON.stringify({ username: u.username }))
     setUser(u)
     return u
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('grid_session')
     setUser(null)
-  }
+  }, [])
 
-  const refreshUser = () => {
+  const refreshUser = useCallback(() => {
     if (!user) return
     const fresh = getUserByUsername(user.username)
     if (fresh) setUser(fresh)
-  }
+  }, [user])
 
-  const updateProfile = (updates) => {
+  const updateProfile = useCallback((updates) => {
     if (!user) return null
     const updated = updateUser(user.id, updates)
     if (updated) {
@@ -59,10 +59,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('grid_session', JSON.stringify({ username: updated.username }))
     }
     return updated
-  }
+  }, [user])
+
+  const value = useMemo(() => ({
+    user, setUser, loading, login, register, logout, refreshUser, updateProfile,
+    token: user ? 'local' : null,
+  }), [user, loading, login, register, logout, refreshUser, updateProfile])
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, login, register, logout, refreshUser, updateProfile, token: user ? 'local' : null }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )

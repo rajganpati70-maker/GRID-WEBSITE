@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useAuth } from './AuthContext'
 import { toast } from '../components/ToastContainer'
 
@@ -180,12 +180,18 @@ export const NotificationProvider = ({ children }) => {
   const dmBadge = Object.values(unreadDms).reduce((a, b) => a + b, 0)
   const totalUnread = unreadCount + chatBadge + dmBadge
 
+  const value = useMemo(() => ({
+    notifications, unreadCount, totalUnread, chatBadge, dmBadge,
+    unreadDms, unreadRooms, markAllRead, clearDmUnread, clearRoomUnread,
+    markChatActive, markChatInactive, addNotification,
+  }), [
+    notifications, unreadCount, totalUnread, chatBadge, dmBadge,
+    unreadDms, unreadRooms, markAllRead, clearDmUnread, clearRoomUnread,
+    markChatActive, markChatInactive, addNotification,
+  ])
+
   return (
-    <NotificationContext.Provider value={{
-      notifications, unreadCount, totalUnread, chatBadge, dmBadge,
-      unreadDms, unreadRooms, markAllRead, clearDmUnread, clearRoomUnread,
-      markChatActive, markChatInactive, addNotification
-    }}>
+    <NotificationContext.Provider value={value}>
       {children}
     </NotificationContext.Provider>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Send, X, Sparkles, Bot, Mic, MicOff } from 'lucide-react'
@@ -166,7 +166,7 @@ export default function GridAIBot() {
   const scrollRef = useRef(null)
   const teaserTimerRef = useRef(null)
   const recognitionRef = useRef(null)
-  const suggestions = getSuggestions(input)
+  const suggestions = useMemo(() => getSuggestions(input), [input])
 
   // Set up voice input (Web Speech API) once, if the browser supports it
   useEffect(() => {
